@@ -1,5 +1,6 @@
 ﻿#include "imgui.h"
 #include "imgui-SFML.h"
+#include "ImGuiFileDialog.h"
 
 #include <SFML/Graphics.hpp>
 
