@@ -140,7 +140,10 @@
     <ClCompile Include="include\imgui_draw.cpp" />
     <ClCompile Include="include\imgui_tables.cpp" />
     <ClCompile Include="include\imgui_widgets.cpp" />
+    <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\imconfig-SFML.h" />
