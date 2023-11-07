@@ -1,13 +1,17 @@
-﻿#include "imgui.h"
-#include "imgui-SFML.h"
-#include "ImGuiFileDialog.h"
-
+﻿#include <imgui.h>
+#include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>
+#include "GameManager.hpp"
+#include "SceneManager.hpp"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1280, 720), "Test project");
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(),
+        "Dungeon Quest", sf::Style::Fullscreen);
+    window.setFramerateLimit(60);
     ImGui::SFML::Init(window);
+    GameManager::Init(window);
+    SceneManager::Init();
 
     sf::Clock deltaClock;
     while (window.isOpen())
@@ -16,18 +20,20 @@ int main()
         while (window.pollEvent(event))
         {
             ImGui::SFML::ProcessEvent(event);
-            if (event.type == sf::Event::Closed)
-                window.close();
+            SceneManager::ProccessEvent(event);
         }
-        ImGui::SFML::Update(window, deltaClock.restart());
+        sf::Time dt = deltaClock.restart();
+        ImGui::SFML::Update(window, dt);
 
-        // ImGui code goes here
+        SceneManager::RenderGUI();
 
         window.clear(sf::Color(36, 36, 36));
+        SceneManager::RenderSFML();
         ImGui::SFML::Render(window);
         window.display();
     }
 
+    SceneManager::Shutdown();
     ImGui::SFML::Shutdown();
     return 0;
 }
