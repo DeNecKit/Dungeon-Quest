@@ -1,6 +1,6 @@
-#include "GameManager.hpp"
+#include "GameManager.h"
 #include <SFML/Graphics.hpp>
-#include "SceneManager.hpp"
+#include "SceneManager.h"
 
 void GameManager::Init()
 {
@@ -17,6 +17,16 @@ sf::RenderWindow* GameManager::GetWindow()
 	return m_window;
 }
 
+unsigned int GameManager::WindowWidth()
+{
+	return m_window->getSize().x;
+}
+
+unsigned int GameManager::WindowHeight()
+{
+	return m_window->getSize().y;
+}
+
 bool GameManager::IsRunning()
 {
 	return !m_isWindowClosed;
@@ -27,7 +37,9 @@ void GameManager::Update()
 	sf::Event event;
 	while (m_window->pollEvent(event))
 		SceneManager::ProccessEvent(event);
-	sf::Time dt = m_deltaClock.restart();
+
+	float dt = m_deltaClock.restart().asSeconds();
+	SceneManager::Update(dt);
 
 	m_window->clear(sf::Color(36, 36, 36));
 	SceneManager::RenderSFML();

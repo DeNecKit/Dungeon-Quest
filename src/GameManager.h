@@ -1,12 +1,14 @@
 #pragma once
 
-#include "SceneManager.hpp"
+#include "SceneManager.h"
 
 class GameManager
 {
 public:
 	static void Init();
 	static sf::RenderWindow* GetWindow();
+	static unsigned int WindowWidth();
+	static unsigned int WindowHeight();
 	static bool IsRunning();
 	static void Update();
 	static void Close();

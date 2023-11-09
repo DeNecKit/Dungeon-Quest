@@ -1,6 +1,6 @@
-#include "SceneManager.hpp"
+#include "SceneManager.h"
 #include <SFML/Graphics.hpp>
-#include "GameManager.hpp"
+#include "GameManager.h"
 
 void SceneManager::Init()
 {
@@ -16,6 +16,12 @@ void SceneManager::ProccessEvent(const sf::Event &event)
 	}
 	if (m_currentScene != nullptr)
 		m_currentScene->ProcessEvent(event);
+}
+
+void SceneManager::Update(float deltaTime)
+{
+	if (m_currentScene != nullptr)
+		m_currentScene->Update(deltaTime);
 }
 
 void SceneManager::RenderGUI()
