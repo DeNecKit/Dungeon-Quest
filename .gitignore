@@ -418,3 +418,6 @@ FodyWeavers.xsd
 /include/stb_image.h
 /include/stb_image_resize.h
 *.ttf
+/Dungeon-Quest.vcxproj
+/Dungeon-Quest.vcxproj.filters
+/Dungeon-Quest.sln
