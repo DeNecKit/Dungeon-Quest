@@ -1,32 +1,18 @@
 #include "Gui.h"
+#include "GuiStyle.h"
+#include "GameManager.h"
 
-GuiStyle::GuiStyle(unsigned int posX, unsigned int posY,
-	unsigned int sizeX, unsigned int sizeY,
-	sf::Color backgroundColor = sf::Color(48, 49, 52),
-	sf::Color outlineColor = sf::Color(32, 33, 36),
-	sf::Color textColor = sf::Color::Black,
-	float outlineThickness = 1.f)
-	: posX(posX), posY(posY), sizeX(sizeX), sizeY(sizeY),
-	backgroundColor(backgroundColor), outlineColor(outlineColor),
-	textColor(textColor), outlineThickness(outlineThickness) {}
+Gui::Gui(GuiStyle style, bool enabled)
+	: style(style), isEnabled(enabled),
+	needsRefresh(true) {}
 
+Gui::~Gui() {}
 
-Gui::Gui(GuiStyle style, bool enabled = true)
-	: style(style), isEnabled(enabled)
+bool Gui::IsMouseOver()
 {
-	needsRefresh = true;
+	sf::Vector2i mPos = sf::Mouse::getPosition(*GameManager::GetWindow());
+	int mx = mPos.x, my = mPos.y;
+	int x = style.pos.x, y = style.pos.y,
+		w = style.size.x, h = style.size.y;
+	return mx >= x && mx <= x + w && my >= y && my <= y + h;
 }
-
-
-GuiClickable::GuiClickable(GuiStyle style, bool enabled = true)
-	: Gui(style, enabled) {};
-
-void GuiClickable::ProcessEvent(const sf::Event &event)
-{
-	if (event.type == sf::Event::MouseButtonPressed)
-		OnClick(event);
-}
-
-
-GuiButton::GuiButton(GuiStyle style, bool enabled = true)
-	: Gui(style, enabled) {}
