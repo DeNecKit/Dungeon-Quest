@@ -34,6 +34,7 @@ SceneMainMenu::SceneMainMenu()
 
 SceneMainMenu::~SceneMainMenu()
 {
+	delete title;
 	delete btnNewGame;
 	delete btnLoadGame;
 	delete btnExit;
