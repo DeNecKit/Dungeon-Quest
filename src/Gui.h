@@ -6,16 +6,16 @@
 class Gui
 {
 public:
-	Gui(GuiStyle style, bool enabled = true);
+	Gui(sf::Vector2f pos, sf::Vector2f size, GuiStyle style, bool enabled = true);
 	virtual ~Gui();
 	virtual void ProcessEvent(const sf::Event &) = 0;
-	virtual void Update() = 0;
-	virtual void Render() = 0;
+	virtual void Update(float deltaTime) = 0;
+	virtual void Render(sf::RenderWindow*) = 0;
 
 protected:
 	bool IsMouseOver();
 
 private:
+	sf::Vector2f pos, size;
 	bool isEnabled, needsRefresh;
-	GuiStyle style;
 };

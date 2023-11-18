@@ -7,9 +7,3 @@ GuiStyle::GuiStyle(
 	float outlineThickness)
 	: backgroundColor(backgroundColor), outlineColor(outlineColor),
 	  textColor(textColor), outlineThickness(outlineThickness) {}
-
-void GuiStyle::SetCoords(sf::Vector2f pos, sf::Vector2f size)
-{
-	this->pos = pos;
-	this->size = size;
-}

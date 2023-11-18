@@ -42,8 +42,8 @@ void GameManager::Update()
 	SceneManager::Update(dt);
 
 	m_window->clear(sf::Color(36, 36, 36));
-	SceneManager::RenderSFML();
-	SceneManager::RenderGUI();
+	SceneManager::RenderSFML(m_window);
+	SceneManager::RenderGUI(m_window);
 	m_window->display();
 }
 

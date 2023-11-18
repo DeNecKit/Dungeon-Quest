@@ -25,16 +25,16 @@ void SceneManager::Update(float deltaTime)
 		m_currentScene->Update(deltaTime);
 }
 
-void SceneManager::RenderGUI()
+void SceneManager::RenderGUI(sf::RenderWindow* window)
 {
 	if (m_currentScene != nullptr)
-		m_currentScene->RenderGUI();
+		m_currentScene->RenderGUI(window);
 }
 
-void SceneManager::RenderSFML()
+void SceneManager::RenderSFML(sf::RenderWindow *window)
 {
 	if (m_currentScene != nullptr)
-		m_currentScene->RenderSFML();
+		m_currentScene->RenderSFML(window);
 }
 
 void SceneManager::Shutdown()

@@ -5,15 +5,18 @@
 class GuiButton : public Gui
 {
 public:
-	GuiButton(GuiStyle style, const char *text,
+	GuiButton(sf::Vector2f pos, sf::Vector2f size,
+		GuiStyle style, const sf::String &str,
+		sf::Font* font, unsigned int chSize,
 		void (*onClick)(const sf::Event&),
-		void (*onHover)(const sf::Event&), bool enabled = true);
+		void (*onHover)(const sf::Event&) = nullptr,
+		bool enabled = true);
 	void ProcessEvent(const sf::Event&) override;
-	void Update() override;
-	void Render() override;
+	void Update(float deltaTime) override;
+	void Render(sf::RenderWindow*) override;
 private:
-	sf::RectangleShape *rect;
-	sf::Text *text;
+	sf::RectangleShape rect;
+	sf::Text text;
 	void (*OnClick)(const sf::Event&);
 	void (*OnHover)(const sf::Event&);
 	bool isHovered;
