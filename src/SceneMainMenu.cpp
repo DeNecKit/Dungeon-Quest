@@ -1,35 +1,29 @@
 #include "SceneMainMenu.h"
 #include "GameManager.h"
-
-void OnClickNewGame(const sf::Event&) {}
-
-void OnClickLoadGame(const sf::Event&) {}
-
-void OnClickExit(const sf::Event&)
-{
-	GameManager::Close();
-}
+#include "ResourceManager.h"
 
 SceneMainMenu::SceneMainMenu()
 {
-	font_tmp = new sf::Font();
-	if (!font_tmp->loadFromFile("data/font.ttf"))
-		throw std::exception();
-
 	GuiStyle style = GuiStyle(sf::Color::Black,
 		sf::Color::White, sf::Color::White);
-	const int w = 500;
-	constexpr const int x = 1920 / 2 - w / 2;
-
-	title = new GuiText(sf::Vector2f(x, 100), style, "Dungeon Quest", font_tmp, 24);
-
+	const float w = 500.f * (int)GameManager::WindowWidth() / 1920;
+	const float x = (int)GameManager::WindowWidth() / 2.f - w / 2;
 	sf::Vector2f size(w, 100);
+
+	title = new GuiText(sf::Vector2f(x, 100), size, style,
+		"Dungeon Quest", ResourceManager::GetMainFont(), 48);
+
 	btnNewGame = new GuiButton(sf::Vector2f(x, 500), size,
-		style, L"Новая игра", font_tmp, 16, OnClickNewGame);
+		style, L"Новая игра", ResourceManager::GetMainFont(), 24,
+		[](const sf::Event&) {});
 	btnLoadGame = new GuiButton(sf::Vector2f(x, 650), size,
-		style, L"Загрузить игру", font_tmp, 16, OnClickLoadGame);
+		style, L"Загрузить игру", ResourceManager::GetMainFont(), 24,
+		[](const sf::Event&) {});
 	btnExit = new GuiButton(sf::Vector2f(x, 800), size,
-		style, L"Выйти", font_tmp, 16, OnClickExit);
+		style, L"Выйти", ResourceManager::GetMainFont(), 24,
+		[](const sf::Event&) {
+			GameManager::Close();
+		});
 }
 
 SceneMainMenu::~SceneMainMenu()
@@ -38,7 +32,6 @@ SceneMainMenu::~SceneMainMenu()
 	delete btnNewGame;
 	delete btnLoadGame;
 	delete btnExit;
-	delete font_tmp;
 }
 
 void SceneMainMenu::ProcessEvent(const sf::Event &event)

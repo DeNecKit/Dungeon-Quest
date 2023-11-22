@@ -4,58 +4,58 @@
 
 void GameManager::Init()
 {
-	m_window = new sf::RenderWindow(
+	window = new sf::RenderWindow(
 		sf::VideoMode::getDesktopMode(),
 		"Dungeon Quest", sf::Style::Fullscreen);
-	m_window->setFramerateLimit(60);
-	m_deltaClock.restart();
+	window->setFramerateLimit(60);
+	deltaClock.restart();
 	SceneManager::Init();
 }
 
 sf::RenderWindow* GameManager::GetWindow()
 {
-	return m_window;
+	return window;
 }
 
 unsigned int GameManager::WindowWidth()
 {
-	return m_window->getSize().x;
+	return window->getSize().x;
 }
 
 unsigned int GameManager::WindowHeight()
 {
-	return m_window->getSize().y;
+	return window->getSize().y;
 }
 
 bool GameManager::IsRunning()
 {
-	return !m_isWindowClosed;
+	return !isWindowClosed;
 }
 
 void GameManager::Update()
 {
 	sf::Event event;
-	while (m_window->pollEvent(event))
+	while (window->pollEvent(event))
 		SceneManager::ProccessEvent(event);
 
-	float dt = m_deltaClock.restart().asSeconds();
+	float dt = deltaClock.restart().asSeconds();
 	SceneManager::Update(dt);
 
-	m_window->clear(sf::Color(36, 36, 36));
-	SceneManager::RenderSFML(m_window);
-	SceneManager::RenderGUI(m_window);
-	m_window->display();
+	window->clear(sf::Color(36, 36, 36));
+	SceneManager::RenderSFML(window);
+	SceneManager::RenderGUI(window);
+	window->display();
 }
 
 void GameManager::Close()
 {
-	if (m_isWindowClosed) return;
-	m_window->close();
-	m_isWindowClosed = true;
+	if (isWindowClosed) return;
+	window->close();
+	isWindowClosed = true;
 }
 
 void GameManager::Shutdown()
 {
-	delete m_window;
+	delete window;
 	SceneManager::Shutdown();
 }

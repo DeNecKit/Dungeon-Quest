@@ -15,7 +15,7 @@ public:
 	static void Shutdown();
 
 private:
-	static inline sf::RenderWindow *m_window;
-	static inline bool m_isWindowClosed;
-	static inline sf::Clock m_deltaClock;
+	static inline sf::RenderWindow *window;
+	static inline bool isWindowClosed;
+	static inline sf::Clock deltaClock;
 };

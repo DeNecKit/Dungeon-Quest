@@ -16,5 +16,4 @@ public:
 private:
 	GuiButton *btnNewGame, *btnLoadGame, *btnExit;
 	GuiText *title;
-	sf::Font* font_tmp;
 };

@@ -5,7 +5,14 @@
 
 void SceneManager::Init()
 {
-	m_currentScene = new SceneMainMenu();
+	currentScene = new SceneMainMenu();
+}
+
+template<typename T>
+void SceneManager::ChangeScene()
+{
+	delete currentScene;
+	currentScene = new T();
 }
 
 void SceneManager::ProccessEvent(const sf::Event &event)
@@ -15,30 +22,30 @@ void SceneManager::ProccessEvent(const sf::Event &event)
 		GameManager::Close();
 		return;
 	}
-	if (m_currentScene != nullptr)
-		m_currentScene->ProcessEvent(event);
+	if (currentScene != nullptr)
+		currentScene->ProcessEvent(event);
 }
 
 void SceneManager::Update(float deltaTime)
 {
-	if (m_currentScene != nullptr)
-		m_currentScene->Update(deltaTime);
+	if (currentScene != nullptr)
+		currentScene->Update(deltaTime);
 }
 
 void SceneManager::RenderGUI(sf::RenderWindow* window)
 {
-	if (m_currentScene != nullptr)
-		m_currentScene->RenderGUI(window);
+	if (currentScene != nullptr)
+		currentScene->RenderGUI(window);
 }
 
 void SceneManager::RenderSFML(sf::RenderWindow *window)
 {
-	if (m_currentScene != nullptr)
-		m_currentScene->RenderSFML(window);
+	if (currentScene != nullptr)
+		currentScene->RenderSFML(window);
 }
 
 void SceneManager::Shutdown()
 {
-	if (m_currentScene != nullptr)
-		delete m_currentScene;
+	if (currentScene != nullptr)
+		delete currentScene;
 }

@@ -1,5 +1,6 @@
 #include "GuiButton.h"
 #include "GameManager.h"
+#include "ResourceManager.h"
 
 GuiButton::GuiButton(sf::Vector2f pos, sf::Vector2f size,
 	GuiStyle style, const sf::String &str,
@@ -15,11 +16,17 @@ GuiButton::GuiButton(sf::Vector2f pos, sf::Vector2f size,
 	rect.setOutlineColor(style.outlineColor);
 	rect.setOutlineThickness(style.outlineThickness);
 	
-	text.setPosition(pos);
 	text.setFont(*font);
 	text.setString(str);
 	text.setCharacterSize(chSize * 4 / 3);
 	text.setFillColor(style.textColor);
+
+	sf::FloatRect textGlobalBounds = text.getGlobalBounds();
+	float w = textGlobalBounds.left + textGlobalBounds.width,
+		h = textGlobalBounds.top + textGlobalBounds.height;
+	sf::Vector2f textPos(pos.x + size.x / 2 - w / 2,
+		pos.y + size.y / 2 - h / 2);
+	text.setPosition(textPos);
 }
 
 void GuiButton::ProcessEvent(const sf::Event &event)

@@ -6,6 +6,7 @@ class SceneManager
 {
 public:
 	static void Init();
+	template<typename T> static void ChangeScene();
 	static void ProccessEvent(const sf::Event &);
 	static void Update(float);
 	static void RenderGUI(sf::RenderWindow*);
@@ -13,5 +14,5 @@ public:
 	static void Shutdown();
 
 private:
-	static inline Scene *m_currentScene;
+	static inline Scene *currentScene;
 };
