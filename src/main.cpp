@@ -1,5 +1,4 @@
 ﻿#include "GameManager.h"
-#include "ResourceManager.h"
 
 int main()
 {
@@ -7,6 +6,5 @@ int main()
     while (GameManager::IsRunning())
         GameManager::Update();
     GameManager::Shutdown();
-    ResourceManager::Shutdown();
     return 0;
 }

@@ -1,5 +1,4 @@
 #include "GuiText.h"
-#include "ResourceManager.h"
 
 GuiText::GuiText(sf::Vector2f pos, sf::Vector2f size,
 	GuiStyle style, const sf::String &str, sf::Font *font,
@@ -21,7 +20,7 @@ GuiText::GuiText(sf::Vector2f pos, sf::Vector2f size,
 
 void GuiText::ProcessEvent(const sf::Event&) {}
 
-void GuiText::Update(float deltaTime) {}
+void GuiText::Update(sf::Time deltaTime) {}
 
 void GuiText::Render(sf::RenderWindow *window)
 {

@@ -12,7 +12,7 @@ public:
 		void (*onHover)(const sf::Event&) = nullptr,
 		bool enabled = true);
 	void ProcessEvent(const sf::Event&) override;
-	void Update(float deltaTime) override;
+	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
 private:
 	sf::RectangleShape rect;

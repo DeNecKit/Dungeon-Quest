@@ -1,6 +1,5 @@
 #include "GuiButton.h"
 #include "GameManager.h"
-#include "ResourceManager.h"
 
 GuiButton::GuiButton(sf::Vector2f pos, sf::Vector2f size,
 	GuiStyle style, const sf::String &str,
@@ -37,7 +36,7 @@ void GuiButton::ProcessEvent(const sf::Event &event)
 		OnClick(event);
 }
 
-void GuiButton::Update(float deltaTime) {}
+void GuiButton::Update(sf::Time deltaTime) {}
 
 void GuiButton::Render(sf::RenderWindow *window)
 {

@@ -41,7 +41,7 @@ void SceneMainMenu::ProcessEvent(const sf::Event &event)
 	btnExit->ProcessEvent(event);
 }
 
-void SceneMainMenu::Update(float deltaTime)
+void SceneMainMenu::Update(sf::Time deltaTime)
 {
 	btnNewGame->Update(deltaTime);
 	btnLoadGame->Update(deltaTime);

@@ -1,6 +1,7 @@
 #include "GameManager.h"
 #include <SFML/Graphics.hpp>
 #include "SceneManager.h"
+#include "ResourceManager.h"
 
 void GameManager::Init()
 {
@@ -38,7 +39,7 @@ void GameManager::Update()
 	while (window->pollEvent(event))
 		SceneManager::ProccessEvent(event);
 
-	float dt = deltaClock.restart().asSeconds();
+	sf::Time dt = deltaClock.restart();
 	SceneManager::Update(dt);
 
 	window->clear(sf::Color(36, 36, 36));
@@ -58,4 +59,5 @@ void GameManager::Shutdown()
 {
 	delete window;
 	SceneManager::Shutdown();
+	ResourceManager::Shutdown();
 }

@@ -26,7 +26,7 @@ void SceneManager::ProccessEvent(const sf::Event &event)
 		currentScene->ProcessEvent(event);
 }
 
-void SceneManager::Update(float deltaTime)
+void SceneManager::Update(sf::Time deltaTime)
 {
 	if (currentScene != nullptr)
 		currentScene->Update(deltaTime);

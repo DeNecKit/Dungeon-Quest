@@ -10,7 +10,7 @@ public:
 	SceneMainMenu();
 	~SceneMainMenu();
 	void ProcessEvent(const sf::Event&) override;
-	void Update(float) override;
+	void Update(sf::Time) override;
 	void RenderGUI(sf::RenderWindow*) override;
 	void RenderSFML(sf::RenderWindow*) override;
 private:
