@@ -6,17 +6,18 @@
 void SceneManager::Init()
 {
 	currentScene = new SceneMainMenu();
-}
-
-template<typename T>
-void SceneManager::ChangeScene()
-{
-	delete currentScene;
-	currentScene = new T();
+	isSceneChanged = false;
 }
 
 void SceneManager::ProccessEvent(const sf::Event &event)
 {
+	if (isSceneChanged)
+	{
+		delete currentScene;
+		currentScene = tmpScene;
+		tmpScene = nullptr;
+		isSceneChanged = false;
+	}
 	if (event.type == sf::Event::Closed)
 	{
 		GameManager::Close();

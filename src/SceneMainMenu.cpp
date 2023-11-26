@@ -1,6 +1,7 @@
 #include "SceneMainMenu.h"
 #include "GameManager.h"
 #include "ResourceManager.h"
+#include "SceneGame.h"
 
 SceneMainMenu::SceneMainMenu()
 {
@@ -15,7 +16,9 @@ SceneMainMenu::SceneMainMenu()
 
 	btnNewGame = new GuiButton(sf::Vector2f(x, 500), size,
 		style, L"Новая игра", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) {});
+		[](const sf::Event&) {
+			SceneManager::ChangeScene<SceneGame>();
+		});
 	btnLoadGame = new GuiButton(sf::Vector2f(x, 650), size,
 		style, L"Загрузить игру", ResourceManager::GetMainFont(), 24,
 		[](const sf::Event&) {});

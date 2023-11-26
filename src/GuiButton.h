@@ -15,7 +15,7 @@ public:
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
 private:
-	sf::RectangleShape rect;
+	sf::RectangleShape rect, hoverRect;
 	sf::Text text;
 	void (*OnClick)(const sf::Event&);
 	void (*OnHover)(const sf::Event&);
