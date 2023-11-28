@@ -1,7 +1,7 @@
 #include "Level.h"
 
 Level::Level(const sf::String &backLayerTexturePath)
-	: player(Player(sf::Vector2f(50.f, 50.f),
+	: player(Player(sf::Vector2f(1472.f, 1280.f),
 		PlayerDirection::Up, sf::milliseconds(128)))
 {
 	if (!backLayerTexture.loadFromFile(backLayerTexturePath))
@@ -20,7 +20,10 @@ void Level::RenderGUI(sf::RenderWindow *window) {}
 
 void Level::RenderSFML(sf::RenderWindow *window)
 {
-	backLayerSprite.setTextureRect(sf::IntRect(0, 0, window->getSize().x, window->getSize().y));
+	int ww = window->getSize().x, wh = window->getSize().y,
+		px = (int)player.GetPos().x, py = (int)player.GetPos().y;
+	backLayerSprite.setTextureRect(sf::IntRect(
+		px + CELL_SIZE / 2 - ww / 2, py + CELL_SIZE / 2 - wh / 2, ww, wh));
 	window->draw(backLayerSprite);
 	player.Render(window);
 }

@@ -11,6 +11,7 @@ class Player : public Entity
 public:
 	Player(sf::Vector2f startPos,
 		PlayerDirection startDir, sf::Time animDeltaTime);
+	sf::Vector2f GetPos();
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow *window) override;
 
