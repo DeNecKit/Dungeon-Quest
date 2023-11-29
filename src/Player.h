@@ -16,6 +16,9 @@ public:
 	void Render(sf::RenderWindow *window) override;
 
 private:
+	void TryMove(float deltaX, float deltaY);
+
+	const float speed = 300.f;
 	bool isInBattle;
 	sf::Vector2f position;
 	PlayerDirection direction;

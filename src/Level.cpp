@@ -23,7 +23,7 @@ Level::Level(const sf::String &tilesetTexturePath,
 	width = data["width"];
 	height = data["height"];
 	tiles = new unsigned int[width * height];
-	for (int i = 0; i < width * height; i++)
+	for (int i = 0; i < (int)(width * height); i++)
 		tiles[i] = data["tiles"][i];
 
 	dataFile.close();
@@ -47,15 +47,15 @@ void Level::RenderGUI(sf::RenderWindow *window) {}
 void Level::RenderSFML(sf::RenderWindow *window)
 {
 	window->clear(sf::Color(37, 19, 26));
-	int ww = window->getSize().x, wh = window->getSize().y,
-		px = player->GetPos().x, py = player->GetPos().y,
-		ts = TileSize();
+	int ww = (int)window->getSize().x, wh = (int)window->getSize().y,
+		px = (int)player->GetPos().x, py = (int)player->GetPos().y,
+		ts = (int)TileSize();
 	float left = px + ts / 2.f - ww / 2.f,
 		right = px + ts / 2.f + ww / 2.f,
 		top = py + ts / 2.f - wh / 2.f,
 		bottom = py + ts / 2.f + wh / 2.f;
-	for (int iy = 0; iy < height; iy++)
-		for (int ix = 0; ix < width; ix++)
+	for (int iy = 0; iy < (int)height; iy++)
+		for (int ix = 0; ix < (int)width; ix++)
 		{
 			int tile = tiles[iy * width + ix];
 			if (tile != 0)

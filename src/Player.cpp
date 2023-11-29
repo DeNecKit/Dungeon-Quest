@@ -8,8 +8,8 @@ Player::Player(sf::Vector2u startPos,
 	direction(startDir), animationState(PlayerAnimationState::Idle)
 {
 	position = sf::Vector2f(
-		startPos.x * Level::TileSize(),
-		startPos.y * Level::TileSize());
+		(float)(startPos.x * Level::TileSize()),
+		(float)(startPos.y * Level::TileSize()));
 	if (!animationTileset.loadFromFile("data/player.png"))
 		throw std::exception();
 	numOfFrames = {
@@ -34,6 +34,17 @@ void Player::Update(sf::Time deltaTime)
 			: numOfFrames[animationState];
 		animationCurFrame = (animationCurFrame + 1) % maxNum;
 	}
+
+	float sprint = sf::Keyboard::isKeyPressed(
+		sf::Keyboard::LControl) ? 1.5f : 1.f;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		TryMove(speed * sprint * deltaTime.asSeconds(), 0.f);
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		TryMove(-speed * sprint * deltaTime.asSeconds(), 0.f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		TryMove(0.f, speed * sprint * deltaTime.asSeconds());
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		TryMove(0.f, -speed * sprint * deltaTime.asSeconds());
 }
 
 void Player::Render(sf::RenderWindow *window)
@@ -46,4 +57,12 @@ void Player::Render(sf::RenderWindow *window)
 	float factor = Level::TileSize() / 16.f;
 	s.setScale(sf::Vector2f(factor, factor));
 	window->draw(s);
+}
+
+void Player::TryMove(float deltaX, float deltaY)
+{
+	// TODO: Collisions
+	position = sf::Vector2f(
+		position.x + deltaX,
+		position.y + deltaY);
 }
