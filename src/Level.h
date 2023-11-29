@@ -6,18 +6,20 @@
 class Level
 {
 public:
-	static const int CELL_SIZE = 64;
-
-	Level(const sf::String &backLayerTexturePath);
+	Level(const sf::String &tilesetTexturePath,
+		const char *dataPath, PlayerDirection startDir);
+	~Level();
 	void ProcessEvent(const sf::Event&);
 	void Update(sf::Time deltaTime);
 	void RenderGUI(sf::RenderWindow*);
 	void RenderSFML(sf::RenderWindow*);
 
+	static unsigned int TileSize();
 	static Level Level1();
 
 private:
-	sf::Texture backLayerTexture;
-	sf::Sprite backLayerSprite;
-	Player player;
+	unsigned int width, height;
+	unsigned int *tiles;
+	sf::Texture tilesetTexture;
+	Player *player;
 };

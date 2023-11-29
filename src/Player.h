@@ -9,7 +9,7 @@ enum class PlayerDirection
 class Player : public Entity
 {
 public:
-	Player(sf::Vector2f startPos,
+	Player(sf::Vector2u startPos,
 		PlayerDirection startDir, sf::Time animDeltaTime);
 	sf::Vector2f GetPos();
 	void Update(sf::Time deltaTime) override;

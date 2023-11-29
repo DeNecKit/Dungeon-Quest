@@ -2,12 +2,14 @@
 #include "Level.h"
 #include "GameManager.h"
 
-Player::Player(sf::Vector2f startPos,
+Player::Player(sf::Vector2u startPos,
 	PlayerDirection startDir, sf::Time animDeltaTime)
 	: Entity(animDeltaTime), isInBattle(false),
-	position(startPos), direction(startDir),
-	animationState(PlayerAnimationState::Idle)
+	direction(startDir), animationState(PlayerAnimationState::Idle)
 {
+	position = sf::Vector2f(
+		startPos.x * Level::TileSize(),
+		startPos.y * Level::TileSize());
 	if (!animationTileset.loadFromFile("data/player.png"))
 		throw std::exception();
 	numOfFrames = {
@@ -39,9 +41,9 @@ void Player::Render(sf::RenderWindow *window)
 	sf::Sprite s(animationTileset,
 		sf::IntRect(animationCurFrame * 16, 0, 16, 16));
 	s.setPosition(sf::Vector2f(
-		GameManager::WindowWidth() / 2 - Level::CELL_SIZE / 2.f,
-		GameManager::WindowHeight() / 2 - Level::CELL_SIZE / 2.f));
-	float factor = Level::CELL_SIZE / 16.f;
+		GameManager::WindowWidth() / 2 - Level::TileSize() / 2.f,
+		GameManager::WindowHeight() / 2 - Level::TileSize() / 2.f));
+	float factor = Level::TileSize() / 16.f;
 	s.setScale(sf::Vector2f(factor, factor));
 	window->draw(s);
 }
