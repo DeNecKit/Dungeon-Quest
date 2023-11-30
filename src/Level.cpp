@@ -23,8 +23,12 @@ Level::Level(const sf::String &tilesetTexturePath,
 	width = data["width"];
 	height = data["height"];
 	tiles = new unsigned int[width * height];
+	walls = new unsigned int[width * height];
 	for (int i = 0; i < (int)(width * height); i++)
+	{
 		tiles[i] = data["tiles"][i];
+		walls[i] = data["walls"][i];
+	}
 
 	dataFile.close();
 }
@@ -39,7 +43,7 @@ void Level::ProcessEvent(const sf::Event &event) {}
 
 void Level::Update(sf::Time deltaTime)
 {
-	player->Update(deltaTime);
+	player->Update(deltaTime, walls, width);
 }
 
 void Level::RenderGUI(sf::RenderWindow *window) {}

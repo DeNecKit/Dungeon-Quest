@@ -19,7 +19,7 @@ public:
 
 private:
 	unsigned int width, height;
-	unsigned int *tiles;
+	unsigned int* tiles, * walls;
 	sf::Texture tilesetTexture;
 	Player *player;
 };
