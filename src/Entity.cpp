@@ -7,5 +7,3 @@ Entity::Entity(sf::Time animDeltaTime)
 	animationPassedTime = sf::Time::Zero;
 	animationDeltaTime = animDeltaTime;
 }
-
-void Entity::Update(sf::Time deltaTime) {}

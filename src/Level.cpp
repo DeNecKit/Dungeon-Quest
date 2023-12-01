@@ -43,7 +43,7 @@ void Level::ProcessEvent(const sf::Event &event) {}
 
 void Level::Update(sf::Time deltaTime)
 {
-	player->Update(deltaTime, walls, width);
+	player->Update(deltaTime);
 }
 
 void Level::RenderGUI(sf::RenderWindow *window) {}
@@ -81,14 +81,20 @@ void Level::RenderSFML(sf::RenderWindow *window)
 	player->Render(window);
 }
 
+bool Level::IsWall(unsigned int x, unsigned int y)
+{
+	return currentLevel->walls[y * currentLevel->width + x];
+}
+
 unsigned int Level::TileSize()
 {
 	const unsigned int tileSize = 128;
 	return tileSize * GameManager::WindowWidth() / 1920;
 }
 
-Level Level::Level1()
+Level *Level::Level1()
 {
-	return Level("data/tileset.png", "data/lvl-01.json",
-		PlayerDirection::Up);
+	currentLevel = new Level(
+		"data/tileset.png", "data/lvl-01.json", PlayerDirection::Up);
+	return currentLevel;
 }

@@ -15,11 +15,14 @@ public:
 	void RenderSFML(sf::RenderWindow*);
 
 	static unsigned int TileSize();
-	static Level Level1();
+	static bool IsWall(unsigned int x, unsigned int y);
+	static Level *Level1();
 
 private:
 	unsigned int width, height;
 	unsigned int* tiles, * walls;
 	sf::Texture tilesetTexture;
 	Player *player;
+
+	static inline Level* currentLevel;
 };

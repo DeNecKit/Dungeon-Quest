@@ -12,13 +12,11 @@ public:
 	Player(sf::Vector2u startPos,
 		PlayerDirection startDir, sf::Time animDeltaTime);
 	sf::Vector2f GetPos();
-	void Update(sf::Time deltaTime,
-		unsigned int* walls, unsigned int width);
+	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow *window) override;
 
 private:
-	void TryMove(float deltaX, float deltaY,
-		unsigned int* walls, unsigned int width);
+	void TryMove(float deltaX, float deltaY);
 
 	const float speed = 300.f, sizeCoef = 0.9f;
 	bool isInBattle;

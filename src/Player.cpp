@@ -24,8 +24,7 @@ sf::Vector2f Player::GetPos()
 	return position;
 }
 
-void Player::Update(sf::Time deltaTime,
-	unsigned int* walls, unsigned int width)
+void Player::Update(sf::Time deltaTime)
 {
 	animationPassedTime += deltaTime;
 	if (animationPassedTime >= animationDeltaTime)
@@ -40,13 +39,13 @@ void Player::Update(sf::Time deltaTime,
 	float sprint = sf::Keyboard::isKeyPressed(
 		sf::Keyboard::LControl) ? 1.5f : 1.f;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		TryMove(speed * sprint * deltaTime.asSeconds(), 0.f, walls, width);
+		TryMove(speed * sprint * deltaTime.asSeconds(), 0.f);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		TryMove(-speed * sprint * deltaTime.asSeconds(), 0.f, walls, width);
+		TryMove(-speed * sprint * deltaTime.asSeconds(), 0.f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		TryMove(0.f, speed * sprint * deltaTime.asSeconds(), walls, width);
+		TryMove(0.f, speed * sprint * deltaTime.asSeconds());
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		TryMove(0.f, -speed * sprint * deltaTime.asSeconds(), walls, width);
+		TryMove(0.f, -speed * sprint * deltaTime.asSeconds());
 }
 
 void Player::Render(sf::RenderWindow *window)
@@ -61,7 +60,7 @@ void Player::Render(sf::RenderWindow *window)
 	window->draw(s);
 }
 
-void Player::TryMove(float deltaX, float deltaY, unsigned int *walls, unsigned int width)
+void Player::TryMove(float deltaX, float deltaY)
 {
 	sf::Vector2f newPos = sf::Vector2f(
 		position.x + deltaX,
@@ -78,7 +77,7 @@ void Player::TryMove(float deltaX, float deltaY, unsigned int *walls, unsigned i
 			int ix = (int)std::roundf(x / tileSize),
 				iy = (int)std::roundf(y / tileSize);
 			x = ix * tileSize, y = iy * tileSize;
-			if (walls[iy * width + ix]
+			if (Level::IsWall(ix, iy)
 				&& px + playerSize > x && px < x + playerSize
 				&& py + playerSize > y && py < y + playerSize)
 			{
