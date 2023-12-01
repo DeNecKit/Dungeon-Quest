@@ -20,9 +20,9 @@ public:
 
 private:
 	unsigned int width, height;
-	unsigned int* tiles, * walls;
+	unsigned int *tiles, *walls;
 	sf::Texture tilesetTexture;
 	Player *player;
 
-	static inline Level* currentLevel;
+	static inline Level *currentLevel;
 };

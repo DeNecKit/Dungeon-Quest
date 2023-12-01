@@ -18,7 +18,7 @@ Level::Level(const sf::String &tilesetTexturePath,
 	unsigned int startPosX = data["start-pos"]["x"],
 		startPosY = data["start-pos"]["y"];
 	sf::Vector2u startPos(startPosX, startPosY);
-	player = new Player(startPos, startDir, sf::microseconds(128));
+	player = new Player(startPos, startDir);
 
 	width = data["width"];
 	height = data["height"];
@@ -95,6 +95,6 @@ unsigned int Level::TileSize()
 Level *Level::Level1()
 {
 	currentLevel = new Level(
-		"data/tileset.png", "data/lvl-01.json", PlayerDirection::Up);
+		"data/tileset.png", "data/lvl-01.json", PlayerDirection::Right);
 	return currentLevel;
 }

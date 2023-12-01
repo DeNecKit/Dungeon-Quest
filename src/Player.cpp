@@ -3,9 +3,8 @@
 #include "GameManager.h"
 #include <cmath>
 
-Player::Player(sf::Vector2u startPos,
-	PlayerDirection startDir, sf::Time animDeltaTime)
-	: Entity(animDeltaTime), isInBattle(false),
+Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
+	: Entity(sf::milliseconds(128)), isInBattle(false),
 	direction(startDir), animationState(PlayerAnimationState::Idle)
 {
 	position = sf::Vector2f(
@@ -26,37 +25,57 @@ sf::Vector2f Player::GetPos()
 
 void Player::Update(sf::Time deltaTime)
 {
+	float sprint = sf::Keyboard::isKeyPressed(
+		sf::Keyboard::LControl) ? sprintCoef : 1.f;
+
 	animationPassedTime += deltaTime;
-	if (animationPassedTime >= animationDeltaTime)
+	sf::Time animDT = animationDeltaTime / sprint;
+	if (animationPassedTime >= animDT)
 	{
-		animationPassedTime -= animationDeltaTime;
+		animationPassedTime -= animDT;
 		unsigned int maxNum = isInBattle
 			? numOfBattleFrames[battleAnimationState]
 			: numOfFrames[animationState];
 		animationCurFrame = (animationCurFrame + 1) % maxNum;
 	}
 
-	float sprint = sf::Keyboard::isKeyPressed(
-		sf::Keyboard::LControl) ? 1.5f : 1.f;
+	bool walking = false;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		walking = true;
+		direction = PlayerDirection::Right;
 		TryMove(speed * sprint * deltaTime.asSeconds(), 0.f);
+	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		walking = true;
+		direction = PlayerDirection::Left;
 		TryMove(-speed * sprint * deltaTime.asSeconds(), 0.f);
+	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		walking = true;
 		TryMove(0.f, speed * sprint * deltaTime.asSeconds());
+	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		walking = true;
 		TryMove(0.f, -speed * sprint * deltaTime.asSeconds());
+	}
+	if (walking) animationState = PlayerAnimationState::Walking;
+	else animationState = PlayerAnimationState::Idle;
 }
 
 void Player::Render(sf::RenderWindow *window)
 {
 	sf::Sprite s(animationTileset,
 		sf::IntRect(animationCurFrame * 16, 0, 16, 16));
+	int right = direction == PlayerDirection::Right ? 1 : -1;
 	s.setPosition(sf::Vector2f(
-		GameManager::WindowWidth() / 2 - Level::TileSize() / 2.f,
+		GameManager::WindowWidth() / 2 - Level::TileSize() / 2.f * right,
 		GameManager::WindowHeight() / 2 - Level::TileSize() / 2.f));
 	float factor = Level::TileSize() / 16.f * sizeCoef;
-	s.setScale(sf::Vector2f(factor, factor));
+	s.setScale(sf::Vector2f(factor * right, factor));
 	window->draw(s);
 }
 
