@@ -37,6 +37,7 @@ void Player::Update(sf::Time deltaTime)
 	}
 
 	bool walking = false;
+	float speed = this->speed * GameManager::ResCoefX();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		walking = true;

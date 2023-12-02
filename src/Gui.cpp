@@ -2,14 +2,14 @@
 #include "GuiStyle.h"
 #include "GameManager.h"
 
-Gui::Gui(sf::FloatRect dimensions) : IsEnabled(true)
+Gui::Gui(sf::FloatRect dims) : IsEnabled(true)
 {
-	dimensions = sf::FloatRect(
-		dimensions.left * GameManager::ResCoefX(),
-		dimensions.top * GameManager::ResCoefY(),
-		dimensions.width * GameManager::ResCoefX(),
-		dimensions.height * GameManager::ResCoefY());
-	this->dimensions = dimensions;
+	dims = sf::FloatRect(
+		dims.left * GameManager::ResCoefX(),
+		dims.top * GameManager::ResCoefY(),
+		dims.width * GameManager::ResCoefX(),
+		dims.height * GameManager::ResCoefY());
+	dimensions = dims;
 }
 
 bool Gui::IsMouseOver()

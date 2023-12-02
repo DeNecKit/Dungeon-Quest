@@ -5,7 +5,7 @@
 class GuiButton final : public GuiText
 {
 public:
-	GuiButton(sf::FloatRect dimensions, const sf::String &str,
+	GuiButton(sf::FloatRect dims, const sf::String &str,
 		sf::Font *font, unsigned int chSize,
 		void (*onClick)(const sf::Event&),
 		sf::Color fillColor, sf::Color textColor,

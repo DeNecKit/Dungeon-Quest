@@ -1,14 +1,14 @@
 #include "GuiText.h"
 #include "GameManager.h"
 
-GuiText::GuiText(sf::FloatRect dimensions, const sf::String& str,
+GuiText::GuiText(sf::FloatRect dims, const sf::String& str,
 	sf::Font* font, unsigned int chSize, sf::Color textColor,
-	sf::Color shadowColor) : Gui(dimensions),
+	sf::Color shadowColor) : Gui(dims),
 	textColor(textColor), shadowColor(shadowColor)
 {
 	text.setFont(*font);
 	text.setString(str);
-	text.setCharacterSize(chSize * 4 / 3);
+	text.setCharacterSize((int)(chSize * 4 / 3 * GameManager::ResCoefX()));
 	text.setFillColor(textColor);
 	
 	sf::FloatRect textGlobalBounds = text.getGlobalBounds();

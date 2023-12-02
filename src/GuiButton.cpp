@@ -1,12 +1,12 @@
 #include "GuiButton.h"
 #include "GameManager.h"
 
-GuiButton::GuiButton(sf::FloatRect dimensions, const sf::String &str,
+GuiButton::GuiButton(sf::FloatRect dims, const sf::String &str,
 	sf::Font *font, unsigned int chSize,
 	void (*onClick)(const sf::Event&),
 	sf::Color fillColor, sf::Color textColor,
 	sf::Color outlineColor, sf::Color shadowColor)
-	: GuiText(dimensions, str, font, chSize, textColor, shadowColor),
+	: GuiText(dims, str, font, chSize, textColor, shadowColor),
 	  OnClick(onClick), isHovered(false)
 {
 	rect = sf::RectangleShape(dimensions.getSize());
