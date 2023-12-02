@@ -9,10 +9,15 @@ public:
 	static sf::RenderWindow* GetWindow();
 	static unsigned int WindowWidth();
 	static unsigned int WindowHeight();
+	static float ResCoefX();
+	static float ResCoefY();
 	static bool IsRunning();
 	static void Update();
 	static void Close();
 	static void Shutdown();
+
+	static inline const sf::Color backgroundColor
+		= sf::Color(36, 36, 36);
 
 private:
 	static inline sf::RenderWindow *window;

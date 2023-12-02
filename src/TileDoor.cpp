@@ -1,6 +1,7 @@
 #include "TileDoor.h"
 #include "Player.h"
 #include "Level.h"
+#include "SceneGame.h"
 #include <cmath>
 
 TileDoor::TileDoor(unsigned int id, sf::Vector2u pos)
@@ -14,16 +15,16 @@ bool TileDoor::IsWall()
 void TileDoor::ProcessEvent(const sf::Event &event)
 {
 	if (isOpen) return;
-	if (!(event.type == sf::Event::KeyPressed &&
-		event.key.code == sf::Keyboard::E)) return;
 	float px = Player::GetPos().x, py = Player::GetPos().y,
 		x = position.x, y = position.y,
 		tileSize = (float)Level::GetTileSize();
-	if (event.type == sf::Event::KeyPressed &&
-		event.key.code == sf::Keyboard::E &&
-		std::abs(px - x) < tileSize * 1.2f &&
+	if (std::abs(px - x) < tileSize * 1.2f &&
 		std::abs(py - y) < tileSize * 1.2f)
-		isOpen = true;
+	{
+		SceneGame::InteractionNotify();
+		isOpen = event.type == sf::Event::KeyPressed
+			&& event.key.code == sf::Keyboard::E;
+	}
 }
 
 void TileDoor::Render(sf::RenderWindow *window)

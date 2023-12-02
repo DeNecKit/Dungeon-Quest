@@ -1,23 +1,22 @@
 #pragma once
 
-#include "Gui.h"
+#include "GuiText.h"
 
-class GuiButton : public Gui
+class GuiButton final : public GuiText
 {
 public:
-	GuiButton(sf::Vector2f pos, sf::Vector2f size,
-		GuiStyle style, const sf::String &str,
-		sf::Font* font, unsigned int chSize,
+	GuiButton(sf::FloatRect dimensions, const sf::String &str,
+		sf::Font *font, unsigned int chSize,
 		void (*onClick)(const sf::Event&),
-		void (*onHover)(const sf::Event&) = nullptr,
-		bool enabled = true);
+		sf::Color fillColor, sf::Color textColor,
+		sf::Color outlineColor = sf::Color::Transparent,
+		sf::Color shadowColor = sf::Color::Transparent);
 	void ProcessEvent(const sf::Event&) override;
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
+
 private:
 	sf::RectangleShape rect, hoverRect;
-	sf::Text text;
 	void (*OnClick)(const sf::Event&);
-	void (*OnHover)(const sf::Event&);
 	bool isHovered;
 };

@@ -5,12 +5,15 @@
 class GuiText : public Gui
 {
 public:
-	GuiText(sf::Vector2f pos, sf::Vector2f size,
-		GuiStyle style, const sf::String &str,
-		sf::Font* font, unsigned int chSize, bool enabled = true);
+	GuiText(sf::FloatRect dimensions, const sf::String &str,
+		sf::Font* font, unsigned int chSize, sf::Color textColor,
+		sf::Color shadowColor = sf::Color::Transparent);
 	void ProcessEvent(const sf::Event&) override;
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
+
 private:
+	sf::FloatRect innerDimensions;
 	sf::Text text;
+	sf::Color textColor, shadowColor;
 };

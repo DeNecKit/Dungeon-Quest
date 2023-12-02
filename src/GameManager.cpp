@@ -28,6 +28,16 @@ unsigned int GameManager::WindowHeight()
 	return window->getSize().y;
 }
 
+float GameManager::ResCoefX()
+{
+	return (int)WindowWidth() / 1920.f;
+}
+
+float GameManager::ResCoefY()
+{
+	return (int)WindowHeight() / 1080.f;
+}
+
 bool GameManager::IsRunning()
 {
 	return !isWindowClosed;
@@ -42,7 +52,7 @@ void GameManager::Update()
 	sf::Time dt = deltaClock.restart();
 	SceneManager::Update(dt);
 
-	window->clear(sf::Color(36, 36, 36));
+	window->clear(backgroundColor);
 	SceneManager::RenderSFML(window);
 	SceneManager::RenderGUI(window);
 	window->display();
