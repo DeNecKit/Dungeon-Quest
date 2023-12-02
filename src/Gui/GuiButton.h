@@ -1,8 +1,9 @@
 #pragma once
 
+#include "GuiRect.h"
 #include "GuiText.h"
 
-class GuiButton final : public GuiText
+class GuiButton final : public Gui
 {
 public:
 	GuiButton(sf::FloatRect dims, const sf::String &str,
@@ -16,7 +17,9 @@ public:
 	void Render(sf::RenderWindow*) override;
 
 private:
-	sf::RectangleShape rect, hoverRect;
+	GuiRect rect;
+	GuiText text;
+	sf::RectangleShape hoverRect;
 	void (*OnClick)(const sf::Event&);
 	bool isHovered;
 };

@@ -13,7 +13,6 @@ public:
 	~Level();
 	void ProcessEvent(const sf::Event&);
 	void Update(sf::Time deltaTime);
-	void RenderGUI(sf::RenderWindow*);
 	void RenderSFML(sf::RenderWindow*);
 
 	static unsigned int GetTileSize();

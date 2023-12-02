@@ -2,7 +2,7 @@
 
 #include "Gui.h"
 
-class GuiText : public Gui
+class GuiText final : public Gui
 {
 public:
 	GuiText(sf::FloatRect dims, const sf::String &str,

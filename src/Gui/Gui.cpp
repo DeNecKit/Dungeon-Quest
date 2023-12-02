@@ -1,7 +1,7 @@
 #include "Gui.h"
 #include "../GameManager.h"
 
-Gui::Gui(sf::FloatRect dims) : IsEnabled(true)
+Gui::Gui(sf::FloatRect dims)
 {
 	dims = sf::FloatRect(
 		dims.left * GameManager::ResCoefX(),

@@ -76,8 +76,6 @@ void Level::Update(sf::Time deltaTime)
 	player->Update(deltaTime);
 }
 
-void Level::RenderGUI(sf::RenderWindow *window) {}
-
 void Level::RenderSFML(sf::RenderWindow *window)
 {
 	window->clear(sf::Color(37, 19, 26));

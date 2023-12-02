@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "../Level.h"
 #include "../Gui/GuiText.h"
+#include "../Gui/GuiList.h"
 
 class SceneGame final : public Scene
 {
@@ -15,11 +16,13 @@ public:
 	void RenderSFML(sf::RenderWindow*) override;
 
 	static void InteractionNotify();
+	static void SetPause(bool pause);
 
 private:
 	Level *level;
 	GuiText *interText;
-	bool isInterTextVisible;
+	GuiList *pauseMenu;
+	bool isInterTextVisible, isPaused;
 
 	static inline SceneGame *instance;
 };

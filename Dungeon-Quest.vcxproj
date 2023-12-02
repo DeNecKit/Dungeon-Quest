@@ -140,7 +140,10 @@
     <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\Gui\Gui.cpp" />
     <ClCompile Include="src\Gui\GuiButton.cpp" />
+    <ClCompile Include="src\Gui\GuiList.cpp" />
+    <ClCompile Include="src\Gui\GuiRect.cpp" />
     <ClCompile Include="src\Gui\GuiText.cpp" />
+    <ClCompile Include="src\Item\Item.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
@@ -159,7 +162,10 @@
     <ClInclude Include="src\GameManager.h" />
     <ClInclude Include="src\Gui\Gui.h" />
     <ClInclude Include="src\Gui\GuiButton.h" />
+    <ClInclude Include="src\Gui\GuiList.h" />
+    <ClInclude Include="src\Gui\GuiRect.h" />
     <ClInclude Include="src\Gui\GuiText.h" />
+    <ClInclude Include="src\Item\Item.h" />
     <ClInclude Include="src\Level.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\ResourceManager.h" />
