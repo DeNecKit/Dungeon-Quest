@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Animatable.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\Gui.cpp" />
@@ -149,6 +150,9 @@
     <ClCompile Include="src\SceneGame.cpp" />
     <ClCompile Include="src\SceneMainMenu.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
+    <ClCompile Include="src\Tile.cpp" />
+    <ClCompile Include="src\TileDoor.cpp" />
+    <ClCompile Include="src\TileTorch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Animatable.h" />
@@ -165,6 +169,9 @@
     <ClInclude Include="src\SceneGame.h" />
     <ClInclude Include="src\SceneMainMenu.h" />
     <ClInclude Include="src\SceneManager.h" />
+    <ClInclude Include="src\Tile.h" />
+    <ClInclude Include="src\TileDoor.h" />
+    <ClInclude Include="src\TileTorch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

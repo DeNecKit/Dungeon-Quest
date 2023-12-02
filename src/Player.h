@@ -11,19 +11,26 @@ class Player : public Entity
 public:
 	Player(sf::Vector2u startPos,
 		PlayerDirection startDir);
-	sf::Vector2f GetPos();
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow *window) override;
 
+	static sf::Vector2f GetPos();
+	static float GetSize();
+
 private:
 	void TryMove(float deltaX, float deltaY);
+	sf::Vector2f GetFixedPos(float deltaX, float deltaY,
+		sf::Vector2f playerPos, float playerSize,
+		float otherX, float otherY);
 
-	const float speed = 300.f,
-		sprintCoef = 1.5f, sizeCoef = 0.9f;
 	bool isInBattle;
 	sf::Vector2f position;
 	PlayerDirection direction;
 	PlayerAnimationState animationState;
 	std::map<PlayerAnimationState, unsigned int> numOfFrames;
 	std::map<BattleAnimationState, unsigned int> numOfBattleFrames;
+
+	static inline Player *currentPlayer;
+	static inline const float speed = 300.f,
+		sprintCoef = 1.5f, sizeCoef = 0.9f;
 };

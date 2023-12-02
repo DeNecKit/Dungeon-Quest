@@ -4,23 +4,21 @@
 #include <cmath>
 
 Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
-	: Entity(sf::milliseconds(128)), isInBattle(false),
-	direction(startDir), animationState(PlayerAnimationState::Idle)
+	: isInBattle(false), direction(startDir),
+	animationState(PlayerAnimationState::Idle)
 {
+	currentPlayer = this;
+	animationDeltaTime = sf::milliseconds(128);
 	position = sf::Vector2f(
-		(float)(startPos.x * Level::TileSize()),
-		(float)(startPos.y * Level::TileSize()));
-	if (!animationTileset.loadFromFile("data/player.png"))
+		(float)(startPos.x * Level::GetTileSize()),
+		(float)(startPos.y * Level::GetTileSize()));
+	animationTileset = new sf::Texture();
+	if (!animationTileset->loadFromFile("data/player.png"))
 		throw std::exception();
 	numOfFrames = {
 		{ PlayerAnimationState::Idle, 1 },
 		{ PlayerAnimationState::Walking, 4 }
 	};
-}
-
-sf::Vector2f Player::GetPos()
-{
-	return position;
 }
 
 void Player::Update(sf::Time deltaTime)
@@ -29,10 +27,9 @@ void Player::Update(sf::Time deltaTime)
 		sf::Keyboard::LControl) ? sprintCoef : 1.f;
 
 	animationPassedTime += deltaTime;
-	sf::Time animDT = animationDeltaTime / sprint;
-	if (animationPassedTime >= animDT)
+	if (animationPassedTime >= animationDeltaTime / sprint)
 	{
-		animationPassedTime -= animDT;
+		animationPassedTime = sf::Time::Zero;
 		unsigned int maxNum = isInBattle
 			? numOfBattleFrames[battleAnimationState]
 			: numOfFrames[animationState];
@@ -68,13 +65,13 @@ void Player::Update(sf::Time deltaTime)
 
 void Player::Render(sf::RenderWindow *window)
 {
-	sf::Sprite s(animationTileset,
+	sf::Sprite s(*animationTileset,
 		sf::IntRect(animationCurFrame * 16, 0, 16, 16));
 	int right = direction == PlayerDirection::Right ? 1 : -1;
 	s.setPosition(sf::Vector2f(
-		GameManager::WindowWidth() / 2 - Level::TileSize() / 2.f * right,
-		GameManager::WindowHeight() / 2 - Level::TileSize() / 2.f));
-	float factor = Level::TileSize() / 16.f * sizeCoef;
+		GameManager::WindowWidth() / 2 - Level::GetTileSize() / 2.f * right,
+		GameManager::WindowHeight() / 2 - Level::GetTileSize() / 2.f));
+	float factor = Level::GetTileSize() / 16.f * sizeCoef;
 	s.setScale(sf::Vector2f(factor * right, factor));
 	window->draw(s);
 }
@@ -84,9 +81,17 @@ void Player::TryMove(float deltaX, float deltaY)
 	sf::Vector2f newPos = sf::Vector2f(
 		position.x + deltaX,
 		position.y + deltaY);
-	float tileSize = (float)Level::TileSize(),
+	float tileSize = (float)Level::GetTileSize(),
 		playerSize = tileSize * sizeCoef,
 		px = newPos.x, py = newPos.y;
+	for (Tile *tile : Level::GetOtherTiles())
+	{
+		float x = tile->GetPos().x, y = tile->GetPos().y;
+		if (tile->IsWall()
+			&& px + playerSize > x && px < x + playerSize
+			&& py + playerSize > y && py < y + playerSize)
+			newPos = GetFixedPos(deltaX, deltaY, newPos, playerSize, x, y);
+	}
 	for (int dx = -1; dx <= 1; dx++)
 		for (int dy = -1; dy <= 1; dy++)
 		{
@@ -99,16 +104,32 @@ void Player::TryMove(float deltaX, float deltaY)
 			if (Level::IsWall(ix, iy)
 				&& px + playerSize > x && px < x + playerSize
 				&& py + playerSize > y && py < y + playerSize)
-			{
-				if (deltaX > 0)
-					newPos = sf::Vector2f(x - playerSize, newPos.y);
-				else if (deltaX < 0)
-					newPos = sf::Vector2f(x + playerSize, newPos.y);
-				else if (deltaY > 0)
-					newPos = sf::Vector2f(newPos.x, y - playerSize);
-				else if (deltaY < 0)
-					newPos = sf::Vector2f(newPos.x, y + playerSize);
-			}
+				newPos = GetFixedPos(deltaX, deltaY, newPos, playerSize, x, y);
 		}
 	position = newPos;
+}
+
+sf::Vector2f Player::GetFixedPos(float deltaX, float deltaY,
+	sf::Vector2f playerPos, float playerSize,
+	float otherX, float otherY)
+{
+	if (deltaX > 0)
+		playerPos = sf::Vector2f(otherX - playerSize, playerPos.y);
+	else if (deltaX < 0)
+		playerPos = sf::Vector2f(otherX + playerSize, playerPos.y);
+	else if (deltaY > 0)
+		playerPos = sf::Vector2f(playerPos.x, otherY - playerSize);
+	else if (deltaY < 0)
+		playerPos = sf::Vector2f(playerPos.x, otherY + playerSize);
+	return playerPos;
+}
+
+sf::Vector2f Player::GetPos()
+{
+	return currentPlayer->position;
+}
+
+float Player::GetSize()
+{
+	return Level::GetTileSize() * sizeCoef;
 }

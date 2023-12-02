@@ -1,5 +1,7 @@
 #include "Level.h"
 #include "GameManager.h"
+#include "TileDoor.h"
+#include "TileTorch.h"
 #include <fstream>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -22,12 +24,33 @@ Level::Level(const sf::String &tilesetTexturePath,
 
 	width = data["width"];
 	height = data["height"];
-	tiles = new unsigned int[width * height];
-	walls = new unsigned int[width * height];
 	for (int i = 0; i < (int)(width * height); i++)
 	{
-		tiles[i] = data["tiles"][i];
-		walls[i] = data["walls"][i];
+		tiles.push_back(data["tiles"][i]);
+		walls.push_back(data["walls"][i]);
+	}
+
+	for (json &tilesData : data["other-tiles"])
+	{
+		int id = tilesData["id"];
+		for (json &tileData : tilesData["tiles"])
+		{
+			unsigned int x = tileData["x"], y = tileData["y"];
+			Tile *tile;
+			switch (id)
+			{
+			case 36: case 37:
+				tile = new TileDoor(id, sf::Vector2u(x, y));
+				break;
+			case 91:
+				tile = new TileTorch(sf::Vector2u(x, y),
+					tileData["type"] == "left");
+				break;
+			default:
+				tile = new Tile(id, sf::Vector2u(x, y));
+			}
+			otherTiles.push_back(tile);
+		}
 	}
 
 	dataFile.close();
@@ -35,14 +58,21 @@ Level::Level(const sf::String &tilesetTexturePath,
 
 Level::~Level()
 {
-	delete tiles;
 	delete player;
+	for (Tile *tile : otherTiles)
+		delete tile;
 }
 
-void Level::ProcessEvent(const sf::Event &event) {}
+void Level::ProcessEvent(const sf::Event &event)
+{
+	for (Tile *tile : otherTiles)
+		tile->ProcessEvent(event);
+}
 
 void Level::Update(sf::Time deltaTime)
 {
+	for (Tile* tile : otherTiles)
+		tile->Update(deltaTime);
 	player->Update(deltaTime);
 }
 
@@ -51,34 +81,22 @@ void Level::RenderGUI(sf::RenderWindow *window) {}
 void Level::RenderSFML(sf::RenderWindow *window)
 {
 	window->clear(sf::Color(37, 19, 26));
-	int ww = (int)window->getSize().x, wh = (int)window->getSize().y,
-		px = (int)player->GetPos().x, py = (int)player->GetPos().y,
-		ts = (int)TileSize();
-	float left = px + ts / 2.f - ww / 2.f,
-		right = px + ts / 2.f + ww / 2.f,
-		top = py + ts / 2.f - wh / 2.f,
-		bottom = py + ts / 2.f + wh / 2.f;
 	for (int iy = 0; iy < (int)height; iy++)
 		for (int ix = 0; ix < (int)width; ix++)
 		{
 			int tile = tiles[iy * width + ix];
 			if (tile != 0)
-			{
-				float x = ix * ts - left;
-				if (x + ts < 0 || x > right - left) continue;
-				float y = iy * ts - top;
-				if (y + ts < 0 || y > bottom - top) continue;
-				int texSize = 16,
-					texX = (tile - 1) % 10 * texSize,
-					texY = (tile - 1) / 10 * texSize;
-				sf::Sprite s(tilesetTexture, sf::IntRect(texX, texY, texSize, texSize));
-				float factor = (float)ts / texSize;
-				s.setScale(sf::Vector2f(factor, factor));
-				s.setPosition(sf::Vector2f(x, y));
-				window->draw(s);
-			}
+				RenderTile(tile - 1, ix * (float)GetTileSize(), iy * (float)GetTileSize());
 		}
+	for (Tile *tile : otherTiles) tile->Render(window);
+	// TODO: some tiles in front of character, some behind
 	player->Render(window);
+}
+
+unsigned int Level::GetTileSize()
+{
+	const unsigned int tileSize = 128;
+	return tileSize * GameManager::WindowWidth() / 1920;
 }
 
 bool Level::IsWall(unsigned int x, unsigned int y)
@@ -86,10 +104,42 @@ bool Level::IsWall(unsigned int x, unsigned int y)
 	return currentLevel->walls[y * currentLevel->width + x];
 }
 
-unsigned int Level::TileSize()
+std::vector<Tile*> Level::GetOtherTiles()
 {
-	const unsigned int tileSize = 128;
-	return tileSize * GameManager::WindowWidth() / 1920;
+	return currentLevel->otherTiles;
+}
+
+sf::Vector2f Level::CalcTilePos(float x, float y, bool &isOnScreen)
+{
+	int ww = (int)GameManager::WindowWidth(),
+		wh = (int)GameManager::WindowHeight(),
+		px = (int)currentLevel->player->GetPos().x,
+		py = (int)currentLevel->player->GetPos().y,
+		ts = (int)GetTileSize();
+	float left = px + ts / 2.f - ww / 2.f,
+		right = px + ts / 2.f + ww / 2.f,
+		top = py + ts / 2.f - wh / 2.f,
+		bottom = py + ts / 2.f + wh / 2.f;
+	x -= left; y -= top;
+	isOnScreen = x + ts > 0 && x < ww && y + ts > 0 && y < wh;
+	return sf::Vector2f(x, y);
+}
+
+void Level::RenderTile(unsigned int id, float x, float y)
+{
+	bool isOnScreen;
+	sf::Vector2f tilePos = CalcTilePos(x, y, isOnScreen);
+	if (!isOnScreen) return;
+	
+	int texSize = 16,
+		texX = id % 10 * texSize,
+		texY = id / 10 * texSize;
+	sf::Sprite s(currentLevel->tilesetTexture,
+		sf::IntRect(texX, texY, texSize, texSize));
+	float factor = (float)GetTileSize() / texSize;
+	s.setScale(sf::Vector2f(factor, factor));
+	s.setPosition(sf::Vector2f(tilePos.x, tilePos.y));
+	GameManager::GetWindow()->draw(s);
 }
 
 Level *Level::Level1()

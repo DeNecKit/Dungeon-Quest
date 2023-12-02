@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "Player.h"
+#include "Tile.h"
+#include <vector>
 
 class Level
 {
@@ -14,13 +16,17 @@ public:
 	void RenderGUI(sf::RenderWindow*);
 	void RenderSFML(sf::RenderWindow*);
 
-	static unsigned int TileSize();
+	static unsigned int GetTileSize();
 	static bool IsWall(unsigned int x, unsigned int y);
+	static std::vector<Tile*> GetOtherTiles();
+	static sf::Vector2f CalcTilePos(float x, float y, bool &isOnScreen);
+	static void RenderTile(unsigned int id, float x, float y);
 	static Level *Level1();
 
 private:
 	unsigned int width, height;
-	unsigned int *tiles, *walls;
+	std::vector<unsigned int> tiles, walls;
+	std::vector<Tile*> otherTiles;
 	sf::Texture tilesetTexture;
 	Player *player;
 

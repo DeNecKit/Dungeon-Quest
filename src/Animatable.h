@@ -11,8 +11,9 @@ enum class PlayerAnimationState
 class Animatable
 {
 public:
+	virtual ~Animatable();
 protected:
-	sf::Texture animationTileset;
+	sf::Texture *animationTileset;
 	sf::Time animationDeltaTime, animationPassedTime;
 	unsigned int animationCurFrame;
 };
