@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Animatable.h"
+#include "../Animatable.h"
 #include <SFML/Graphics.hpp>
 
 class Tile : public Animatable

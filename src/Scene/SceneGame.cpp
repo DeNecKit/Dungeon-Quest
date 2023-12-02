@@ -1,8 +1,8 @@
 #include "SceneGame.h"
-#include "SceneManager.h"
+#include "../SceneManager.h"
 #include "SceneMainMenu.h"
-#include "GameManager.h"
-#include "ResourceManager.h"
+#include "../GameManager.h"
+#include "../ResourceManager.h"
 
 SceneGame::SceneGame()
 	: level(Level::Level1()), isInterTextVisible(false)
@@ -11,7 +11,7 @@ SceneGame::SceneGame()
 	interText = new GuiText(
 		sf::FloatRect(1920.f/2 - 200.f/2, 1080.f/2 + 100.f, 200.f, 100.f),
 		L"Нажмите \"E\" для взаимодействия", ResourceManager::GetMainFont(),
-		18, sf::Color(255, 255, 255, 100), sf::Color(0, 0, 0, 100));
+		18, sf::Color(255, 255, 255, 200), sf::Color::Black);
 }
 
 SceneGame::~SceneGame()

@@ -1,7 +1,7 @@
 #include "TileDoor.h"
-#include "Player.h"
-#include "Level.h"
-#include "SceneGame.h"
+#include "../Player.h"
+#include "../Level.h"
+#include "../Scene/SceneGame.h"
 #include <cmath>
 
 TileDoor::TileDoor(unsigned int id, sf::Vector2u pos)

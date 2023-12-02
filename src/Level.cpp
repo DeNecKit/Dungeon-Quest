@@ -1,7 +1,7 @@
 #include "Level.h"
 #include "GameManager.h"
-#include "TileDoor.h"
-#include "TileTorch.h"
+#include "Tile/TileDoor.h"
+#include "Tile/TileTorch.h"
 #include <fstream>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -89,7 +89,6 @@ void Level::RenderSFML(sf::RenderWindow *window)
 				RenderTile(tile - 1, ix * (float)GetTileSize(), iy * (float)GetTileSize());
 		}
 	for (Tile *tile : otherTiles) tile->Render(window);
-	// TODO: some tiles in front of character, some behind
 	player->Render(window);
 }
 

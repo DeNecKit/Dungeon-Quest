@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Scene.h"
-#include "GuiButton.h"
-#include "GuiText.h"
+#include "../Gui/GuiButton.h"
+#include "../Gui/GuiText.h"
 
 class SceneMainMenu final : public Scene
 {

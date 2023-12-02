@@ -1,5 +1,5 @@
 #include "Tile.h"
-#include "Level.h"
+#include "../Level.h"
 
 Tile::Tile(unsigned int id, sf::Vector2u pos)
 	: id(id), position(sf::Vector2f(

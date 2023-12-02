@@ -1,7 +1,7 @@
 #include "SceneManager.h"
 #include <SFML/Graphics.hpp>
 #include "GameManager.h"
-#include "SceneMainMenu.h"
+#include "Scene/SceneMainMenu.h"
 
 void SceneManager::Init()
 {

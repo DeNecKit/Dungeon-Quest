@@ -1,6 +1,5 @@
 #pragma once
 
-#include "GuiStyle.h"
 #include <SFML/Graphics.hpp>
 
 class Gui

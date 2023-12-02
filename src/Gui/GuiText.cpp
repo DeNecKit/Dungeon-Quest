@@ -1,5 +1,5 @@
 #include "GuiText.h"
-#include "GameManager.h"
+#include "../GameManager.h"
 
 GuiText::GuiText(sf::FloatRect dims, const sf::String& str,
 	sf::Font* font, unsigned int chSize, sf::Color textColor,

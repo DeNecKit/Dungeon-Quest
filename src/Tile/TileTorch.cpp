@@ -1,5 +1,5 @@
 #include "TileTorch.h"
-#include "Level.h"
+#include "../Level.h"
 
 TileTorch::TileTorch(sf::Vector2u pos, bool left)
 	: Tile(0, pos), left(left)

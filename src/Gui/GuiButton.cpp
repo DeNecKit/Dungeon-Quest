@@ -1,5 +1,5 @@
 #include "GuiButton.h"
-#include "GameManager.h"
+#include "../GameManager.h"
 
 GuiButton::GuiButton(sf::FloatRect dims, const sf::String &str,
 	sf::Font *font, unsigned int chSize,

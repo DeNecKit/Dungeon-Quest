@@ -1,6 +1,6 @@
 #include "SceneMainMenu.h"
-#include "GameManager.h"
-#include "ResourceManager.h"
+#include "../GameManager.h"
+#include "../ResourceManager.h"
 #include "SceneGame.h"
 
 SceneMainMenu::SceneMainMenu()

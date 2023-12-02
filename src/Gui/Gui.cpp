@@ -1,6 +1,5 @@
 #include "Gui.h"
-#include "GuiStyle.h"
-#include "GameManager.h"
+#include "../GameManager.h"
 
 Gui::Gui(sf::FloatRect dims) : IsEnabled(true)
 {

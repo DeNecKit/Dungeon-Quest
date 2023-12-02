@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Player.h"
-#include "Tile.h"
+#include "Tile/Tile.h"
 #include <vector>
 
 class Level

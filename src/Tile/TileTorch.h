@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Tile.h"
-#include "Animatable.h"
+#include "../Animatable.h"
 
 class TileTorch final : public Tile
 {

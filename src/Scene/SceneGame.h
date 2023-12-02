@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Scene.h"
-#include "Level.h"
-#include "GuiText.h"
+#include "../Level.h"
+#include "../Gui/GuiText.h"
 
 class SceneGame final : public Scene
 {
