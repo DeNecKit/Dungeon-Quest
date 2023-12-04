@@ -1,15 +1,14 @@
 #pragma once
 
+#include "Gui.h"
 #include "GuiRect.h"
-#include "GuiText.h"
 #include "GuiClickable.h"
+#include "../Item/Item.h"
 
-class GuiButton final : public Gui
+class GuiItemSlot : public Gui
 {
 public:
-	GuiButton(sf::FloatRect dims, const sf::String &str,
-		sf::Font *font, unsigned int chSize,
-		void (*onClick)(const sf::Event&),
+	GuiItemSlot(sf::FloatRect dims, Item*,
 		sf::Color fillColor, sf::Color textColor,
 		sf::Color outlineColor = sf::Color::Transparent,
 		sf::Color shadowColor = sf::Color::Transparent);
@@ -19,6 +18,6 @@ public:
 
 private:
 	GuiRect rect;
-	GuiText text;
 	GuiClickable click;
+	Item *item;
 };

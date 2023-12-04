@@ -23,7 +23,7 @@ void TileDoor::ProcessEvent(const sf::Event &event)
 	{
 		SceneGame::InteractionNotify();
 		isOpen = event.type == sf::Event::KeyPressed
-			&& event.key.code == sf::Keyboard::E;
+			&& event.key.code == sf::Keyboard::F;
 	}
 }
 

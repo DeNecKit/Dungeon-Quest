@@ -70,8 +70,8 @@ void Player::Render(sf::RenderWindow *window)
 		sf::IntRect(animationCurFrame * 16, 0, 16, 16));
 	int right = direction == PlayerDirection::Right ? 1 : -1;
 	s.setPosition(sf::Vector2f(
-		GameManager::WindowWidth() / 2 - Level::GetTileSize() / 2.f * right,
-		GameManager::WindowHeight() / 2 - Level::GetTileSize() / 2.f));
+		GameManager::WindowWidth() / 2 - Level::GetTileSize() * sizeCoef / 2.f * right,
+		GameManager::WindowHeight() / 2 - Level::GetTileSize() * sizeCoef / 2.f));
 	float factor = Level::GetTileSize() / 16.f * sizeCoef;
 	s.setScale(sf::Vector2f(factor * right, factor));
 	window->draw(s);

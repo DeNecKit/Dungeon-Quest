@@ -75,6 +75,12 @@
     <ClCompile Include="src\Gui\GuiList.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\Gui\GuiItemSlot.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Gui\GuiClickable.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\SceneManager.h">
@@ -132,6 +138,12 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\Gui\GuiList.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Gui\GuiItemSlot.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Gui\GuiClickable.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

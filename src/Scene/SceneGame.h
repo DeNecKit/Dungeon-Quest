@@ -21,8 +21,8 @@ public:
 private:
 	Level *level;
 	GuiText *interText;
-	GuiList *pauseMenu;
-	bool isInterTextVisible, isPaused;
+	GuiList *pauseMenu, *inventory, *equipment;
+	bool isInterTextVisible, isPaused, isInvMenu;
 
 	static inline SceneGame *instance;
 };
