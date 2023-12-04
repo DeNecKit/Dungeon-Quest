@@ -16,6 +16,7 @@ Level::Level(const sf::String &tilesetTexturePath,
 	if (!dataFile.is_open())
 		throw std::exception();
 	json data = json::parse(dataFile);
+	dataFile.close();
 
 	unsigned int startPosX = data["start-pos"]["x"],
 		startPosY = data["start-pos"]["y"];
@@ -53,7 +54,9 @@ Level::Level(const sf::String &tilesetTexturePath,
 		}
 	}
 
-	dataFile.close();
+	/*items = {
+		Item(ItemType::Sword, L"Рыцарский меч", 0, new int[] {0, 10, 0, 0})
+	};*/
 }
 
 Level::~Level()

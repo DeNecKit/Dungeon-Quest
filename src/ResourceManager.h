@@ -7,6 +7,7 @@ class ResourceManager
 public:
 	static sf::Font *GetMainFont();
 	static void Shutdown();
+
 private:
 	static inline sf::Font *mainFont;
 };

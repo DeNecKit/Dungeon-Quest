@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "Tile/Tile.h"
+#include "Item/Item.h"
 #include <vector>
 
 class Level
@@ -28,6 +29,7 @@ private:
 	std::vector<Tile*> otherTiles;
 	sf::Texture tilesetTexture;
 	Player *player;
+	std::vector<Item> items;
 
 	static inline Level *currentLevel;
 };

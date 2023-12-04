@@ -5,17 +5,18 @@
 #include "../ResourceManager.h"
 #include "../Gui/GuiButton.h"
 #include "../Gui/GuiItemSlot.h"
+#include "../Item/Item.h"
 
 SceneGame::SceneGame()
 	: level(Level::Level1()),
 	isInterTextVisible(false), isPaused(false), isInvMenu(false)
 {
 	instance = this;
+	Item::Init();
 	sf::Color textColor = sf::Color::White,
 		shadowColor = sf::Color(128, 128, 128),
 		fillColor = sf::Color::Black,
 		outlineColor = sf::Color::White;
-
 	const float hww = 1920.f/2, hwh = 1080.f/2;
 	interText = new GuiText(
 		sf::FloatRect(hww - 200.f/2, hwh + 100.f, 200.f, 100.f),
@@ -75,6 +76,7 @@ SceneGame::~SceneGame()
 	delete pauseMenu;
 	delete inventory;
 	delete equipment;
+	Item::Shutdown();
 }
 
 void SceneGame::ProcessEvent(const sf::Event &event)

@@ -2,6 +2,8 @@
 
 #include "Animatable.h"
 
+enum class Stat { HP, ATK, DEF, AGI };
+
 class Entity : public Animatable
 {
 public:
