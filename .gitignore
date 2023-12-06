@@ -365,3 +365,4 @@ FodyWeavers.xsd
 *.dll
 /include
 /data
+/lib

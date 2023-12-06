@@ -9,6 +9,8 @@ using json = nlohmann::json;
 Level::Level(const sf::String &tilesetTexturePath,
 	const char *dataPath, PlayerDirection startDir)
 {
+	currentLevel = this;
+
 	if (!tilesetTexture.loadFromFile(tilesetTexturePath))
 		throw std::exception();
 
@@ -54,9 +56,10 @@ Level::Level(const sf::String &tilesetTexturePath,
 		}
 	}
 
-	/*items = {
-		Item(ItemType::Sword, L"Рыцарский меч", 0, new int[] {0, 10, 0, 0})
-	};*/
+	items = new std::vector<Item*>({
+		new Item(ItemType::Sword, L"Рыцарский меч", 0,
+			{{Stat::HP, 0},{Stat::ATK, 10},{Stat::DEF, 0},{Stat::AGI, 0}})
+	});
 }
 
 Level::~Level()
@@ -64,6 +67,9 @@ Level::~Level()
 	delete player;
 	for (Tile *tile : otherTiles)
 		delete tile;
+	for (Item *item : *items)
+		delete item;
+	delete items;
 }
 
 void Level::ProcessEvent(const sf::Event &event)
@@ -142,9 +148,12 @@ void Level::RenderTile(unsigned int id, float x, float y)
 	GameManager::GetWindow()->draw(s);
 }
 
+std::vector<Item*> Level::GetItems()
+{
+	return *currentLevel->items;
+}
+
 Level *Level::Level1()
 {
-	currentLevel = new Level(
-		"data/tileset.png", "data/lvl-01.json", PlayerDirection::Right);
-	return currentLevel;
+	 return new Level("data/tileset.png", "data/lvl-01.json", PlayerDirection::Right);
 }

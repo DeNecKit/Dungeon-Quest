@@ -3,29 +3,33 @@
 #include <SFML/Graphics.hpp>
 #include "../Gui/Gui.h"
 #include "../Entity.h"
+#include "../GameManager.h"
 #include <map>
 
 enum class ItemType
-	{ Sword, Helmet, Chestplate, Leggings, Boots, Potion };
+	{ None, Sword, Helmet, Chestplate, Leggings, Boots, Potion };
 
 class Item
 {
 public:
 	Item(ItemType type, const sf::String &name,
 		unsigned int textureId,
-		const int *stats = new int[] { 0, 0, 0, 0 });
-	sf::Sprite GetSprite(sf::RenderWindow*);
-	~Item();
+		std::map<Stat, const int> stats =
+			{{Stat::HP, 0}, {Stat::ATK, 0}, {Stat::DEF, 0}, {Stat::AGI, 0}});
+	sf::Sprite GetSprite();
 
 	static void Init();
 	static void Shutdown();
+	static Item GetEmptyItem();
+	static unsigned int GetSize();
 
 protected:
 	ItemType type;
 	const sf::String &name;
 	unsigned int textureId;
-	const int *stats;
+	std::map<Stat, const int> stats;
 
 	static inline sf::Texture *tileset;
-	static inline unsigned int size = 75;
+	static inline unsigned int size;
+	static inline const Item* emptyItem;
 };

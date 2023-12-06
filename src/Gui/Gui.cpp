@@ -11,6 +11,8 @@ Gui::Gui(sf::FloatRect dims)
 	dimensions = dims;
 }
 
+Gui::~Gui() {}
+
 bool Gui::IsMouseOver()
 {
 	sf::Vector2i mPos = sf::Mouse::getPosition(*GameManager::GetWindow());

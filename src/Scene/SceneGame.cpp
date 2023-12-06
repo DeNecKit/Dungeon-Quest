@@ -56,7 +56,8 @@ SceneGame::SceneGame()
 		for (int y = 0; y < m; y++)
 			inventory->Append(new GuiItemSlot(
 				sf::FloatRect(x0 + x * (s + d), y0 + y * (s + d), s, s),
-				nullptr, fillColor, textColor, outlineColor, shadowColor));
+				fillColor, textColor, *Level::GetItems()[0], 1,
+				outlineColor, shadowColor));
 	equipment = new GuiList(sf::FloatRect(ex, ey, ew, eh),
 		fillColor, outlineColor);
 	equipment->Append(new GuiText(
@@ -66,7 +67,8 @@ SceneGame::SceneGame()
 	for (int x = 0; x < n; x++)
 		equipment->Append(new GuiItemSlot(
 			sf::FloatRect(x1 + x * (s + d), y1, s, s),
-			nullptr, fillColor, textColor, outlineColor, shadowColor));
+			fillColor, textColor, *Level::GetItems()[0], 1,
+			outlineColor, shadowColor));
 }
 
 SceneGame::~SceneGame()
