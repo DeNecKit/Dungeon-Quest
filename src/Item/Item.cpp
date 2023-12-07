@@ -1,40 +1,33 @@
 #include "Item.h"
 
-Item::Item(ItemType type, const sf::String &name,
-	unsigned int textureId, std::map<Stat, const int> stats)
-	: type(type), name(name), textureId(textureId), stats(stats) {}
+Item::Item(ItemTemplate* itemTemplate, unsigned int count)
+	: itemTemplate(itemTemplate), count(count)
+{
+	itemMemory.push_back(this);
+}
 
 sf::Sprite Item::GetSprite()
 {
-	int x = textureId % 5 * 32,
-		y = textureId / 5 * 32;
-	sf::Sprite s(*tileset, sf::IntRect(x, y, 32, 32));
-	float factor = size / 32.f;
-	s.setScale(factor, factor);
-	return s;
-}
-
-void Item::Init()
-{
-	size = 75 * GameManager::ResCoefX();
-	emptyItem = new Item(ItemType::None, "none", 0, {});
-	tileset = new sf::Texture();
-	if (!tileset->loadFromFile("data/items.png"))
-		throw new std::exception();
-}
-
-void Item::Shutdown()
-{
-	delete emptyItem;
-	delete tileset;
-}
-
-Item Item::GetEmptyItem()
-{
-	return *emptyItem;
+	return itemTemplate->GetSprite();
 }
 
 unsigned int Item::GetSize()
 {
-	return size;
+	return itemTemplate->GetSize();
+}
+
+unsigned int Item::GetCount()
+{
+	return count;
+}
+
+Item* Item::Create(unsigned int itemTemplateId, unsigned int count)
+{
+	return new Item(ItemTemplate::GetItemTemplates()[itemTemplateId], count);
+}
+
+void Item::Shutdown()
+{
+	for (Item *item : itemMemory)
+		delete item;
 }

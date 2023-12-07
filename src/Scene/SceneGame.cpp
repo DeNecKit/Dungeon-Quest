@@ -5,14 +5,14 @@
 #include "../ResourceManager.h"
 #include "../Gui/GuiButton.h"
 #include "../Gui/GuiItemSlot.h"
-#include "../Item/Item.h"
+#include "../Item/ItemTemplate.h"
 
 SceneGame::SceneGame()
-	: level(Level::Level1()),
-	isInterTextVisible(false), isPaused(false), isInvMenu(false)
+	: isInterTextVisible(false), isPaused(false), isInvMenu(false)
 {
 	instance = this;
-	Item::Init();
+	ItemTemplate::Init();
+	level = Level::Level1();
 	sf::Color textColor = sf::Color::White,
 		shadowColor = sf::Color(128, 128, 128),
 		fillColor = sf::Color::Black,
@@ -56,7 +56,7 @@ SceneGame::SceneGame()
 		for (int y = 0; y < m; y++)
 			inventory->Append(new GuiItemSlot(
 				sf::FloatRect(x0 + x * (s + d), y0 + y * (s + d), s, s),
-				fillColor, textColor, *Level::GetItems()[0], 1,
+				fillColor, textColor, Player::GetItemAt(y*5 + x),
 				outlineColor, shadowColor));
 	equipment = new GuiList(sf::FloatRect(ex, ey, ew, eh),
 		fillColor, outlineColor);
@@ -67,7 +67,7 @@ SceneGame::SceneGame()
 	for (int x = 0; x < n; x++)
 		equipment->Append(new GuiItemSlot(
 			sf::FloatRect(x1 + x * (s + d), y1, s, s),
-			fillColor, textColor, *Level::GetItems()[0], 1,
+			fillColor, textColor, Player::GetItemAt(15 + x),
 			outlineColor, shadowColor));
 }
 
@@ -78,7 +78,7 @@ SceneGame::~SceneGame()
 	delete pauseMenu;
 	delete inventory;
 	delete equipment;
-	Item::Shutdown();
+	ItemTemplate::Shutdown();
 }
 
 void SceneGame::ProcessEvent(const sf::Event &event)

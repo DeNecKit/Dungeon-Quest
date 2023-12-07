@@ -2,6 +2,9 @@
 #include "Level.h"
 #include "GameManager.h"
 #include <cmath>
+#include <fstream>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	: isInBattle(false), direction(startDir),
@@ -19,6 +22,16 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 		{ PlayerAnimationState::Idle, 1 },
 		{ PlayerAnimationState::Walking, 4 }
 	};
+
+	std::ifstream dataFile("data/player.json");
+	if (!dataFile.is_open())
+		throw std::exception();
+	json data = json::parse(dataFile);
+	dataFile.close();
+	for (int i = 0; i < 20; i++)
+		inventory[i] = nullptr;
+	for (json &item : data["start-inventory"])
+		inventory[item["pos"]] = Item::Create(item["id"], item["count"]);
 }
 
 void Player::Update(sf::Time deltaTime)
@@ -133,4 +146,9 @@ sf::Vector2f Player::GetPos()
 float Player::GetSize()
 {
 	return Level::GetTileSize() * sizeCoef;
+}
+
+Item * Player::GetItemAt(unsigned int pos)
+{
+	return currentPlayer->inventory[pos];
 }

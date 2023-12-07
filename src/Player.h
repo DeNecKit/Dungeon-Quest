@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include "Item/Item.h"
 #include <map>
 
 enum class PlayerDirection
@@ -16,6 +17,7 @@ public:
 
 	static sf::Vector2f GetPos();
 	static float GetSize();
+	static Item *GetItemAt(unsigned int pos);
 
 private:
 	void TryMove(float deltaX, float deltaY);
@@ -29,6 +31,7 @@ private:
 	PlayerAnimationState animationState;
 	std::map<PlayerAnimationState, unsigned int> numOfFrames;
 	std::map<BattleAnimationState, unsigned int> numOfBattleFrames;
+	Item *inventory[20] = {};
 
 	static inline Player *currentPlayer;
 	static inline const float speed = 300.f,

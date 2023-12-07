@@ -55,11 +55,6 @@ Level::Level(const sf::String &tilesetTexturePath,
 			otherTiles.push_back(tile);
 		}
 	}
-
-	items = new std::vector<Item*>({
-		new Item(ItemType::Sword, L"Рыцарский меч", 0,
-			{{Stat::HP, 0},{Stat::ATK, 10},{Stat::DEF, 0},{Stat::AGI, 0}})
-	});
 }
 
 Level::~Level()
@@ -67,9 +62,6 @@ Level::~Level()
 	delete player;
 	for (Tile *tile : otherTiles)
 		delete tile;
-	for (Item *item : *items)
-		delete item;
-	delete items;
 }
 
 void Level::ProcessEvent(const sf::Event &event)
@@ -146,11 +138,6 @@ void Level::RenderTile(unsigned int id, float x, float y)
 	s.setScale(sf::Vector2f(factor, factor));
 	s.setPosition(sf::Vector2f(tilePos.x, tilePos.y));
 	GameManager::GetWindow()->draw(s);
-}
-
-std::vector<Item*> Level::GetItems()
-{
-	return *currentLevel->items;
 }
 
 Level *Level::Level1()

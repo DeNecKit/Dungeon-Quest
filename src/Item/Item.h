@@ -1,35 +1,23 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include "../Gui/Gui.h"
-#include "../Entity.h"
-#include "../GameManager.h"
-#include <map>
-
-enum class ItemType
-	{ None, Sword, Helmet, Chestplate, Leggings, Boots, Potion };
+#include "ItemTemplate.h"
+#include <vector>
 
 class Item
 {
 public:
-	Item(ItemType type, const sf::String &name,
-		unsigned int textureId,
-		std::map<Stat, const int> stats =
-			{{Stat::HP, 0}, {Stat::ATK, 0}, {Stat::DEF, 0}, {Stat::AGI, 0}});
+	Item(ItemTemplate *itemTemplate, unsigned int count);
 	sf::Sprite GetSprite();
+	unsigned int GetSize();
+	unsigned int GetCount();
 
-	static void Init();
+	static Item *Create(unsigned int itemTemplateId,
+		unsigned int count = 1);
 	static void Shutdown();
-	static Item GetEmptyItem();
-	static unsigned int GetSize();
 
-protected:
-	ItemType type;
-	const sf::String &name;
-	unsigned int textureId;
-	std::map<Stat, const int> stats;
+private:
+	ItemTemplate *itemTemplate;
+	unsigned int count;
 
-	static inline sf::Texture *tileset;
-	static inline unsigned int size;
-	static inline const Item* emptyItem;
+	static inline std::vector<Item*> itemMemory;
 };

@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "Tile/Tile.h"
-#include "Item/Item.h"
+#include "Item/ItemTemplate.h"
 #include <vector>
 
 class Level
@@ -21,7 +21,6 @@ public:
 	static std::vector<Tile*> GetOtherTiles();
 	static sf::Vector2f CalcTilePos(float x, float y, bool &isOnScreen);
 	static void RenderTile(unsigned int id, float x, float y);
-	static std::vector<Item*> GetItems();
 	static Level *Level1();
 
 private:
@@ -30,7 +29,6 @@ private:
 	std::vector<Tile*> otherTiles;
 	sf::Texture tilesetTexture;
 	Player *player;
-	std::vector<Item*> *items;
 
 	static inline Level *currentLevel;
 };
