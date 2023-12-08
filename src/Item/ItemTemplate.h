@@ -23,6 +23,7 @@ public:
 	static ItemTemplate GetEmptyItem();
 	static unsigned int GetSize();
 	static std::vector<ItemTemplate*> GetItemTemplates();
+	sf::Texture *GetTileset();
 
 protected:
 	ItemType type;

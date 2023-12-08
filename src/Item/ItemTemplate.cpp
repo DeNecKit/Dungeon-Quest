@@ -16,7 +16,7 @@ sf::Sprite ItemTemplate::GetSprite()
 
 void ItemTemplate::Init()
 {
-	size = 75 * (int)GameManager::ResCoefX();
+	size = (int)(75 * GameManager::ResCoefX());
 	emptyItem = new ItemTemplate(ItemType::None, "none", 0, {});
 	tileset = new sf::Texture();
 	if (!tileset->loadFromFile("data/items.png"))
@@ -57,4 +57,9 @@ unsigned int ItemTemplate::GetSize()
 std::vector<ItemTemplate*> ItemTemplate::GetItemTemplates()
 {
 	return *itemTemplates;
+}
+
+sf::Texture *ItemTemplate::GetTileset()
+{
+	return tileset;
 }

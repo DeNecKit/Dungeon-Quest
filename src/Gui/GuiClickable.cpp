@@ -17,7 +17,6 @@ GuiClickable::~GuiClickable()
 
 void GuiClickable::ProcessEvent(const sf::Event &event)
 {
-	dragReleased = false;
 	isHovered = IsMouseOver();
 	if (isHovered) isPressed = isPressed ||
 		event.type == sf::Event::MouseButtonPressed;
@@ -42,6 +41,7 @@ void GuiClickable::Update(sf::Time deltaTime)
 void GuiClickable::Render(sf::RenderWindow *window)
 {
 	if (doHover && isHovered) window->draw(hoverRect);
+	dragReleased = false;
 }
 
 bool GuiClickable::IsPressed()

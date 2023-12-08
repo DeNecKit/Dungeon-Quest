@@ -2,9 +2,9 @@
 #include "../Scene/SceneGame.h"
 
 GuiItemSlot::GuiItemSlot(sf::FloatRect dims,
-	sf::Color fillColor, sf::Color textColor, Item *item,
-	sf::Color outlineColor, sf::Color shadowColor)
-	: Gui(dims), item(item), origPos(dimensions.getPosition()),
+	sf::Color fillColor, sf::Color textColor, SlotType type,
+	Item *item, sf::Color outlineColor, sf::Color shadowColor)
+	: Gui(dims), type(type), item(item), origPos(dimensions.getPosition()),
 	rect(dims, fillColor, outlineColor),
 	click(dims, [](const sf::Event&) {}, true,
 		new GuiDraggable(sf::milliseconds(64))) {}

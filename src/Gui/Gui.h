@@ -12,6 +12,12 @@ public:
 	virtual void Render(sf::RenderWindow*) = 0;
 	bool IsMouseOver();
 
+	static inline sf::Color
+		ButtonFillColor = sf::Color(78, 74, 78),
+		ButtonOutlineColor = sf::Color(68, 36, 52),
+		ItemSlotFillColor = sf::Color(68, 36, 52),
+		ItemSlotOutlineColor = sf::Color(133, 76, 48);
+
 protected:
 	sf::FloatRect dimensions;
 };

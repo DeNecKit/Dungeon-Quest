@@ -94,7 +94,7 @@ void Level::RenderSFML(sf::RenderWindow *window)
 unsigned int Level::GetTileSize()
 {
 	const unsigned int tileSize = 128;
-	return tileSize * (int)GameManager::ResCoefX();
+	return (int)(tileSize * GameManager::ResCoefX());
 }
 
 bool Level::IsWall(unsigned int x, unsigned int y)
