@@ -31,6 +31,7 @@ private:
 	PlayerAnimationState animationState;
 	std::map<PlayerAnimationState, unsigned int> numOfFrames;
 	std::map<BattleAnimationState, unsigned int> numOfBattleFrames;
+	std::map<Stat, unsigned int> stats;
 	Item *inventory[20] = {};
 
 	static inline Player *currentPlayer;

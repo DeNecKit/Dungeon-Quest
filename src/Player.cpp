@@ -22,7 +22,7 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 		{ PlayerAnimationState::Idle, 1 },
 		{ PlayerAnimationState::Walking, 4 }
 	};
-
+	stats = {{Stat::HP, 40}, {Stat::ATK, 5}, {Stat::DEF, 5}, {Stat::AGI, 5}};
 	std::ifstream dataFile("data/player.json");
 	if (!dataFile.is_open())
 		throw std::exception();

@@ -16,8 +16,12 @@ public:
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
 
+	Item* item;
+
 private:
 	GuiRect rect;
 	GuiClickable click;
-	Item *item;
+	sf::Sprite sprite;
+	sf::Vector2i lastMousePos;
+	sf::Vector2f origPos;
 };

@@ -84,6 +84,9 @@
     <ClCompile Include="src\Item\Item.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\Gui\GuiDraggable.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\SceneManager.h">
@@ -150,6 +153,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\Item\Item.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Gui\GuiDraggable.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

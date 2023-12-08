@@ -14,6 +14,7 @@ public:
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
 	void Append(Gui *element);
+	std::vector<Gui*> GetChildren();
 
 private:
 	GuiRect rect;

@@ -8,7 +8,8 @@
 #include "../Item/ItemTemplate.h"
 
 SceneGame::SceneGame()
-	: isInterTextVisible(false), isPaused(false), isInvMenu(false)
+	: isInterTextVisible(false), isPaused(false), isInvMenu(false),
+	renderOnTop(nullptr)
 {
 	instance = this;
 	ItemTemplate::Init();
@@ -107,11 +108,10 @@ void SceneGame::Update(sf::Time deltaTime)
 		level->Update(deltaTime);
 		if (isInterTextVisible)
 			interText->Update(deltaTime);
-		if (isInvMenu)
-		{
-			inventory->Update(deltaTime);
-			equipment->Update(deltaTime);
-		}
+	} else if (isInvMenu)
+	{
+		inventory->Update(deltaTime);
+		equipment->Update(deltaTime);
 	} else pauseMenu->Update(deltaTime);
 }
 
@@ -124,6 +124,11 @@ void SceneGame::RenderGUI(sf::RenderWindow *window)
 	{
 		inventory->Render(window);
 		equipment->Render(window);
+	}
+	if (renderOnTop != nullptr)
+	{
+		window->draw(*renderOnTop);
+		renderOnTop = nullptr;
 	}
 }
 
@@ -146,4 +151,17 @@ void SceneGame::InteractionNotify()
 void SceneGame::SetPause(bool pause)
 {
 	instance->isPaused = pause;
+}
+
+void SceneGame::RenderOnTop(sf::Drawable *r)
+{
+	instance->renderOnTop = r;
+}
+
+std::vector<Gui*> SceneGame::GetInventoryGui()
+{
+	std::vector<Gui*> inv = instance->inventory->GetChildren(),
+		eq = instance->equipment->GetChildren();
+	inv.insert(inv.end(), eq.begin(), eq.end());
+	return inv;
 }

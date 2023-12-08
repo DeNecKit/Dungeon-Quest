@@ -141,6 +141,7 @@
     <ClCompile Include="src\Gui\Gui.cpp" />
     <ClCompile Include="src\Gui\GuiButton.cpp" />
     <ClCompile Include="src\Gui\GuiClickable.cpp" />
+    <ClCompile Include="src\Gui\GuiDraggable.cpp" />
     <ClCompile Include="src\Gui\GuiItemSlot.cpp" />
     <ClCompile Include="src\Gui\GuiList.cpp" />
     <ClCompile Include="src\Gui\GuiRect.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="src\Gui\Gui.h" />
     <ClInclude Include="src\Gui\GuiButton.h" />
     <ClInclude Include="src\Gui\GuiClickable.h" />
+    <ClInclude Include="src\Gui\GuiDraggable.h" />
     <ClInclude Include="src\Gui\GuiItemSlot.h" />
     <ClInclude Include="src\Gui\GuiList.h" />
     <ClInclude Include="src\Gui\GuiRect.h" />

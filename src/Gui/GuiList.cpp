@@ -33,3 +33,8 @@ void GuiList::Append(Gui *element)
 {
 	children.push_back(element);
 }
+
+std::vector<Gui*> GuiList::GetChildren()
+{
+	return children;
+}
