@@ -10,6 +10,7 @@ public:
 	sf::Sprite GetSprite();
 	unsigned int GetSize();
 	unsigned int GetCount();
+	ItemType GetType();
 
 	static Item *Create(unsigned int itemTemplateId,
 		unsigned int count = 1);

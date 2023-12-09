@@ -19,6 +19,7 @@ public:
 	void ProcessEvent(const sf::Event&) override;
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
+	SlotType GetType();
 
 	Item *item;
 

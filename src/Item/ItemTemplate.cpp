@@ -63,3 +63,8 @@ sf::Texture *ItemTemplate::GetTileset()
 {
 	return tileset;
 }
+
+ItemType ItemTemplate::GetType()
+{
+	return type;
+}

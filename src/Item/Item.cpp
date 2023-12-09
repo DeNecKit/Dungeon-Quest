@@ -21,6 +21,11 @@ unsigned int Item::GetCount()
 	return count;
 }
 
+ItemType Item::GetType()
+{
+	return itemTemplate == nullptr ? ItemType::None : itemTemplate->GetType();
+}
+
 Item* Item::Create(unsigned int itemTemplateId, unsigned int count)
 {
 	return new Item(ItemTemplate::GetItemTemplates()[itemTemplateId], count);

@@ -24,6 +24,7 @@ public:
 	static unsigned int GetSize();
 	static std::vector<ItemTemplate*> GetItemTemplates();
 	sf::Texture *GetTileset();
+	ItemType GetType();
 
 protected:
 	ItemType type;

@@ -33,10 +33,20 @@ void GuiItemSlot::Update(sf::Time deltaTime)
 				if (gui != this && gui->IsMouseOver())
 				{
 					GuiItemSlot* other = (GuiItemSlot*)gui;
-					Item* tmp = other->item;
-					other->item = item;
-					item = tmp;
-					break;
+					SlotType otherType = other->GetType();
+					ItemType otherItemType = other->item == nullptr
+						? ItemType::None : other->item->GetType();
+					if ((type == SlotType::Any ||
+						(ItemType)type == otherItemType ||
+						otherItemType == ItemType::None) &&
+						(other->GetType() == SlotType::Any ||
+						(ItemType)otherType == item->GetType()))
+					{
+						Item* tmp = other->item;
+						other->item = item;
+						item = tmp;
+						break;
+					}
 				}
 	}
 }
@@ -56,4 +66,9 @@ void GuiItemSlot::Render(sf::RenderWindow *window)
 		else window->draw(sprite);
 	}
 	if (!click.ShouldDrag()) click.Render(window);
+}
+
+SlotType GuiItemSlot::GetType()
+{
+	return type;
 }
