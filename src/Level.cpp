@@ -2,6 +2,7 @@
 #include "GameManager.h"
 #include "Tile/TileDoor.h"
 #include "Tile/TileTorch.h"
+#include "Tile/TileChest.h"
 #include <fstream>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -49,6 +50,9 @@ Level::Level(const sf::String &tilesetTexturePath,
 				tile = new TileTorch(sf::Vector2u(x, y),
 					tileData["type"] == "left");
 				break;
+			case 84:
+				tile = new TileChest(sf::Vector2u(x, y), tileData["content"]);
+				break;
 			default:
 				tile = new Tile(id, sf::Vector2u(x, y));
 			}
@@ -62,6 +66,7 @@ Level::~Level()
 	delete player;
 	for (Tile *tile : otherTiles)
 		delete tile;
+	Item::Shutdown();
 }
 
 void Level::ProcessEvent(const sf::Event &event)

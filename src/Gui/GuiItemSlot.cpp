@@ -1,13 +1,13 @@
 #include "GuiItemSlot.h"
 #include "../Scene/SceneGame.h"
 
-GuiItemSlot::GuiItemSlot(sf::FloatRect dims,
-	sf::Color fillColor, sf::Color textColor, SlotType type,
-	Item *item, sf::Color outlineColor, sf::Color shadowColor)
+GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest *parentChest,
+	unsigned int pos, SlotType type, Item *item)
 	: Gui(dims), type(type), item(item), origPos(dimensions.getPosition()),
-	rect(dims, fillColor, outlineColor),
+	rect(dims, Gui::ItemSlotFillColor, Gui::ItemSlotOutlineColor),
+	pos(pos), parentChest(parentChest),
 	click(dims, [](const sf::Event&) {}, true,
-		new GuiDraggable(sf::milliseconds(64))) {}
+		new GuiDraggable(sf::milliseconds(32))) {}
 
 void GuiItemSlot::ProcessEvent(const sf::Event &event)
 {
@@ -30,23 +30,30 @@ void GuiItemSlot::Update(sf::Time deltaTime)
 
 		if (click.DragReleased())
 			for (Gui* gui : SceneGame::GetInventoryGui())
-				if (gui != this && gui->IsMouseOver())
+				if (gui != this && dynamic_cast<GuiItemSlot*>(gui)
+					&& gui->IsMouseOver())
 				{
 					GuiItemSlot* other = (GuiItemSlot*)gui;
-					SlotType otherType = other->GetType();
+					SlotType otherType = other->type;
 					ItemType otherItemType = other->item == nullptr
 						? ItemType::None : other->item->GetType();
 					if ((type == SlotType::Any ||
 						(ItemType)type == otherItemType ||
 						otherItemType == ItemType::None) &&
-						(other->GetType() == SlotType::Any ||
+						(other->type == SlotType::Any ||
 						(ItemType)otherType == item->GetType()))
 					{
-						Item* tmp = other->item;
+						Item *tmp = other->item;
 						other->item = item;
+						if (other->parentChest == nullptr)
+							Player::SetItem(other->GetPos(),  item);
+						else other->parentChest->SetItem(other->GetPos(), item);
 						item = tmp;
-						break;
+						if (parentChest == nullptr)
+							Player::SetItem(pos, tmp);
+						else parentChest->SetItem(pos, tmp);
 					}
+					break;
 				}
 	}
 }
@@ -68,7 +75,7 @@ void GuiItemSlot::Render(sf::RenderWindow *window)
 	if (!click.ShouldDrag()) click.Render(window);
 }
 
-SlotType GuiItemSlot::GetType()
+unsigned int GuiItemSlot::GetPos()
 {
-	return type;
+	return pos;
 }

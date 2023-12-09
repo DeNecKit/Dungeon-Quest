@@ -13,10 +13,12 @@ public:
 	bool IsMouseOver();
 
 	static inline sf::Color
-		ButtonFillColor = sf::Color(78, 74, 78),
-		ButtonOutlineColor = sf::Color(68, 36, 52),
+		TextColor = sf::Color(222, 238, 214),
+		ShadowColor = sf::Color(133, 149, 161),
+		ButtonFillColor = sf::Color(133, 76, 48),
+		ButtonOutlineColor = sf::Color(210, 125, 44),
 		ItemSlotFillColor = sf::Color(68, 36, 52),
-		ItemSlotOutlineColor = sf::Color(133, 76, 48);
+		ItemSlotOutlineColor = sf::Color(218, 212, 94);
 
 protected:
 	sf::FloatRect dimensions;

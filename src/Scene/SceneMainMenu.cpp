@@ -12,24 +12,20 @@ SceneMainMenu::SceneMainMenu()
 		fillColor = sf::Color::Black,
 		outlineColor = sf::Color::White;
 
-	title = new GuiText(sf::FloatRect(x, 100, w, 100),
-		"Dungeon Quest", ResourceManager::GetMainFont(), 48,
-		textColor, shadowColor);
+	title = new GuiText(sf::FloatRect(x, 100.f, w, 200.f),
+		"Dungeon Quest", ResourceManager::GetMainFont(), 96);
 
-	btnNewGame = new GuiButton(sf::FloatRect(x, 500, w, 100),
+	btnNewGame = new GuiButton(sf::FloatRect(x, 500.f, w, 100.f),
 		L"Новая игра", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) { SceneManager::ChangeScene<SceneGame>(); },
-		fillColor, textColor, outlineColor, shadowColor);
+		[](const sf::Event&) { SceneManager::ChangeScene<SceneGame>(); });
 
-	btnLoadGame = new GuiButton(sf::FloatRect(x, 650, w, 100),
+	btnLoadGame = new GuiButton(sf::FloatRect(x, 650.f, w, 100.f),
 		L"Загрузить игру", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) {},
-		fillColor, textColor, outlineColor, shadowColor);
+		[](const sf::Event&) {});
 
-	btnExit = new GuiButton(sf::FloatRect(x, 800, w, 100),
+	btnExit = new GuiButton(sf::FloatRect(x, 800.f, w, 100.f),
 		L"Выйти", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) { GameManager::Close(); },
-		fillColor, textColor, outlineColor, shadowColor);
+		[](const sf::Event&) { GameManager::Close(); });
 }
 
 SceneMainMenu::~SceneMainMenu()

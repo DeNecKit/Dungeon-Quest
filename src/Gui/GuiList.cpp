@@ -1,4 +1,7 @@
 #include "GuiList.h"
+#include "GuiItemSlot.h"
+#include "../Player.h"
+#include "../Tile/TileChest.h"
 
 GuiList::GuiList(sf::FloatRect dims,
 	sf::Color fillColor, sf::Color outlineColor)
@@ -37,4 +40,15 @@ void GuiList::Append(Gui *element)
 std::vector<Gui*> GuiList::GetChildren()
 {
 	return children;
+}
+
+void GuiList::SetItem(unsigned int pos, Item *item)
+{
+	dynamic_cast<GuiItemSlot*>(children[pos+1])->item = item;
+}
+
+void GuiList::SetParent(unsigned int pos, TileChest *parentChest)
+{
+	GuiItemSlot* slot = dynamic_cast<GuiItemSlot*>(children[pos+1]);
+	slot->parentChest = parentChest;
 }

@@ -7,7 +7,7 @@
 #include <map>
 
 enum class ItemType
-	{ None, Sword, Helmet, Chestplate, Leggings, Boots, Potion };
+	{ None, Sword, Helmet, Chestplate, Leggings, Boots, Potion, Key };
 
 class ItemTemplate
 {

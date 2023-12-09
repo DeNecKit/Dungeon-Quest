@@ -9,67 +9,72 @@
 
 SceneGame::SceneGame()
 	: isInterTextVisible(false), isPaused(false), isInvMenu(false),
-	renderOnTop(nullptr)
+	renderOnTop(nullptr), openedChest(nullptr)
 {
 	instance = this;
 	ItemTemplate::Init();
 	level = Level::Level1();
-	sf::Color textColor = sf::Color::White,
-		shadowColor = sf::Color(128, 128, 128),
-		fillColor = sf::Color::Black,
-		outlineColor = sf::Color::White;
 	const float hww = 1920.f/2, hwh = 1080.f/2;
 	interText = new GuiText(
-		sf::FloatRect(hww - 200.f/2, hwh + 100.f, 200.f, 100.f),
+		sf::FloatRect(hww - 200.f/2, hwh * 1.5f, 200.f, 100.f),
 		L"Нажмите \"F\" для взаимодействия", ResourceManager::GetMainFont(),
 		18, sf::Color(255, 255, 255, 200), sf::Color::Black);
 
 	const float w = 500.f, h = 100.f, d = 50.f,
 		lw = w + d*2, lh = h*4 + d*5,
 		lx = hww - lw/2, ly = hwh - lh/2;
-	pauseMenu = new GuiList(sf::FloatRect(lx, ly, lw, lh), fillColor, outlineColor);
+	pauseMenu = new GuiList(sf::FloatRect(lx, ly, lw, lh),
+		sf::Color(103, 46, 18), sf::Color(218, 212, 94));
 	pauseMenu->Append(new GuiText(sf::FloatRect(lx + d, ly + d, w, h), L"Пауза",
-		ResourceManager::GetMainFont(), 48, textColor, shadowColor));
+		ResourceManager::GetMainFont(), 48));
 	pauseMenu->Append(new GuiButton(sf::FloatRect(lx + d, ly + d*2 + h, w, h),
 		L"Вернуться в игру", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) { SetPause(false); },
-		fillColor, textColor, outlineColor, shadowColor));
+		[](const sf::Event&) { SetPause(false); }));
 	pauseMenu->Append(new GuiButton(sf::FloatRect(lx + d, ly + d*3 + h*2, w, h),
 		L"Сохранить игру", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) {},
-		fillColor, textColor, outlineColor, shadowColor));
+		[](const sf::Event&) {}));
 	pauseMenu->Append(new GuiButton(sf::FloatRect(lx + d, ly + d*4 + h*3, w, h),
 		L"Выйти в главное меню", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) { SceneManager::ChangeScene<SceneMainMenu>(); },
-		fillColor, textColor, outlineColor, shadowColor));
+		[](const sf::Event&) { SceneManager::ChangeScene<SceneMainMenu>(); }));
 
 	const float n = 5, m = 3, s = 100.f,
-		iw = s*n + d*(n+1), ih = s*m + d*(m+1) + s, ew = iw, eh = s*2 + d*2,
-		ix = d, iy = hwh - (ih + d + eh) / 2, ex = ix, ey = iy + ih + d,
-		x0 = ix + d, y0 = iy + s + d, x1 = ex + d, y1 = ey + s + d;
-	inventory = new GuiList(sf::FloatRect(ix, iy, iw, ih),
-		fillColor, outlineColor);
-	inventory->Append(new GuiText(
-		sf::FloatRect(ix, iy, iw, s),
-		L"Инвентарь", ResourceManager::GetMainFont(), 48,
-		sf::Color::White, sf::Color(128, 128, 128)));
+		iw = s*n + d*(n+1), ih = s*m + d*(m+1) + s,
+		ew = iw, eh = s*2 + d*2,
+		cw = iw, ch = ih,
+		ix = d, iy = hwh - (ih + d + eh)/2,
+		ex = ix, ey = iy + ih + d,
+		cx = hww*2 - cw - d, cy = iy,
+		x0 = ix + d, y0 = iy + s + d,
+		x1 = ex + d, y1 = ey + s + d,
+		x2 = cx + d, y2 = cy + s + d;
+	inventoryGui = new GuiList(sf::FloatRect(ix, iy, iw, ih),
+		Gui::ButtonFillColor, Gui::ButtonOutlineColor);
+	inventoryGui->Append(new GuiText(
+		sf::FloatRect(ix, iy, iw, s), L"Инвентарь",
+		ResourceManager::GetMainFont(), 48));
+	for (int y = 0; y < m; y++)
+		for (int x = 0; x < n; x++)
+			inventoryGui->Append(new GuiItemSlot(
+				sf::FloatRect(x0 + x*(s+d), y0 + y*(s+d), s, s),
+				nullptr, y*5+x, SlotType::Any, Player::GetItem(y*5+x)));
+	equipmentGui = new GuiList(sf::FloatRect(ex, ey, ew, eh),
+		Gui::ButtonFillColor, Gui::ButtonOutlineColor);
+	equipmentGui->Append(new GuiText(
+		sf::FloatRect(ex, ey, ew, s), L"Экипировка",
+		ResourceManager::GetMainFont(), 48));
 	for (int x = 0; x < n; x++)
-		for (int y = 0; y < m; y++)
-			inventory->Append(new GuiItemSlot(
-				sf::FloatRect(x0 + x * (s + d), y0 + y * (s + d), s, s),
-				fillColor, textColor, SlotType::Any, Player::GetItemAt(y*5 + x),
-				outlineColor, shadowColor));
-	equipment = new GuiList(sf::FloatRect(ex, ey, ew, eh),
-		fillColor, outlineColor);
-	equipment->Append(new GuiText(
-		sf::FloatRect(ex, ey, ew, s),
-		L"Экипировка", ResourceManager::GetMainFont(), 48,
-		sf::Color::White, sf::Color(128, 128, 128)));
-	for (int x = 0; x < n; x++)
-		equipment->Append(new GuiItemSlot(
-			sf::FloatRect(x1 + x * (s + d), y1, s, s),
-			fillColor, textColor, (SlotType)(x + 1), Player::GetItemAt(15 + x),
-			outlineColor, shadowColor));
+		equipmentGui->Append(new GuiItemSlot(
+			sf::FloatRect(x1 + x*(s+d), y1, s, s),
+			nullptr, 15+x, (SlotType)(x + 1), Player::GetItem(15+x)));
+	chestGui = new GuiList(sf::FloatRect(cx, cy, cw, ch),
+		Gui::ButtonFillColor, Gui::ButtonOutlineColor);
+	chestGui->Append(new GuiText(
+		sf::FloatRect(cx, cy, cw, s), L"Сундук",
+		ResourceManager::GetMainFont(), 48));
+	for (int y = 0; y < m; y++)
+		for (int x = 0; x < n; x++)
+			chestGui->Append(new GuiItemSlot(
+				sf::FloatRect(x2 + x*(s+d), y2 + y*(s+d), s, s), nullptr, y*5+x));
 }
 
 SceneGame::~SceneGame()
@@ -77,8 +82,9 @@ SceneGame::~SceneGame()
 	delete level;
 	delete interText;
 	delete pauseMenu;
-	delete inventory;
-	delete equipment;
+	delete inventoryGui;
+	delete equipmentGui;
+	delete chestGui;
 	ItemTemplate::Shutdown();
 }
 
@@ -87,17 +93,25 @@ void SceneGame::ProcessEvent(const sf::Event &event)
 	if (event.type == sf::Event::KeyPressed)
 		if (event.key.code == sf::Keyboard::Escape)
 			if (!isInvMenu) isPaused = !isPaused;
-			else isInvMenu = false;
+			else
+			{
+				isInvMenu = false;
+				openedChest = nullptr;
+			}
 		else if (!isPaused && event.key.code == sf::Keyboard::E)
+		{
 			isInvMenu = !isInvMenu;
+			if (!isInvMenu) openedChest = nullptr;
+		}
 	isInterTextVisible = false;
 	if (!isPaused && !isInvMenu)
 		level->ProcessEvent(event);
 	if (isPaused) pauseMenu->ProcessEvent(event);
 	if (isInvMenu)
 	{
-		inventory->ProcessEvent(event);
-		equipment->ProcessEvent(event);
+		inventoryGui->ProcessEvent(event);
+		equipmentGui->ProcessEvent(event);
+		if (openedChest != nullptr) chestGui->ProcessEvent(event);
 	}
 }
 
@@ -110,8 +124,9 @@ void SceneGame::Update(sf::Time deltaTime)
 			interText->Update(deltaTime);
 	} else if (isInvMenu)
 	{
-		inventory->Update(deltaTime);
-		equipment->Update(deltaTime);
+		inventoryGui->Update(deltaTime);
+		equipmentGui->Update(deltaTime);
+		if (openedChest != nullptr) chestGui->Update(deltaTime);
 	} else pauseMenu->Update(deltaTime);
 }
 
@@ -122,8 +137,9 @@ void SceneGame::RenderGUI(sf::RenderWindow *window)
 	if (isPaused) pauseMenu->Render(window);
 	if (isInvMenu)
 	{
-		inventory->Render(window);
-		equipment->Render(window);
+		inventoryGui->Render(window);
+		equipmentGui->Render(window);
+		if (openedChest != nullptr) chestGui->Render(window);
 	}
 	if (renderOnTop != nullptr)
 	{
@@ -153,6 +169,17 @@ void SceneGame::SetPause(bool pause)
 	instance->isPaused = pause;
 }
 
+void SceneGame::OpenChest(TileChest *chest)
+{
+	instance->isInvMenu = true;
+	instance->openedChest = chest;
+	for (int i = 0; i < 15; i++)
+	{
+		instance->chestGui->SetParent(i, chest);
+		instance->chestGui->SetItem(i, chest->GetItem(i));
+	}
+}
+
 void SceneGame::RenderOnTop(sf::Drawable *r)
 {
 	instance->renderOnTop = r;
@@ -160,8 +187,10 @@ void SceneGame::RenderOnTop(sf::Drawable *r)
 
 std::vector<Gui*> SceneGame::GetInventoryGui()
 {
-	std::vector<Gui*> inv = instance->inventory->GetChildren(),
-		eq = instance->equipment->GetChildren();
+	std::vector<Gui*> inv = instance->inventoryGui->GetChildren(),
+		eq = instance->equipmentGui->GetChildren(),
+		ch = instance->chestGui->GetChildren();
 	inv.insert(inv.end(), eq.begin(), eq.end());
+	inv.insert(inv.end(), ch.begin(), ch.end());
 	return inv;
 }

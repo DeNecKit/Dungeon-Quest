@@ -37,7 +37,7 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 void Player::Update(sf::Time deltaTime)
 {
 	float sprint = sf::Keyboard::isKeyPressed(
-		sf::Keyboard::LControl) ? sprintCoef : 1.f;
+		sf::Keyboard::LShift) ? sprintCoef : 1.f;
 
 	animationPassedTime += deltaTime;
 	if (animationPassedTime >= animationDeltaTime / sprint)
@@ -148,7 +148,12 @@ float Player::GetSize()
 	return Level::GetTileSize() * sizeCoef;
 }
 
-Item * Player::GetItemAt(unsigned int pos)
+Item* Player::GetItem(unsigned int pos)
 {
 	return currentPlayer->inventory[pos];
+}
+
+void Player::SetItem(unsigned int pos, Item *item)
+{
+	currentPlayer->inventory[pos] = item;
 }

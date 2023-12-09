@@ -35,4 +35,5 @@ void Item::Shutdown()
 {
 	for (Item *item : itemMemory)
 		delete item;
+	itemMemory.clear();
 }

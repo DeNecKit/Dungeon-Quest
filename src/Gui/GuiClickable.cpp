@@ -8,6 +8,9 @@ GuiClickable::GuiClickable(sf::FloatRect dims,
 	hoverRect = sf::RectangleShape(dimensions.getSize());
 	hoverRect.setPosition(dimensions.getPosition());
 	hoverRect.setFillColor(sf::Color(255, 255, 255, 100));
+	clickRect = sf::RectangleShape(dimensions.getSize());
+	clickRect.setPosition(dimensions.getPosition());
+	clickRect.setFillColor(sf::Color(0, 0, 0, 100));
 }
 
 GuiClickable::~GuiClickable()
@@ -20,15 +23,16 @@ void GuiClickable::ProcessEvent(const sf::Event &event)
 	isHovered = IsMouseOver();
 	if (isHovered) isPressed = isPressed ||
 		event.type == sf::Event::MouseButtonPressed;
+	else isPressed = false;
 	if (event.type == sf::Event::MouseButtonReleased)
 	{
-		isPressed = false;
-		if (!ShouldDrag() && isHovered) OnClick(event);
+		if (isHovered && isPressed && !ShouldDrag()) OnClick(event);
 		if (ShouldDrag())
 		{
 			drag->Reset();
 			dragReleased = true;
 		}
+		isPressed = false;
 	}
 }
 
@@ -40,7 +44,9 @@ void GuiClickable::Update(sf::Time deltaTime)
 
 void GuiClickable::Render(sf::RenderWindow *window)
 {
-	if (doHover && isHovered) window->draw(hoverRect);
+	if (doHover && isHovered)
+		if (isPressed) window->draw(clickRect);
+		else window->draw(hoverRect);
 	dragReleased = false;
 }
 

@@ -2,6 +2,9 @@
 
 #include "Gui.h"
 #include "GuiRect.h"
+#include "../Item/Item.h"
+#include "../Player.h"
+#include "../Tile/TileChest.h"
 #include <vector>
 
 class GuiList : public Gui
@@ -15,6 +18,8 @@ public:
 	void Render(sf::RenderWindow*) override;
 	void Append(Gui *element);
 	std::vector<Gui*> GetChildren();
+	void SetItem(unsigned int pos, Item *item);
+	void SetParent(unsigned int pos,  TileChest *parentChest);
 
 private:
 	GuiRect rect;

@@ -157,6 +157,7 @@
     <ClCompile Include="src\Scene\SceneGame.cpp" />
     <ClCompile Include="src\Scene\SceneMainMenu.cpp" />
     <ClCompile Include="src\Tile\Tile.cpp" />
+    <ClCompile Include="src\Tile\TileChest.cpp" />
     <ClCompile Include="src\Tile\TileDoor.cpp" />
     <ClCompile Include="src\Tile\TileTorch.cpp" />
   </ItemGroup>
@@ -182,6 +183,7 @@
     <ClInclude Include="src\Scene\SceneGame.h" />
     <ClInclude Include="src\Scene\SceneMainMenu.h" />
     <ClInclude Include="src\Tile\Tile.h" />
+    <ClInclude Include="src\Tile\TileChest.h" />
     <ClInclude Include="src\Tile\TileDoor.h" />
     <ClInclude Include="src\Tile\TileTorch.h" />
   </ItemGroup>

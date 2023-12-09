@@ -17,7 +17,8 @@ public:
 
 	static sf::Vector2f GetPos();
 	static float GetSize();
-	static Item *GetItemAt(unsigned int pos);
+	static Item *GetItem(unsigned int pos);
+	static void SetItem(unsigned int pos, Item *item);
 
 private:
 	void TryMove(float deltaX, float deltaY);

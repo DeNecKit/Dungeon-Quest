@@ -3,11 +3,9 @@
 
 GuiButton::GuiButton(sf::FloatRect dims, const sf::String &str,
 	sf::Font *font, unsigned int chSize,
-	void (*onClick)(const sf::Event&),
-	sf::Color fillColor, sf::Color textColor,
-	sf::Color outlineColor, sf::Color shadowColor)
-	: Gui(dims), rect(dims, fillColor, outlineColor),
-	text(dims, str, font, chSize, textColor, shadowColor),
+	void (*onClick)(const sf::Event&))
+	: Gui(dims), rect(dims, ButtonFillColor, ButtonOutlineColor),
+	text(dims, str, font, chSize),
 	click(dims, onClick) {}
 
 void GuiButton::ProcessEvent(const sf::Event &event)

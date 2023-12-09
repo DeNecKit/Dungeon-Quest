@@ -22,7 +22,7 @@ public:
 private:
 	void (*OnClick)(const sf::Event&);
 	bool isPressed, doHover, isHovered;
-	sf::RectangleShape hoverRect;
+	sf::RectangleShape hoverRect, clickRect;
 	GuiDraggable *drag;
 	bool dragReleased;
 };
