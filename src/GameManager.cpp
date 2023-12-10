@@ -2,9 +2,12 @@
 #include <SFML/Graphics.hpp>
 #include "SceneManager.h"
 #include "ResourceManager.h"
+#include <cstdlib>
+#include <ctime>
 
 void GameManager::Init()
 {
+	std::srand((unsigned int)std::time(nullptr));
 	window = new sf::RenderWindow(
 		sf::VideoMode::getDesktopMode(),
 		"Dungeon Quest", sf::Style::Fullscreen);

@@ -17,10 +17,3 @@ private:
 	static inline Scene *currentScene, *tmpScene;
 	static inline bool isSceneChanged;
 };
-
-template<typename T>
-void SceneManager::ChangeScene()
-{
-	tmpScene = new T();
-	isSceneChanged = true;
-}

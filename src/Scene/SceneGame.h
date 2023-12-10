@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Scene.h"
-#include "../Level.h"
 #include "../Gui/GuiText.h"
 #include "../Gui/GuiList.h"
 #include "../Gui/Gui.h"
@@ -24,7 +23,6 @@ public:
 	static std::vector<Gui*> GetInventoryGui();
 
 private:
-	Level *level;
 	GuiText *interText;
 	GuiList *pauseMenu,
 		*inventoryGui, *equipmentGui, *chestGui;

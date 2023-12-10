@@ -13,6 +13,7 @@ public:
 	void Update(sf::Time) override;
 	void RenderGUI(sf::RenderWindow*) override;
 	void RenderSFML(sf::RenderWindow*) override;
+
 private:
 	GuiButton *btnNewGame, *btnLoadGame, *btnExit;
 	GuiText *title;

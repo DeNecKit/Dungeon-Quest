@@ -25,6 +25,7 @@ private:
 	sf::Vector2f GetFixedPos(float deltaX, float deltaY,
 		sf::Vector2f playerPos, float playerSize,
 		float otherX, float otherY);
+	float GenerateRequiredDistance();
 
 	bool isInBattle;
 	sf::Vector2f position;
@@ -34,6 +35,7 @@ private:
 	std::map<BattleAnimationState, unsigned int> numOfBattleFrames;
 	std::map<Stat, unsigned int> stats;
 	Item *inventory[20] = {};
+	float walkedDistance, requiredDistance;
 
 	static inline Player *currentPlayer;
 	static inline const float speed = 300.f,

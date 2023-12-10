@@ -2,6 +2,7 @@
 #include "../GameManager.h"
 #include "../ResourceManager.h"
 #include "SceneGame.h"
+#include "../Level.h"
 
 SceneMainMenu::SceneMainMenu()
 {

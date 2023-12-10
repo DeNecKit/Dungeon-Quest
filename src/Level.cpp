@@ -10,8 +10,6 @@ using json = nlohmann::json;
 Level::Level(const sf::String &tilesetTexturePath,
 	const char *dataPath, PlayerDirection startDir)
 {
-	currentLevel = this;
-
 	ItemTemplate::Init();
 	Item::Init();
 
@@ -152,4 +150,22 @@ void Level::RenderTile(unsigned int id, float x, float y)
 Level *Level::Level1()
 {
 	 return new Level("data/tileset.png", "data/lvl-01.json", PlayerDirection::Right);
+}
+
+Level* Level::Get()
+{
+	return currentLevel;
+}
+
+void Level::Change(Level *level)
+{
+	delete currentLevel;
+	currentLevel = level;
+}
+
+void Level::Reset()
+{
+	if (currentLevel != nullptr)
+		delete currentLevel;
+	currentLevel = nullptr;
 }

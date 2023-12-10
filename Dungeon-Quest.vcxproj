@@ -154,6 +154,7 @@
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
+    <ClCompile Include="src\Scene\SceneBattle.cpp" />
     <ClCompile Include="src\Scene\SceneGame.cpp" />
     <ClCompile Include="src\Scene\SceneMainMenu.cpp" />
     <ClCompile Include="src\Tile\Tile.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Scene\SceneBattle.h" />
     <ClInclude Include="src\Scene\SceneGame.h" />
     <ClInclude Include="src\Scene\SceneMainMenu.h" />
     <ClInclude Include="src\Tile\Tile.h" />

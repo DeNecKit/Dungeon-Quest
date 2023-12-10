@@ -22,6 +22,9 @@ public:
 	static sf::Vector2f CalcTilePos(float x, float y, bool &isOnScreen);
 	static void RenderTile(unsigned int id, float x, float y);
 	static Level *Level1();
+	static Level *Get();
+	static void Change(Level*);
+	static void Reset();
 
 private:
 	unsigned int width, height;
@@ -30,5 +33,5 @@ private:
 	sf::Texture tilesetTexture;
 	Player *player;
 
-	static inline Level *currentLevel;
+	static inline Level *currentLevel = nullptr;
 };

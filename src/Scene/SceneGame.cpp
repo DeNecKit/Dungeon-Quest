@@ -6,13 +6,13 @@
 #include "../Gui/GuiButton.h"
 #include "../Gui/GuiItemSlot.h"
 #include "../Item/ItemTemplate.h"
+#include "../Level.h"
 
 SceneGame::SceneGame()
 	: isInterTextVisible(false), isPaused(false), isInvMenu(false),
 	renderOnTop(nullptr), openedChest(nullptr)
 {
 	instance = this;
-	level = Level::Level1();
 	const float hww = 1920.f/2, hwh = 1080.f/2;
 	interText = new GuiText(
 		sf::FloatRect(hww - 200.f/2, hwh * 1.5f, 200.f, 100.f),
@@ -78,7 +78,6 @@ SceneGame::SceneGame()
 
 SceneGame::~SceneGame()
 {
-	delete level;
 	delete interText;
 	delete pauseMenu;
 	delete inventoryGui;
@@ -103,7 +102,7 @@ void SceneGame::ProcessEvent(const sf::Event &event)
 		}
 	isInterTextVisible = false;
 	if (!isPaused && !isInvMenu)
-		level->ProcessEvent(event);
+		Level::Get()->ProcessEvent(event);
 	if (isPaused) pauseMenu->ProcessEvent(event);
 	if (isInvMenu)
 	{
@@ -117,7 +116,7 @@ void SceneGame::Update(sf::Time deltaTime)
 {
 	if (!isPaused && !isInvMenu)
 	{
-		level->Update(deltaTime);
+		Level::Get()->Update(deltaTime);
 		if (isInterTextVisible)
 			interText->Update(deltaTime);
 	} else if (isInvMenu)
@@ -148,7 +147,7 @@ void SceneGame::RenderGUI(sf::RenderWindow *window)
 
 void SceneGame::RenderSFML(sf::RenderWindow *window)
 {
-	level->RenderSFML(window);
+	Level::Get()->RenderSFML(window);
 	if (isPaused || isInvMenu)
 	{
 		sf::RectangleShape r((sf::Vector2f)window->getSize());

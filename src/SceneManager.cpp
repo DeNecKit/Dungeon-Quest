@@ -2,6 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include "GameManager.h"
 #include "Scene/SceneMainMenu.h"
+#include "Scene/SceneGame.h"
+#include "Scene/SceneBattle.h"
+#include "Level.h"
 
 void SceneManager::Init()
 {
@@ -9,10 +12,27 @@ void SceneManager::Init()
 	isSceneChanged = false;
 }
 
+template<typename T>
+void SceneManager::ChangeScene()
+{
+	if (dynamic_cast<SceneMainMenu*>(currentScene) &&
+		typeid(T) == typeid(SceneGame))
+		Level::Change(Level::Level1());
+	tmpScene = new T();
+	isSceneChanged = true;
+}
+
+template void SceneManager::ChangeScene<SceneMainMenu>();
+template void SceneManager::ChangeScene<SceneGame>();
+template void SceneManager::ChangeScene<SceneBattle>();
+
 void SceneManager::ProccessEvent(const sf::Event &event)
 {
 	if (isSceneChanged)
 	{
+		if (dynamic_cast<SceneGame*>(currentScene) &&
+			dynamic_cast<SceneMainMenu*>(tmpScene))
+			Level::Reset();
 		delete currentScene;
 		currentScene = tmpScene;
 		tmpScene = nullptr;

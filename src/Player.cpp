@@ -5,10 +5,13 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
+#include <cstdlib>
+#include "Scene/SceneBattle.h"
 
 Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	: isInBattle(false), direction(startDir),
-	animationState(PlayerAnimationState::Idle)
+	animationState(PlayerAnimationState::Idle), walkedDistance(0.f),
+	requiredDistance(GenerateRequiredDistance())
 {
 	currentPlayer = this;
 	animationDeltaTime = sf::milliseconds(128);
@@ -50,30 +53,41 @@ void Player::Update(sf::Time deltaTime)
 	}
 
 	bool walking = false;
-	float speed = this->speed * GameManager::ResCoefX();
+	float speed = this->speed * GameManager::ResCoefX(),
+		deltaDist = speed * sprint * deltaTime.asSeconds();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		walking = true;
 		direction = PlayerDirection::Right;
-		TryMove(speed * sprint * deltaTime.asSeconds(), 0.f);
+		TryMove(deltaDist, 0.f);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		walking = true;
 		direction = PlayerDirection::Left;
-		TryMove(-speed * sprint * deltaTime.asSeconds(), 0.f);
+		TryMove(-deltaDist, 0.f);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
 		walking = true;
-		TryMove(0.f, speed * sprint * deltaTime.asSeconds());
+		TryMove(0.f, deltaDist);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		walking = true;
-		TryMove(0.f, -speed * sprint * deltaTime.asSeconds());
+		TryMove(0.f, -deltaDist);
 	}
-	if (walking) animationState = PlayerAnimationState::Walking;
+	if (walking)
+	{
+		animationState = PlayerAnimationState::Walking;
+		walkedDistance += deltaDist;
+		if (walkedDistance > requiredDistance)
+		{
+			walkedDistance = 0.f;
+			requiredDistance = GenerateRequiredDistance();
+			SceneManager::ChangeScene<SceneBattle>();
+		}
+	}
 	else animationState = PlayerAnimationState::Idle;
 }
 
@@ -136,6 +150,11 @@ sf::Vector2f Player::GetFixedPos(float deltaX, float deltaY,
 	else if (deltaY < 0)
 		playerPos = sf::Vector2f(playerPos.x, otherY + playerSize);
 	return playerPos;
+}
+
+float Player::GenerateRequiredDistance()
+{
+	return std::rand() / (float)RAND_MAX * 10*speed + 5*speed;
 }
 
 sf::Vector2f Player::GetPos()
