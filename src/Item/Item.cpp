@@ -3,7 +3,7 @@
 Item::Item(ItemTemplate* itemTemplate, unsigned int count)
 	: itemTemplate(itemTemplate), count(count)
 {
-	itemMemory.push_back(this);
+	itemMemory->push_back(this);
 }
 
 sf::Sprite Item::GetSprite()
@@ -31,9 +31,20 @@ Item* Item::Create(unsigned int itemTemplateId, unsigned int count)
 	return new Item(ItemTemplate::GetItemTemplates()[itemTemplateId], count);
 }
 
+void Item::Init()
+{
+	itemMemory = new std::vector<Item*>();
+}
+
 void Item::Shutdown()
 {
-	for (Item *item : itemMemory)
+	//for (Item *item : itemMemory)
+		//delete item;
+	//itemMemory.clear();
+	for (int i = 0; i < itemMemory->size(); i++)
+	{
+		Item *item = itemMemory->at(i);
 		delete item;
-	itemMemory.clear();
+	}
+	delete itemMemory;
 }

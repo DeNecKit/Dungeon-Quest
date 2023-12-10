@@ -14,11 +14,12 @@ public:
 
 	static Item *Create(unsigned int itemTemplateId,
 		unsigned int count = 1);
+	static void Init();
 	static void Shutdown();
 
 private:
 	ItemTemplate *itemTemplate;
 	unsigned int count;
 
-	static inline std::vector<Item*> itemMemory;
+	static inline std::vector<Item*> *itemMemory;
 };

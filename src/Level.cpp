@@ -12,6 +12,9 @@ Level::Level(const sf::String &tilesetTexturePath,
 {
 	currentLevel = this;
 
+	ItemTemplate::Init();
+	Item::Init();
+
 	if (!tilesetTexture.loadFromFile(tilesetTexturePath))
 		throw std::exception();
 
@@ -67,6 +70,7 @@ Level::~Level()
 	for (Tile *tile : otherTiles)
 		delete tile;
 	Item::Shutdown();
+	ItemTemplate::Shutdown();
 }
 
 void Level::ProcessEvent(const sf::Event &event)

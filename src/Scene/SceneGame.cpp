@@ -12,7 +12,6 @@ SceneGame::SceneGame()
 	renderOnTop(nullptr), openedChest(nullptr)
 {
 	instance = this;
-	ItemTemplate::Init();
 	level = Level::Level1();
 	const float hww = 1920.f/2, hwh = 1080.f/2;
 	interText = new GuiText(
@@ -85,7 +84,6 @@ SceneGame::~SceneGame()
 	delete inventoryGui;
 	delete equipmentGui;
 	delete chestGui;
-	ItemTemplate::Shutdown();
 }
 
 void SceneGame::ProcessEvent(const sf::Event &event)
