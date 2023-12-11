@@ -9,6 +9,7 @@ using json = nlohmann::json;
 #include "../Scene/SceneBattle.h"
 #include "../Battle.h"
 #include "EnemyGoblin.h"
+#include "../Gui/GuiProgressBar.h"
 
 Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	: isInBattle(false), direction(startDir),
@@ -34,6 +35,7 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 		{ BattleAnimationState::Death, 6 }
 	};
 	stats = {{Stat::HP, 40}, {Stat::ATK, 5}, {Stat::DEF, 5}, {Stat::AGI, 5}};
+	hp = stats[Stat::HP];
 	std::ifstream dataFile("data/player.json");
 	if (!dataFile.is_open())
 		throw std::exception();
@@ -55,6 +57,14 @@ void Player::Render(sf::RenderWindow *window)
 {
 	if (isInBattle) RenderInBattle(window);
 	else RenderInGame(window);
+}
+
+sf::Vector2f Player::GetHealthBarPos()
+{
+	sf::Vector2f hbs = GuiProgressBar::GetHealthBarSize();
+	float w = hbs.x, h = hbs.y, ps = Player::GetScrenSize() * 0.875f,
+		px = Player::GetScreenPos().x, py = Player::GetScreenPos().y;
+	return sf::Vector2f(px + ps/2 - w/2, py + h*4);
 }
 
 unsigned int Player::Attack()
@@ -109,7 +119,8 @@ void Player::UpdateInGame(sf::Time deltaTime)
 		{
 			walkedDistance = 0.f;
 			requiredDistance = GenerateRequiredDistance();
-			Battle::Start(this, {new EnemyGoblin()});
+			Battle::Start(this,
+				{new EnemyGoblin(1), new EnemyGoblin(2), new EnemyGoblin(3)});
 		}
 	} else animationState = PlayerAnimationState::Idle;
 }
@@ -130,11 +141,9 @@ void Player::RenderInGame(sf::RenderWindow *window)
 	unsigned int texSize = 16;
 	sf::Sprite s(*animationTileset,
 		sf::IntRect(animationCurFrame * texSize, 0, texSize, texSize));
+	s.setPosition(GetScreenPos());
+	float factor = GetScrenSize()/16;
 	int right = direction == PlayerDirection::Right ? 1 : -1;
-	s.setPosition(sf::Vector2f(
-		GameManager::WindowWidth() / 2 - Level::GetTileSize() * sizeCoef / 2.f * right,
-		GameManager::WindowHeight() / 2 - Level::GetTileSize() * sizeCoef / 2.f));
-	float factor = Level::GetTileSize() / 16.f * sizeCoef;
 	s.setScale(sf::Vector2f(factor * right, factor));
 	window->draw(s);
 }
@@ -145,9 +154,8 @@ void Player::RenderInBattle(sf::RenderWindow* window)
 	sf::Sprite s(*animationTileset,
 		sf::IntRect(animationCurFrame * texSize,
 			16 + (int)battleAnimationState * texSize, texSize, texSize));
-	float size = GameManager::WindowHeight() / 2.f;
-	s.setPosition(0.f, GameManager::WindowHeight() / 2.f - size / 2.f);
-	float factor = size / texSize;
+	s.setPosition(GetScreenPos());
+	float factor = GetScrenSize() / texSize;
 	s.setScale(factor, factor);
 	window->draw(s);
 }
@@ -203,7 +211,7 @@ sf::Vector2f Player::GetFixedPos(float deltaX, float deltaY,
 float Player::GenerateRequiredDistance()
 {
 	//return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
-	return 300.f;
+	return 10.f;
 }
 
 sf::Vector2f Player::GetPos()
@@ -230,4 +238,36 @@ void Player::InBattle(bool set)
 {
 	currentPlayer->isInBattle = set;
 	currentPlayer->animationCurFrame = 0;
+}
+
+std::map<Stat, unsigned int> Player::GetStats()
+{
+	return currentPlayer->stats;
+}
+
+sf::Vector2f Player::GetScreenPos()
+{
+	if (currentPlayer->isInBattle)
+	{
+		float size = GameManager::WindowHeight()/2.f;
+		return sf::Vector2f(0.f, GameManager::WindowHeight()/2.f - size/2);
+	}
+	else
+	{
+		int right = currentPlayer->direction == PlayerDirection::Right ? 1 : -1;
+		return sf::Vector2f(
+			GameManager::WindowWidth()/2 - Level::GetTileSize()*sizeCoef/2 * right,
+			GameManager::WindowHeight()/2 - Level::GetTileSize()*sizeCoef/2);
+	}
+}
+
+float Player::GetScrenSize()
+{
+	if (currentPlayer->isInBattle) return GameManager::WindowHeight()/2.f;
+	else return Level::GetTileSize()*sizeCoef;
+}
+
+Player* Player::Get()
+{
+	return currentPlayer;
 }

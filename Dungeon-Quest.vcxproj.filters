@@ -102,6 +102,9 @@
     <ClCompile Include="src\Entity\EnemyGoblin.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\Gui\GuiProgressBar.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\SceneManager.h">
@@ -186,6 +189,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\Entity\EnemyGoblin.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Gui\GuiProgressBar.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

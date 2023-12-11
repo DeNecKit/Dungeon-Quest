@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Gui.h"
 
-class GuiRect final : Gui
+class GuiRect final : public Gui
 {
 public:
 	GuiRect(sf::FloatRect dims, sf::Color fillColor,

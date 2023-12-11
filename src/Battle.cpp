@@ -4,7 +4,7 @@
 #include "Scene/SceneGame.h"
 
 Battle::Battle(Player* player, std::vector<Enemy*> enemies)
-	: player(player), enemies(enemies) {}
+	: player(player), enemies(enemies), turn(Turn::Player) {}
 
 Battle::~Battle()
 {
@@ -43,6 +43,11 @@ void Battle::End()
 	instance = nullptr;
 	Player::InBattle(false);
 	SceneManager::ChangeScene<SceneGame>();
+}
+
+std::vector<Enemy*> Battle::GetEnemies()
+{
+	return instance->enemies;
 }
 
 Battle* Battle::Get()

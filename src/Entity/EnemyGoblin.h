@@ -5,5 +5,6 @@
 class EnemyGoblin final : public Enemy
 {
 public:
-	EnemyGoblin();
+	EnemyGoblin(unsigned int pos);
+	sf::Vector2f GetHealthBarPos() override;
 };

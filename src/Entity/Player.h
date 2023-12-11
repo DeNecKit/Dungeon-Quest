@@ -14,6 +14,7 @@ public:
 		PlayerDirection startDir);
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
+	sf::Vector2f GetHealthBarPos() override;
 	unsigned int Attack() override;
 
 	static sf::Vector2f GetPos();
@@ -21,6 +22,10 @@ public:
 	static Item *GetItem(unsigned int pos);
 	static void SetItem(unsigned int pos, Item *item);
 	static void InBattle(bool set);
+	static std::map<Stat, unsigned int> GetStats();
+	static sf::Vector2f GetScreenPos();
+	static float GetScrenSize();
+	static Player *Get();
 
 private:
 	void UpdateInGame(sf::Time deltaTime);
