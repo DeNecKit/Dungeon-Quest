@@ -4,9 +4,12 @@
 #include "../Battle.h"
 #include "../Gui/GuiButton.h"
 #include "../GameManager.h"
+#include "../Entity/Player.h"
 
 SceneBattle::SceneBattle()
+	: pauseMenu(nullptr), inventoryGui(nullptr)
 {
+	Player::InBattle(true);
 	sf::Vector2f hbs = GuiProgressBar::GetHealthBarSize();
 	playerHealthBar = new GuiProgressBar(
 		sf::FloatRect(Player::Get()->GetHealthBarPos(), hbs), sf::Color::Red,
@@ -32,6 +35,7 @@ SceneBattle::~SceneBattle()
 	for (GuiProgressBar *enemyBar : enemiesHealthBar)
 		delete enemyBar;
 	delete actionsMenu;
+	Player::InBattle(false);
 }
 
 void SceneBattle::ProcessEvent(const sf::Event &event)
@@ -62,5 +66,6 @@ void SceneBattle::RenderGUI(sf::RenderWindow *window)
 void SceneBattle::RenderSFML(sf::RenderWindow *window)
 {
 	if (Battle::Get() == nullptr) return;
+	window->clear(sf::Color(58, 51, 62));
 	Battle::Get()->Render(window);
 }

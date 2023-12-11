@@ -16,15 +16,14 @@ SceneGame::SceneGame()
 	const float hww = 1920.f/2, hwh = 1080.f/2;
 	interText = new GuiText(
 		sf::FloatRect(hww - 200.f/2, hwh * 1.5f, 200.f, 100.f),
-		L"Нажмите \"F\" для взаимодействия", ResourceManager::GetMainFont(),
-		18, sf::Color(255, 255, 255, 200), sf::Color::Black);
+		L"Нажмите \"F\" для взаимодействия", 18, ResourceManager::GetMainFont(),
+		sf::Color(255, 255, 255, 200), sf::Color::Black);
 
 	const float w = 500.f, h = 100.f, d = 50.f,
 		lw = w + d*2, lh = h*4 + d*5,
 		lx = hww - lw/2, ly = hwh - lh/2;
 	pauseMenu = new GuiList(sf::FloatRect(lx, ly, lw, lh));
-	pauseMenu->Append(new GuiText(sf::FloatRect(lx + d, ly + d, w, h), L"Пауза",
-		ResourceManager::GetMainFont(), 48));
+	pauseMenu->Append(new GuiText(sf::FloatRect(lx + d, ly + d, w, h), L"Пауза", 48));
 	pauseMenu->Append(new GuiButton(sf::FloatRect(lx + d, ly + d*2 + h, w, h),
 		L"Вернуться в игру", 24, [](const sf::Event&) { SetPause(false); }));
 	pauseMenu->Append(new GuiButton(sf::FloatRect(lx + d, ly + d*3 + h*2, w, h),
@@ -46,8 +45,7 @@ SceneGame::SceneGame()
 	inventoryGui = new GuiList(sf::FloatRect(ix, iy, iw, ih),
 		Gui::ButtonFillColor, Gui::ButtonOutlineColor);
 	inventoryGui->Append(new GuiText(
-		sf::FloatRect(ix, iy, iw, s), L"Инвентарь",
-		ResourceManager::GetMainFont(), 48));
+		sf::FloatRect(ix, iy, iw, s), L"Инвентарь", 48));
 	for (int y = 0; y < m; y++)
 		for (int x = 0; x < n; x++)
 			inventoryGui->Append(new GuiItemSlot(
@@ -56,8 +54,7 @@ SceneGame::SceneGame()
 	equipmentGui = new GuiList(sf::FloatRect(ex, ey, ew, eh),
 		Gui::ButtonFillColor, Gui::ButtonOutlineColor);
 	equipmentGui->Append(new GuiText(
-		sf::FloatRect(ex, ey, ew, s), L"Экипировка",
-		ResourceManager::GetMainFont(), 48));
+		sf::FloatRect(ex, ey, ew, s), L"Экипировка", 48));
 	for (int x = 0; x < n; x++)
 		equipmentGui->Append(new GuiItemSlot(
 			sf::FloatRect(x1 + x*(s+d), y1, s, s),
@@ -65,8 +62,7 @@ SceneGame::SceneGame()
 	chestGui = new GuiList(sf::FloatRect(cx, cy, cw, ch),
 		Gui::ButtonFillColor, Gui::ButtonOutlineColor);
 	chestGui->Append(new GuiText(
-		sf::FloatRect(cx, cy, cw, s), L"Сундук",
-		ResourceManager::GetMainFont(), 48));
+		sf::FloatRect(cx, cy, cw, s), L"Сундук", 48));
 	for (int y = 0; y < m; y++)
 		for (int x = 0; x < n; x++)
 			chestGui->Append(new GuiItemSlot(

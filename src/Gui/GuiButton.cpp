@@ -4,7 +4,7 @@
 GuiButton::GuiButton(sf::FloatRect dims, const sf::String &str,
 	unsigned int chSize, void (*onClick)(const sf::Event&), sf::Font *font)
 	: Gui(dims), rect(dims, ButtonFillColor, ButtonOutlineColor),
-	text(dims, str, font, chSize),
+	text(dims, str, chSize, font),
 	click(dims, onClick) {}
 
 void GuiButton::ProcessEvent(const sf::Event &event)

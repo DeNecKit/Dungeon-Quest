@@ -9,7 +9,8 @@ public:
 	Enemy(const sf::String &name,
 		std::map<Stat, unsigned int> stats, const char *tilesetPath,
 		unsigned int texSize, sf::Time animDeltaTime,
-		std::map<BattleAnimationState, unsigned int> numOfFrames, float size);
+		std::map<BattleAnimationState, unsigned int> numOfFrames,
+		unsigned int hitFrameNum, float size);
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
 	unsigned int Attack() override;

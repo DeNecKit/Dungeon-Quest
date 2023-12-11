@@ -13,8 +13,7 @@ SceneMainMenu::SceneMainMenu()
 		fillColor = sf::Color::Black,
 		outlineColor = sf::Color::White;
 
-	title = new GuiText(sf::FloatRect(x, 100.f, w, 200.f),
-		"Dungeon Quest", ResourceManager::GetMainFont(), 96);
+	title = new GuiText(sf::FloatRect(x, 100.f, w, 200.f), "Dungeon Quest", 96);
 
 	btnNewGame = new GuiButton(sf::FloatRect(x, 500.f, w, 100.f),
 		L"Новая игра", 24, [](const sf::Event&)

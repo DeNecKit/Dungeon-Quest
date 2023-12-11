@@ -1,7 +1,8 @@
 #include "Entity.h"
 
-Entity::Entity()
-	: battleAnimationState(BattleAnimationState::Idle), hp(0)
+Entity::Entity(unsigned int hitFrameNum)
+	: battleAnimationState(BattleAnimationState::Idle),
+	hp(0), hitFrameNumber(hitFrameNum)
 {
 	animationCurFrame = 0;
 	animationPassedTime = sf::Time::Zero;
@@ -10,4 +11,9 @@ Entity::Entity()
 unsigned int &Entity::GetHP()
 {
 	return hp;
+}
+
+bool Entity::IsHitFrame()
+{
+	return animationCurFrame == hitFrameNumber;
 }

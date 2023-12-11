@@ -1,6 +1,7 @@
 #include "EnemyGoblin.h"
 #include "../GameManager.h"
 #include "../Gui/GuiProgressBar.h"
+#include <cstdlib>
 
 EnemyGoblin::EnemyGoblin(unsigned int pos)
 	: Enemy("Гоблин",
@@ -9,20 +10,22 @@ EnemyGoblin::EnemyGoblin(unsigned int pos)
 		{ {BattleAnimationState::Idle, 4},
 		  {BattleAnimationState::Attack, 8},
 		  {BattleAnimationState::TakeHit, 4},
-		  {BattleAnimationState::Death, 4} }, 750.f)
+		  {BattleAnimationState::Death, 4} }, 6, 750.f)
 {
+	animationPassedTime = sf::milliseconds(std::rand() % 150);
+	animationCurFrame = std::rand() % 8;
 	float ww = (float)GameManager::WindowWidth(),
 		wh = (float)GameManager::WindowHeight();
 	switch (pos)
 	{
 	case 1:
-		position = sf::Vector2f(ww + 100.f, wh/2 - size/2);
+		position = sf::Vector2f(ww + 129, wh/2 - size/2);
 		break;
 	case 2:
-		position = sf::Vector2f(ww - 200.f, -100.f);
+		position = sf::Vector2f(ww - 250, -150.f);
 		break;
 	case 3:
-		position = sf::Vector2f(ww - 200.f, wh - size + 100.f);
+		position = sf::Vector2f(ww - 250, wh - size + 150);
 		break;
 	default:
 		throw new std::exception();

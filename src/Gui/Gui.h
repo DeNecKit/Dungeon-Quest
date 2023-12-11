@@ -22,5 +22,5 @@ public:
 		MenuFillColor = sf::Color(103, 46, 18),
 		MenuOutlineColor = sf::Color(218, 212, 94),
 		ItemSlotFillColor = sf::Color(68, 36, 52),
-		ItemSlotOutlineColor = sf::Color(218, 212, 94);
+		ItemSlotOutlineColor = MenuOutlineColor;
 };

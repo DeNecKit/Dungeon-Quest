@@ -12,7 +12,7 @@ using json = nlohmann::json;
 #include "../Gui/GuiProgressBar.h"
 
 Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
-	: isInBattle(false), direction(startDir),
+	: Entity(3), isInBattle(false), direction(startDir),
 	animationState(PlayerAnimationState::Idle), walkedDistance(0.f),
 	requiredDistance(GenerateRequiredDistance())
 {
@@ -119,8 +119,19 @@ void Player::UpdateInGame(sf::Time deltaTime)
 		{
 			walkedDistance = 0.f;
 			requiredDistance = GenerateRequiredDistance();
-			Battle::Start(this,
-				{new EnemyGoblin(1), new EnemyGoblin(2), new EnemyGoblin(3)});
+			std::vector<Enemy*> enemies;
+			int c = 0;
+			bool f[] = { false, false, false };
+			while (c == 0 || c < 3 && std::rand() % 2)
+			{
+				int i;
+				do i = std::rand() % 3;
+				while (f[i]);
+				enemies.push_back(new EnemyGoblin(i + 1));
+				f[i] = true;
+				c++;
+			}
+			Battle::Start(this, enemies);
 		}
 	} else animationState = PlayerAnimationState::Idle;
 }

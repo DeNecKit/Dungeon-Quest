@@ -17,6 +17,7 @@ public:
 	static void Start(Player *player, std::vector<Enemy*> enemies);
 	static void End();
 	static std::vector<Enemy*> GetEnemies();
+	static Turn GetTurn();
 	static bool IsPlayerTurn();
 	static Battle *Get();
 

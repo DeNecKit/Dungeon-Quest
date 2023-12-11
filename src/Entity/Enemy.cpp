@@ -3,8 +3,9 @@
 
 Enemy::Enemy(const sf::String& name, std::map<Stat, unsigned int> stats,
 	const char* tilesetPath, unsigned int texSize, sf::Time animDeltaTime,
-	std::map<BattleAnimationState, unsigned int> numOfFrames, float size)
-	: name(name), stats(stats), textureSize(texSize),
+	std::map<BattleAnimationState, unsigned int> numOfFrames,
+	unsigned int hitFrameNum, float size)
+	: Entity(hitFrameNum), name(name), stats(stats), textureSize(texSize),
 	numOfFrames(numOfFrames), size(size * GameManager::ResCoefX())
 {
 	animationDeltaTime = animDeltaTime;

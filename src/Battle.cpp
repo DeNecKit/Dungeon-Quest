@@ -30,7 +30,6 @@ void Battle::Render(sf::RenderWindow* window)
 void Battle::Start(Player *player, std::vector<Enemy*> enemies)
 {
 	instance = new Battle(player, enemies);
-	Player::InBattle(true);
 	SceneManager::ChangeScene<SceneBattle>();
 }
 
@@ -38,13 +37,17 @@ void Battle::End()
 {
 	delete instance;
 	instance = nullptr;
-	Player::InBattle(false);
 	SceneManager::ChangeScene<SceneGame>();
 }
 
 std::vector<Enemy*> Battle::GetEnemies()
 {
 	return instance->enemies;
+}
+
+Turn Battle::GetTurn()
+{
+	return instance->turn;
 }
 
 bool Battle::IsPlayerTurn()

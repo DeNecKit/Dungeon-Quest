@@ -1,8 +1,8 @@
 #include "GuiText.h"
 #include "../GameManager.h"
 
-GuiText::GuiText(sf::FloatRect dims, const sf::String& str,
-	sf::Font* font, unsigned int chSize, sf::Color textColor,
+GuiText::GuiText(sf::FloatRect dims, const sf::String &str,
+	unsigned int chSize, sf::Font *font, sf::Color textColor,
 	sf::Color shadowColor) : Gui(dims),
 	textColor(textColor), shadowColor(shadowColor)
 {
@@ -38,4 +38,9 @@ void GuiText::Render(sf::RenderWindow *window)
 		text.setFillColor(textColor);
 	}
 	window->draw(text);
+}
+
+void GuiText::SetString(const sf::String& str)
+{
+	text.setString(str);
 }
