@@ -11,13 +11,13 @@ class Battle
 public:
 	Battle(Player *player, std::vector<Enemy*> enemies);
 	~Battle();
-	void ProcessEvent(const sf::Event&);
 	void Update(sf::Time deltaTime);
 	void Render(sf::RenderWindow*);
 	
 	static void Start(Player *player, std::vector<Enemy*> enemies);
 	static void End();
 	static std::vector<Enemy*> GetEnemies();
+	static bool IsPlayerTurn();
 	static Battle *Get();
 
 private:

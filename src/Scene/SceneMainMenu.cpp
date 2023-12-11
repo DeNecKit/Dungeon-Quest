@@ -17,16 +17,14 @@ SceneMainMenu::SceneMainMenu()
 		"Dungeon Quest", ResourceManager::GetMainFont(), 96);
 
 	btnNewGame = new GuiButton(sf::FloatRect(x, 500.f, w, 100.f),
-		L"Новая игра", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) { SceneManager::ChangeScene<SceneGame>(); });
+		L"Новая игра", 24, [](const sf::Event&)
+			{ SceneManager::ChangeScene<SceneGame>(); });
 
 	btnLoadGame = new GuiButton(sf::FloatRect(x, 650.f, w, 100.f),
-		L"Загрузить игру", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) {});
+		L"Загрузить игру", 24, [](const sf::Event&) {});
 
 	btnExit = new GuiButton(sf::FloatRect(x, 800.f, w, 100.f),
-		L"Выйти", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) { GameManager::Close(); });
+		L"Выйти", 24, [](const sf::Event&) { GameManager::Close(); });
 }
 
 SceneMainMenu::~SceneMainMenu()

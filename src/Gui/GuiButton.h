@@ -3,13 +3,14 @@
 #include "GuiRect.h"
 #include "GuiText.h"
 #include "GuiClickable.h"
+#include "../ResourceManager.h"
 
 class GuiButton final : public Gui
 {
 public:
 	GuiButton(sf::FloatRect dims, const sf::String &str,
-		sf::Font *font, unsigned int chSize,
-		void (*onClick)(const sf::Event&));
+		unsigned int chSize, void (*onClick)(const sf::Event&),
+		sf::Font *font = ResourceManager::GetMainFont());
 	void ProcessEvent(const sf::Event&) override;
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;

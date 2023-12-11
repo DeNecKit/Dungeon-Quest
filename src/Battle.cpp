@@ -3,6 +3,7 @@
 #include "Scene/SceneBattle.h"
 #include "Scene/SceneGame.h"
 
+
 Battle::Battle(Player* player, std::vector<Enemy*> enemies)
 	: player(player), enemies(enemies), turn(Turn::Player) {}
 
@@ -10,10 +11,6 @@ Battle::~Battle()
 {
 	for (Enemy *enemy : enemies)
 		delete enemy;
-}
-
-void Battle::ProcessEvent(const sf::Event& event)
-{
 }
 
 void Battle::Update(sf::Time deltaTime)
@@ -48,6 +45,11 @@ void Battle::End()
 std::vector<Enemy*> Battle::GetEnemies()
 {
 	return instance->enemies;
+}
+
+bool Battle::IsPlayerTurn()
+{
+	return instance->turn == Turn::Player;
 }
 
 Battle* Battle::Get()

@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "../Gui/GuiProgressBar.h"
+#include "../Gui/GuiList.h"
 #include <vector>
 
 class SceneBattle final : public Scene
@@ -17,4 +18,5 @@ public:
 private:
 	GuiProgressBar *playerHealthBar;
 	std::vector<GuiProgressBar*> enemiesHealthBar;
+	GuiList *actionsMenu, *pauseMenu, *inventoryGui;
 };

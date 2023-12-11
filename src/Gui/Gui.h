@@ -19,6 +19,8 @@ public:
 		ShadowColor = sf::Color(133, 149, 161),
 		ButtonFillColor = sf::Color(133, 76, 48),
 		ButtonOutlineColor = sf::Color(210, 125, 44),
+		MenuFillColor = sf::Color(103, 46, 18),
+		MenuOutlineColor = sf::Color(218, 212, 94),
 		ItemSlotFillColor = sf::Color(68, 36, 52),
 		ItemSlotOutlineColor = sf::Color(218, 212, 94);
 };

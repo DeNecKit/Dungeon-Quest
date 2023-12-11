@@ -10,8 +10,8 @@
 class GuiList : public Gui
 {
 public:
-	GuiList(sf::FloatRect dims, sf::Color fillColor,
-		sf::Color outlineColor = sf::Color::Transparent);
+	GuiList(sf::FloatRect dims, sf::Color fillColor = MenuFillColor,
+		sf::Color outlineColor = MenuOutlineColor);
 	~GuiList();
 	void ProcessEvent(const sf::Event&) override;
 	void Update(sf::Time deltaTime) override;

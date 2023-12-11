@@ -22,19 +22,16 @@ SceneGame::SceneGame()
 	const float w = 500.f, h = 100.f, d = 50.f,
 		lw = w + d*2, lh = h*4 + d*5,
 		lx = hww - lw/2, ly = hwh - lh/2;
-	pauseMenu = new GuiList(sf::FloatRect(lx, ly, lw, lh),
-		sf::Color(103, 46, 18), sf::Color(218, 212, 94));
+	pauseMenu = new GuiList(sf::FloatRect(lx, ly, lw, lh));
 	pauseMenu->Append(new GuiText(sf::FloatRect(lx + d, ly + d, w, h), L"Пауза",
 		ResourceManager::GetMainFont(), 48));
 	pauseMenu->Append(new GuiButton(sf::FloatRect(lx + d, ly + d*2 + h, w, h),
-		L"Вернуться в игру", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) { SetPause(false); }));
+		L"Вернуться в игру", 24, [](const sf::Event&) { SetPause(false); }));
 	pauseMenu->Append(new GuiButton(sf::FloatRect(lx + d, ly + d*3 + h*2, w, h),
-		L"Сохранить игру", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) {}));
+		L"Сохранить игру", 24, [](const sf::Event&) {}));
 	pauseMenu->Append(new GuiButton(sf::FloatRect(lx + d, ly + d*4 + h*3, w, h),
-		L"Выйти в главное меню", ResourceManager::GetMainFont(), 24,
-		[](const sf::Event&) { SceneManager::ChangeScene<SceneMainMenu>(); }));
+		L"Выйти в главное меню", 24, [](const sf::Event&)
+			{ SceneManager::ChangeScene<SceneMainMenu>(); }));
 
 	const float n = 5, m = 3, s = 100.f,
 		iw = s*n + d*(n+1), ih = s*m + d*(m+1) + s,
