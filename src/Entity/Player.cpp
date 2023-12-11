@@ -1,12 +1,14 @@
 #include "Player.h"
-#include "Level.h"
-#include "GameManager.h"
+#include "../Level.h"
+#include "../GameManager.h"
 #include <cmath>
 #include <fstream>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 #include <cstdlib>
-#include "Scene/SceneBattle.h"
+#include "../Scene/SceneBattle.h"
+#include "../Battle.h"
+#include "EnemyGoblin.h"
 
 Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	: isInBattle(false), direction(startDir),
@@ -25,6 +27,12 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 		{ PlayerAnimationState::Idle, 1 },
 		{ PlayerAnimationState::Walking, 4 }
 	};
+	numOfBattleFrames = {
+		{ BattleAnimationState::Idle, 6 },
+		{ BattleAnimationState::Attack,	6 },
+		{ BattleAnimationState::TakeHit, 3 },
+		{ BattleAnimationState::Death, 6 }
+	};
 	stats = {{Stat::HP, 40}, {Stat::ATK, 5}, {Stat::DEF, 5}, {Stat::AGI, 5}};
 	std::ifstream dataFile("data/player.json");
 	if (!dataFile.is_open())
@@ -39,6 +47,26 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 
 void Player::Update(sf::Time deltaTime)
 {
+	if (isInBattle) UpdateInBattle(deltaTime);
+	else UpdateInGame(deltaTime);
+}
+
+void Player::Render(sf::RenderWindow *window)
+{
+	if (isInBattle) RenderInBattle(window);
+	else RenderInGame(window);
+}
+
+unsigned int Player::Attack()
+{
+	unsigned int res = stats[Stat::ATK];
+	for (int i = 14; i < 20; i++)
+		res += inventory[i]->GetTemplate()->GetStats()[Stat::ATK];
+	return res;
+}
+
+void Player::UpdateInGame(sf::Time deltaTime)
+{
 	float sprint = sf::Keyboard::isKeyPressed(
 		sf::Keyboard::LShift) ? sprintCoef : 1.f;
 
@@ -46,10 +74,8 @@ void Player::Update(sf::Time deltaTime)
 	if (animationPassedTime >= animationDeltaTime / sprint)
 	{
 		animationPassedTime = sf::Time::Zero;
-		unsigned int maxNum = isInBattle
-			? numOfBattleFrames[battleAnimationState]
-			: numOfFrames[animationState];
-		animationCurFrame = (animationCurFrame + 1) % maxNum;
+		animationCurFrame = (animationCurFrame + 1)
+			% numOfFrames[animationState];
 	}
 
 	bool walking = false;
@@ -60,8 +86,7 @@ void Player::Update(sf::Time deltaTime)
 		walking = true;
 		direction = PlayerDirection::Right;
 		TryMove(deltaDist, 0.f);
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		walking = true;
 		direction = PlayerDirection::Left;
@@ -71,8 +96,7 @@ void Player::Update(sf::Time deltaTime)
 	{
 		walking = true;
 		TryMove(0.f, deltaDist);
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		walking = true;
 		TryMove(0.f, -deltaDist);
@@ -85,22 +109,46 @@ void Player::Update(sf::Time deltaTime)
 		{
 			walkedDistance = 0.f;
 			requiredDistance = GenerateRequiredDistance();
-			SceneManager::ChangeScene<SceneBattle>();
+			Battle::Start(this, {new EnemyGoblin()});
 		}
-	}
-	else animationState = PlayerAnimationState::Idle;
+	} else animationState = PlayerAnimationState::Idle;
 }
 
-void Player::Render(sf::RenderWindow *window)
+void Player::UpdateInBattle(sf::Time deltaTime)
 {
+	animationPassedTime += deltaTime;
+	if (animationPassedTime >= animationDeltaTime)
+	{
+		animationPassedTime = sf::Time::Zero;
+		animationCurFrame = (animationCurFrame + 1)
+			% numOfBattleFrames[battleAnimationState];
+	}
+}
+
+void Player::RenderInGame(sf::RenderWindow *window)
+{
+	unsigned int texSize = 16;
 	sf::Sprite s(*animationTileset,
-		sf::IntRect(animationCurFrame * 16, 0, 16, 16));
+		sf::IntRect(animationCurFrame * texSize, 0, texSize, texSize));
 	int right = direction == PlayerDirection::Right ? 1 : -1;
 	s.setPosition(sf::Vector2f(
 		GameManager::WindowWidth() / 2 - Level::GetTileSize() * sizeCoef / 2.f * right,
 		GameManager::WindowHeight() / 2 - Level::GetTileSize() * sizeCoef / 2.f));
 	float factor = Level::GetTileSize() / 16.f * sizeCoef;
 	s.setScale(sf::Vector2f(factor * right, factor));
+	window->draw(s);
+}
+
+void Player::RenderInBattle(sf::RenderWindow* window)
+{
+	unsigned int texSize = 64;
+	sf::Sprite s(*animationTileset,
+		sf::IntRect(animationCurFrame * texSize,
+			16 + (int)battleAnimationState * texSize, texSize, texSize));
+	float size = GameManager::WindowHeight() / 2.f;
+	s.setPosition(0.f, GameManager::WindowHeight() / 2.f - size / 2.f);
+	float factor = size / texSize;
+	s.setScale(factor, factor);
 	window->draw(s);
 }
 
@@ -154,7 +202,8 @@ sf::Vector2f Player::GetFixedPos(float deltaX, float deltaY,
 
 float Player::GenerateRequiredDistance()
 {
-	return std::rand() / (float)RAND_MAX * 10*speed + 5*speed;
+	//return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
+	return 300.f;
 }
 
 sf::Vector2f Player::GetPos()
@@ -175,4 +224,10 @@ Item* Player::GetItem(unsigned int pos)
 void Player::SetItem(unsigned int pos, Item *item)
 {
 	currentPlayer->inventory[pos] = item;
+}
+
+void Player::InBattle(bool set)
+{
+	currentPlayer->isInBattle = set;
+	currentPlayer->animationCurFrame = 0;
 }

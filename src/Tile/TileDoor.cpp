@@ -1,5 +1,5 @@
 #include "TileDoor.h"
-#include "../Player.h"
+#include "../Entity/Player.h"
 #include "../Level.h"
 #include "../Scene/SceneGame.h"
 #include <cmath>

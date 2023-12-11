@@ -11,6 +11,7 @@ public:
 	unsigned int GetSize();
 	unsigned int GetCount();
 	ItemType GetType();
+	ItemTemplate *GetTemplate();
 
 	static Item *Create(unsigned int itemTemplateId,
 		unsigned int count = 1);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Player.h"
+#include "Entity/Player.h"
 #include "Tile/Tile.h"
 #include "Item/ItemTemplate.h"
 #include <vector>

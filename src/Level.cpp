@@ -6,6 +6,9 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
+#include "SceneManager.h"
+#include "Scene/SceneBattle.h"
+#include "Scene/SceneGame.h"
 
 Level::Level(const sf::String &tilesetTexturePath,
 	const char *dataPath, PlayerDirection startDir)

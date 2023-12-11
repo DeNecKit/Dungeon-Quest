@@ -111,7 +111,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\;$(SolutionDir)include\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-system-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-audio-d.lib;sfml-network-d.lib;sfml-main-d.lib;%(AdditionalDependencies);opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>sfml-system-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-main-d.lib;%(AdditionalDependencies);opengl32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -131,12 +131,16 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\;$(SolutionDir)include\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-system.lib;sfml-graphics.lib;sfml-window.lib;sfml-audio.lib;sfml-network.lib;sfml-main.lib;%(AdditionalDependencies);opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>sfml-system.lib;sfml-graphics.lib;sfml-window.lib;sfml-main.lib;%(AdditionalDependencies);opengl32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Animatable.cpp" />
-    <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\Battle.cpp" />
+    <ClCompile Include="src\Entity\Enemy.cpp" />
+    <ClCompile Include="src\Entity\Entity.cpp" />
+    <ClCompile Include="src\Entity\EnemyGoblin.cpp" />
+    <ClCompile Include="src\Entity\Player.cpp" />
     <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\Gui\Gui.cpp" />
     <ClCompile Include="src\Gui\GuiButton.cpp" />
@@ -150,7 +154,6 @@
     <ClCompile Include="src\Item\ItemTemplate.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
@@ -164,7 +167,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Animatable.h" />
-    <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\Battle.h" />
+    <ClInclude Include="src\Entity\Enemy.h" />
+    <ClInclude Include="src\Entity\EnemyGoblin.h" />
+    <ClInclude Include="src\Entity\Entity.h" />
+    <ClInclude Include="src\Entity\Player.h" />
     <ClInclude Include="src\GameManager.h" />
     <ClInclude Include="src\Gui\Gui.h" />
     <ClInclude Include="src\Gui\GuiButton.h" />
@@ -177,7 +184,6 @@
     <ClInclude Include="src\Item\Item.h" />
     <ClInclude Include="src\Item\ItemTemplate.h" />
     <ClInclude Include="src\Level.h" />
-    <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\Scene\Scene.h" />

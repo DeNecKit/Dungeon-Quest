@@ -3,7 +3,7 @@
 #include "Gui.h"
 #include "GuiRect.h"
 #include "../Item/Item.h"
-#include "../Player.h"
+#include "../Entity/Player.h"
 #include "../Tile/TileChest.h"
 #include <vector>
 

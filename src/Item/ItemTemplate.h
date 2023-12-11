@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "../Gui/Gui.h"
-#include "../Entity.h"
+#include "../Entity/Entity.h"
 #include "../GameManager.h"
 #include <map>
 
@@ -17,14 +17,14 @@ public:
 		std::map<Stat, const int> stats =
 			{{Stat::HP, 0}, {Stat::ATK, 0}, {Stat::DEF, 0}, {Stat::AGI, 0}});
 	sf::Sprite GetSprite();
+	sf::Texture* GetTileset();
+	ItemType GetType();
+	std::map<Stat, const int> GetStats();
 
 	static void Init();
 	static void Shutdown();
-	static ItemTemplate GetEmptyItem();
 	static unsigned int GetSize();
 	static std::vector<ItemTemplate*> GetItemTemplates();
-	sf::Texture *GetTileset();
-	ItemType GetType();
 
 protected:
 	ItemType type;
@@ -34,6 +34,5 @@ protected:
 
 	static inline sf::Texture *tileset;
 	static inline unsigned int size;
-	static inline const ItemTemplate *emptyItem;
 	static inline std::vector<ItemTemplate*>* itemTemplates;
 };

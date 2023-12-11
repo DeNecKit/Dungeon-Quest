@@ -12,6 +12,7 @@ class Animatable
 {
 public:
 	virtual ~Animatable();
+
 protected:
 	sf::Texture *animationTileset;
 	sf::Time animationDeltaTime, animationPassedTime;

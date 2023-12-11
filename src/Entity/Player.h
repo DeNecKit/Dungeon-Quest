@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Entity.h"
-#include "Item/Item.h"
+#include "../Item/Item.h"
 #include <map>
 
 enum class PlayerDirection
@@ -13,14 +13,20 @@ public:
 	Player(sf::Vector2u startPos,
 		PlayerDirection startDir);
 	void Update(sf::Time deltaTime) override;
-	void Render(sf::RenderWindow *window) override;
+	void Render(sf::RenderWindow*) override;
+	unsigned int Attack() override;
 
 	static sf::Vector2f GetPos();
 	static float GetSize();
 	static Item *GetItem(unsigned int pos);
 	static void SetItem(unsigned int pos, Item *item);
+	static void InBattle(bool set);
 
 private:
+	void UpdateInGame(sf::Time deltaTime);
+	void UpdateInBattle(sf::Time deltaTime);
+	void RenderInGame(sf::RenderWindow*);
+	void RenderInBattle(sf::RenderWindow*);
 	void TryMove(float deltaX, float deltaY);
 	sf::Vector2f GetFixedPos(float deltaX, float deltaY,
 		sf::Vector2f playerPos, float playerSize,

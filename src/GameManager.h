@@ -17,7 +17,7 @@ public:
 	static void Shutdown();
 
 	static inline const sf::Color backgroundColor
-		= sf::Color(117, 113, 97);
+		= sf::Color(24, 19, 16);
 
 private:
 	static inline sf::RenderWindow *window;

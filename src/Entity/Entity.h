@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Animatable.h"
+#include "../Animatable.h"
 
 enum class Stat { HP, ATK, DEF, AGI };
 
@@ -10,6 +10,7 @@ public:
 	Entity();
 	virtual void Update(sf::Time deltaTime) = 0;
 	virtual void Render(sf::RenderWindow*) = 0;
+	virtual unsigned int Attack() = 0;
 
 protected:
 	BattleAnimationState battleAnimationState;

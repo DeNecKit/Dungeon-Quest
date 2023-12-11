@@ -4,7 +4,7 @@
 #include "GuiRect.h"
 #include "GuiClickable.h"
 #include "../Item/Item.h"
-#include "../Player.h"
+#include "../Entity/Player.h"
 #include "../Tile/TileChest.h"
 
 enum class SlotType

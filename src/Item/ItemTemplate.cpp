@@ -14,10 +14,24 @@ sf::Sprite ItemTemplate::GetSprite()
 	return s;
 }
 
+sf::Texture* ItemTemplate::GetTileset()
+{
+	return tileset;
+}
+
+ItemType ItemTemplate::GetType()
+{
+	return type;
+}
+
+std::map<Stat, const int> ItemTemplate::GetStats()
+{
+	return stats;
+}
+
 void ItemTemplate::Init()
 {
 	size = (int)(75 * GameManager::ResCoefX());
-	emptyItem = new ItemTemplate(ItemType::None, "none", 0, {});
 	tileset = new sf::Texture();
 	if (!tileset->loadFromFile("data/items.png"))
 		throw new std::exception();
@@ -40,17 +54,12 @@ void ItemTemplate::Init()
 
 void ItemTemplate::Shutdown()
 {
-	delete emptyItem;
 	delete tileset;
 	for (ItemTemplate* i : *itemTemplates)
 		delete i;
 	delete itemTemplates;
 }
 
-ItemTemplate ItemTemplate::GetEmptyItem()
-{
-	return *emptyItem;
-}
 
 unsigned int ItemTemplate::GetSize()
 {
@@ -60,14 +69,4 @@ unsigned int ItemTemplate::GetSize()
 std::vector<ItemTemplate*> ItemTemplate::GetItemTemplates()
 {
 	return *itemTemplates;
-}
-
-sf::Texture *ItemTemplate::GetTileset()
-{
-	return tileset;
-}
-
-ItemType ItemTemplate::GetType()
-{
-	return type;
 }

@@ -1,6 +1,6 @@
 #include "GuiList.h"
 #include "GuiItemSlot.h"
-#include "../Player.h"
+#include "../Entity/Player.h"
 #include "../Tile/TileChest.h"
 
 GuiList::GuiList(sf::FloatRect dims,
