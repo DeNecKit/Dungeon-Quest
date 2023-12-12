@@ -11,6 +11,8 @@ using json = nlohmann::json;
 #include "EnemyGoblin.h"
 #include "../Gui/GuiProgressBar.h"
 
+bool playerAttacked = false;
+
 Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	: Entity(3), isInBattle(false), direction(startDir),
 	animationState(PlayerAnimationState::Idle), walkedDistance(0.f),
@@ -73,6 +75,13 @@ unsigned int Player::Attack()
 	for (int i = 14; i < 20; i++)
 		res += inventory[i]->GetTemplate()->GetStats()[Stat::ATK];
 	return res;
+}
+
+bool Player::FinishedActionAnimation()
+{
+	if (Battle::GetChosenAction() == TurnAction::Attack)
+		return playerAttacked;
+	return true;
 }
 
 void Player::UpdateInGame(sf::Time deltaTime)
@@ -138,11 +147,30 @@ void Player::UpdateInGame(sf::Time deltaTime)
 
 void Player::UpdateInBattle(sf::Time deltaTime)
 {
+	if (Battle::GetStage() == TurnStage::Waiting) playerAttacked = false;
+	bool attack = Battle::IsPlayerTurn() && !playerAttacked
+		&& Battle::GetStage() == TurnStage::Action
+		&& Battle::GetChosenAction() == TurnAction::Attack;
+	if (battleAnimationState != BattleAnimationState::Attack && attack)
+	{
+		battleAnimationState = BattleAnimationState::Attack;
+		animationCurFrame = 0;
+	}
 	animationPassedTime += deltaTime;
 	if (animationPassedTime >= animationDeltaTime)
 	{
 		animationPassedTime = sf::Time::Zero;
-		animationCurFrame = (animationCurFrame + 1)
+		if (attack)
+		{
+			if (++animationCurFrame ==
+				numOfBattleFrames[battleAnimationState])
+			{
+				playerAttacked = true;
+				battleAnimationState = BattleAnimationState::Idle;
+				animationCurFrame = 0;
+			}
+		}
+		else animationCurFrame = (animationCurFrame + 1)
 			% numOfBattleFrames[battleAnimationState];
 	}
 }

@@ -15,9 +15,5 @@ Gui::~Gui() {}
 
 bool Gui::IsMouseOver()
 {
-	sf::Vector2i mPos = sf::Mouse::getPosition(*GameManager::GetWindow());
-	int mx = mPos.x, my = mPos.y;
-	int x = (int)dimensions.left, y = (int)dimensions.top,
-		w = (int)dimensions.width, h = (int)dimensions.height;
-	return mx >= x && mx <= x + w && my >= y && my <= y + h;
+	return GameManager::IsMouseOver(dimensions);
 }

@@ -2,10 +2,16 @@
 #include "../GameManager.h"
 
 GuiButton::GuiButton(sf::FloatRect dims, const sf::String &str,
-	unsigned int chSize, void (*onClick)(const sf::Event&), sf::Font *font)
-	: Gui(dims), rect(dims, ButtonFillColor, ButtonOutlineColor),
+	unsigned int chSize, void (*onClick)(const sf::Event&),
+	sf::Color fillColor, sf::Color outlineColor, sf::Font *font)
+	: Gui(dims), rect(dims, fillColor, outlineColor),
 	text(dims, str, chSize, font),
-	click(dims, onClick) {}
+	click(dims, onClick), enabled(true)
+{
+	disabledRect = sf::RectangleShape(dimensions.getSize());
+	disabledRect.setPosition(dimensions.getPosition());
+	disabledRect.setFillColor(sf::Color(127, 127, 127, 100));
+}
 
 void GuiButton::ProcessEvent(const sf::Event &event)
 {
@@ -18,5 +24,11 @@ void GuiButton::Render(sf::RenderWindow *window)
 {
 	rect.Render(window);
 	text.Render(window);
-	click.Render(window);
+	if (enabled) click.Render(window);
+	else window->draw(disabledRect);
+}
+
+void GuiButton::SetEnabled(bool enabled)
+{
+	this->enabled = enabled;
 }

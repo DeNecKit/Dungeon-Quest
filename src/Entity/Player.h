@@ -16,6 +16,7 @@ public:
 	void Render(sf::RenderWindow*) override;
 	sf::Vector2f GetHealthBarPos() override;
 	unsigned int Attack() override;
+	bool FinishedActionAnimation() override;
 
 	static sf::Vector2f GetPos();
 	static float GetSize();

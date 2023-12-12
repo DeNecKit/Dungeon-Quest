@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "../Gui/GuiProgressBar.h"
 #include "../Gui/GuiList.h"
+#include "../Entity/Enemy.h"
 #include <vector>
 
 class SceneBattle final : public Scene
@@ -19,4 +20,6 @@ private:
 	GuiProgressBar *playerHealthBar;
 	std::vector<GuiProgressBar*> enemiesHealthBar;
 	GuiList *actionsMenu, *pauseMenu, *inventoryGui;
+	Enemy *lastTarget;
+	sf::RectangleShape targetRect;
 };

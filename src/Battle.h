@@ -4,7 +4,8 @@
 #include "Entity/Enemy.h"
 #include <vector>
 
-enum class Turn { Player, Enemy };
+enum class TurnAction { None, Attack, UseItem, Flee };
+enum class TurnStage { Waiting, Action };
 
 class Battle
 {
@@ -14,17 +15,26 @@ public:
 	void Update(sf::Time deltaTime);
 	void Render(sf::RenderWindow*);
 	
+	Enemy *target;
+
 	static void Start(Player *player, std::vector<Enemy*> enemies);
 	static void End();
 	static std::vector<Enemy*> GetEnemies();
-	static Turn GetTurn();
 	static bool IsPlayerTurn();
+	static void MakeTurn(TurnAction action);
+	static TurnAction GetChosenAction();
+	static TurnStage GetStage();
+	static Entity *GetTurnMaker();
 	static Battle *Get();
 
 private:
 	Player *player;
 	std::vector<Enemy*> enemies;
-	Turn turn;
+	TurnAction chosenAction;
+	TurnStage currentStage;
+	sf::Time timer;
+	Entity *turnMaker;
+	unsigned int curEnemyIndex;
 
 	static inline Battle *instance = nullptr;
 };

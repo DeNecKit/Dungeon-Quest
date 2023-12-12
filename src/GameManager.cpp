@@ -6,10 +6,11 @@
 #include <format>
 #include <ctime>
 #include "Gui/GuiText.h"
+#include "Gui/GuiRect.h"
 
 GuiText *fpsText = nullptr;
-float framesCount = 0;
-sf::Time passedTime = sf::Time::Zero;
+GuiRect *fpsBackground = nullptr;
+float fps = 0.f;
 bool showFps = true;
 
 void GameManager::Init()
@@ -22,6 +23,8 @@ void GameManager::Init()
 	deltaClock.restart();
 	fpsText = new GuiText(sf::FloatRect(10.f, 10.f, 50.f, 25.f), "NaN", 18,
 		ResourceManager::GetMainFont(), sf::Color::White, sf::Color::Black);
+	fpsBackground = new GuiRect(sf::FloatRect(9.f, 10.f, 135.f, 31.f),
+		sf::Color(0, 0, 0, 100));
 	SceneManager::Init();
 }
 
@@ -69,22 +72,20 @@ void GameManager::Update()
 	sf::Time dt = deltaClock.restart();
 	if (showFps)
 	{
-		framesCount++;
-		passedTime += dt;
-		fpsText->SetString(std::format("{:.1f}",
-			framesCount / passedTime.asSeconds()));
-		if (passedTime > sf::seconds(1.f))
-		{
-			framesCount = 0;
-			passedTime = sf::Time::Zero;
-		}
+		const float smoothing = 0.92f;
+		fps = fps*smoothing + 1/dt.asSeconds()*(1-smoothing);
+		fpsText->SetString("FPS: " + std::format("{:.1f}", fps));
 	}
 	SceneManager::Update(dt);
 
 	window->clear(backgroundColor);
 	SceneManager::RenderSFML(window);
 	SceneManager::RenderGUI(window);
-	if (showFps) fpsText->Render(window);
+	if (showFps)
+	{
+		fpsBackground->Render(window);
+		fpsText->Render(window);
+	}
 	window->display();
 }
 
@@ -101,4 +102,13 @@ void GameManager::Shutdown()
 	delete window;
 	SceneManager::Shutdown();
 	ResourceManager::Shutdown();
+}
+
+bool GameManager::IsMouseOver(sf::FloatRect rect)
+{
+	sf::Vector2i mPos = sf::Mouse::getPosition(*window);
+	int mx = mPos.x, my = mPos.y,
+		x = (int)rect.left, y = (int)rect.top,
+		w = (int)rect.width, h = (int)rect.height;
+	return mx >= x && mx <= x + w && my >= y && my <= y + h;;
 }

@@ -11,10 +11,13 @@ public:
 		unsigned int texSize, sf::Time animDeltaTime,
 		std::map<BattleAnimationState, unsigned int> numOfFrames,
 		unsigned int hitFrameNum, float size);
+	~Enemy();
+	void ProcessEvent(const sf::Event&);
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
 	unsigned int Attack() override;
 	std::map<Stat, unsigned int> GetStats();
+	virtual sf::FloatRect GetClickHitbox() = 0;
 
 protected:
 	const sf::String &name;
@@ -23,4 +26,6 @@ protected:
 	std::map<BattleAnimationState, unsigned int> numOfFrames;
 	sf::Vector2f position;
 	float size;
+	sf::RectangleShape *targetHover;
+	bool finishedAttack;
 };

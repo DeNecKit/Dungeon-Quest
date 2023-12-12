@@ -10,7 +10,7 @@ public:
 		sf::Color outlineColor = sf::Color::Transparent);
 	void ProcessEvent(const sf::Event&) override;
 	void Update(sf::Time deltaTime) override;
-	void Render(sf::RenderWindow* window) override;
+	void Render(sf::RenderWindow *window) override;
 
 private:
 	sf::RectangleShape rect;

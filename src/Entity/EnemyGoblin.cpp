@@ -39,3 +39,17 @@ sf::Vector2f EnemyGoblin::GetHealthBarPos()
 	float w = hbs.x, h = hbs.y;
 	return sf::Vector2f(position.x - size + size/2 - w/2, position.y + h*10);
 }
+
+sf::FloatRect EnemyGoblin::GetClickHitbox()
+{
+	sf::Vector2f pos = sf::Vector2f(position.x - size, position.y);
+	const float coef = 0.5f;
+	return sf::FloatRect(
+		sf::Vector2f(pos.x + size/2*(1-coef), pos.y + size/2*(1-coef)),
+		sf::Vector2f(size*coef, size*coef));
+}
+
+bool EnemyGoblin::FinishedActionAnimation()
+{
+	return finishedAttack;
+}
