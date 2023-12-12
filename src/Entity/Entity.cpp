@@ -8,12 +8,23 @@ Entity::Entity(unsigned int hitFrameNum)
 	animationPassedTime = sf::Time::Zero;
 }
 
-unsigned int &Entity::GetHP()
+int &Entity::GetHP()
 {
 	return hp;
 }
 
 bool Entity::IsHitFrame()
 {
-	return animationCurFrame == hitFrameNumber;
+	return battleAnimationState == BattleAnimationState::Attack
+		&& animationCurFrame == hitFrameNumber;
+}
+
+bool Entity::IsAlive()
+{
+	return hp > 0;
+}
+
+bool Entity::IsOut()
+{
+	return !IsAlive() && FinishedDeathAnimation();
 }

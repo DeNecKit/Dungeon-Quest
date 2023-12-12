@@ -9,4 +9,6 @@ public:
 	sf::Vector2f GetHealthBarPos() override;
 	sf::FloatRect GetClickHitbox() override;
 	bool FinishedActionAnimation() override;
+	bool FinishedHitAnimation() override;
+	bool FinishedDeathAnimation() override;
 };

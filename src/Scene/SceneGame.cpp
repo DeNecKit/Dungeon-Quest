@@ -16,7 +16,8 @@ SceneGame::SceneGame()
 	const float hww = 1920.f/2, hwh = 1080.f/2;
 	interText = new GuiText(
 		sf::FloatRect(hww - 200.f/2, hwh * 1.5f, 200.f, 100.f),
-		L"Нажмите \"F\" для взаимодействия", 18, ResourceManager::GetMainFont(),
+		L"Нажмите \"F\" для взаимодействия", 18,
+		false, ResourceManager::GetMainFont(),
 		sf::Color(255, 255, 255, 200), sf::Color::Black);
 
 	const float w = 500.f, h = 100.f, d = 50.f,

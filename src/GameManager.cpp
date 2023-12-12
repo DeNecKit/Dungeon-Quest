@@ -21,9 +21,9 @@ void GameManager::Init()
 		"Dungeon Quest", sf::Style::Fullscreen);
 	window->setFramerateLimit(60);
 	deltaClock.restart();
-	fpsText = new GuiText(sf::FloatRect(10.f, 10.f, 50.f, 25.f), "NaN", 18,
+	fpsText = new GuiText(sf::FloatRect(16.f, 11.f, 50.f, 25.f), "NaN", 18, false,
 		ResourceManager::GetMainFont(), sf::Color::White, sf::Color::Black);
-	fpsBackground = new GuiRect(sf::FloatRect(9.f, 10.f, 135.f, 31.f),
+	fpsBackground = new GuiRect(sf::FloatRect(9.f, 10.f, 136.f, 32.f),
 		sf::Color(0, 0, 0, 100));
 	SceneManager::Init();
 }

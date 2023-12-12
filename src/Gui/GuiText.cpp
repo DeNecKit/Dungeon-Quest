@@ -1,29 +1,38 @@
 #include "GuiText.h"
 #include "../GameManager.h"
 
+sf::FloatRect centerText(sf::FloatRect dims, const sf::Text &text)
+{
+	sf::FloatRect textLocalBounds = text.getLocalBounds();
+	float w = textLocalBounds.left + textLocalBounds.width,
+		h = textLocalBounds.top + textLocalBounds.height;
+	return sf::FloatRect(
+		dims.left + dims.width / 2 - w / 2,
+		dims.top + dims.height / 2 - h / 2,
+		dims.width, dims.height);
+}
+
 GuiText::GuiText(sf::FloatRect dims, const sf::String &str,
-	unsigned int chSize, sf::Font *font, sf::Color textColor,
-	sf::Color shadowColor) : Gui(dims),
-	textColor(textColor), shadowColor(shadowColor)
+	unsigned int chSize, bool alignCenter, sf::Font *font,
+	sf::Color textColor, sf::Color shadowColor) : Gui(dims),
+	textColor(textColor), shadowColor(shadowColor), alignCenter(alignCenter)
 {
 	text.setFont(*font);
 	text.setString(str);
 	text.setCharacterSize((int)(chSize * 4 / 3 * GameManager::ResCoefX()));
 	text.setFillColor(textColor);
-	
-	sf::FloatRect textGlobalBounds = text.getGlobalBounds();
-	float w = textGlobalBounds.left + textGlobalBounds.width,
-		h = textGlobalBounds.top + textGlobalBounds.height;
-	innerDimensions = sf::FloatRect(
-		dimensions.left + dimensions.width / 2 - w / 2,
-		dimensions.top + dimensions.height / 2 - h / 2,
-		dimensions.width, dimensions.height);
+	innerDimensions = alignCenter ? centerText(dimensions, text) : dimensions;
 	text.setPosition(innerDimensions.getPosition());
 }
 
 void GuiText::ProcessEvent(const sf::Event&) {}
 
-void GuiText::Update(sf::Time deltaTime) {}
+void GuiText::Update(sf::Time deltaTime)
+{
+	if (!alignCenter) return;
+	innerDimensions = centerText(dimensions, text);
+	text.setPosition(innerDimensions.getPosition());
+}
 
 void GuiText::Render(sf::RenderWindow *window)
 {

@@ -7,8 +7,8 @@ Enemy::Enemy(const sf::String &name, std::map<Stat, unsigned int> stats,
 	std::map<BattleAnimationState, unsigned int> numOfFrames,
 	unsigned int hitFrameNum, float size)
 	: Entity(hitFrameNum), name(name), stats(stats), textureSize(texSize),
-	numOfFrames(numOfFrames), size(size*GameManager::ResCoefX()),
-	targetHover(nullptr), finishedAttack(false)
+	numOfFrames(numOfFrames), size(size*GameManager::ResCoefX()), targetHover(nullptr),
+	finishedAttack(false), finishedHit(false), finishedDeath(false)
 {
 	animationDeltaTime = animDeltaTime;
 	animationTileset = new sf::Texture();
@@ -40,7 +40,12 @@ void Enemy::ProcessEvent(const sf::Event &event)
 
 void Enemy::Update(sf::Time deltaTime)
 {
-	if (Battle::GetStage() == TurnStage::Waiting) finishedAttack = false;
+	if (!Battle::IsPlayerTurn() &&
+		Battle::GetStage() == TurnStage::Waiting)
+	{
+		finishedAttack = false;
+		finishedHit = false;
+	}
 	bool attack = Battle::GetTurnMaker() == this && !finishedAttack
 		&& Battle::GetStage() == TurnStage::Action
 		&& Battle::GetChosenAction() == TurnAction::Attack;
@@ -53,17 +58,29 @@ void Enemy::Update(sf::Time deltaTime)
 	if (animationPassedTime >= animationDeltaTime)
 	{
 		animationPassedTime = sf::Time::Zero;
-		if (attack)
+		animationCurFrame++;
+		bool animLastFrame = animationCurFrame == numOfFrames[battleAnimationState];
+		if (battleAnimationState == BattleAnimationState::TakeHit && animLastFrame)
 		{
-			if (++animationCurFrame == numOfFrames[battleAnimationState])
-			{
-				finishedAttack = true;
-				battleAnimationState = BattleAnimationState::Idle;
-				animationCurFrame = 0;
-			}
+			battleAnimationState = IsAlive()
+				? BattleAnimationState::Idle : BattleAnimationState::Death;
+			animationCurFrame = 0;
+			animLastFrame = false;
+			finishedHit = true;
 		}
-		else animationCurFrame = (animationCurFrame + 1)
-			% numOfFrames[battleAnimationState];
+		if (battleAnimationState == BattleAnimationState::Death && animLastFrame)
+		{
+			finishedDeath = true;
+			animationCurFrame--;
+		}
+		if (attack && animLastFrame)
+		{
+			finishedAttack = true;
+			battleAnimationState = BattleAnimationState::Idle;
+			animationCurFrame = 0;
+		}
+		else if (battleAnimationState == BattleAnimationState::Idle)
+			animationCurFrame %= numOfFrames[battleAnimationState];
 	}
 }
 
@@ -85,6 +102,14 @@ void Enemy::Render(sf::RenderWindow *window)
 unsigned int Enemy::Attack()
 {
 	return stats[Stat::ATK];
+}
+
+void Enemy::TakeHit(unsigned int damage)
+{
+	int dmg = std::max((int)damage - (int)stats[Stat::DEF], 0);
+	hp = std::max(hp - dmg, 0);
+	battleAnimationState = BattleAnimationState::TakeHit;
+	animationCurFrame = 0;
 }
 
 std::map<Stat, unsigned int> Enemy::GetStats()

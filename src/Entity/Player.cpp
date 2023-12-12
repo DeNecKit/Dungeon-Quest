@@ -12,6 +12,8 @@ using json = nlohmann::json;
 #include "../Gui/GuiProgressBar.h"
 
 bool playerAttacked = false;
+bool finishedHit = false;
+bool finishedDeath = false;
 
 Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	: Entity(3), isInBattle(false), direction(startDir),
@@ -72,8 +74,8 @@ sf::Vector2f Player::GetHealthBarPos()
 unsigned int Player::Attack()
 {
 	unsigned int res = stats[Stat::ATK];
-	for (int i = 14; i < 20; i++)
-		res += inventory[i]->GetTemplate()->GetStats()[Stat::ATK];
+	for (int i = 15; i < 20; i++)
+		res += inventory[i] ? inventory[i]->GetTemplate()->GetStats()[Stat::ATK] : 0;
 	return res;
 }
 
@@ -82,6 +84,28 @@ bool Player::FinishedActionAnimation()
 	if (Battle::GetChosenAction() == TurnAction::Attack)
 		return playerAttacked;
 	return true;
+}
+
+bool Player::FinishedHitAnimation()
+{
+	return finishedHit;
+}
+
+bool Player::FinishedDeathAnimation()
+{
+	return finishedDeath;
+}
+
+void Player::TakeHit(unsigned int damage)
+{
+	int dmg = (int)damage - (int)stats[Stat::DEF];
+	for (int i = 15; i < 20; i++)
+		if (inventory[i]) dmg -=
+			(int)inventory[i]->GetTemplate()->GetStats()[Stat::DEF];
+	dmg = std::max(dmg, 0);
+	hp = std::max(hp - dmg, 0);
+	battleAnimationState = BattleAnimationState::TakeHit;
+	animationCurFrame = 0;
 }
 
 void Player::UpdateInGame(sf::Time deltaTime)
@@ -147,7 +171,12 @@ void Player::UpdateInGame(sf::Time deltaTime)
 
 void Player::UpdateInBattle(sf::Time deltaTime)
 {
-	if (Battle::GetStage() == TurnStage::Waiting) playerAttacked = false;
+	if (Battle::IsPlayerTurn() &&
+		Battle::GetStage() == TurnStage::Waiting)
+	{
+		playerAttacked = false;
+		finishedHit = false;
+	}
 	bool attack = Battle::IsPlayerTurn() && !playerAttacked
 		&& Battle::GetStage() == TurnStage::Action
 		&& Battle::GetChosenAction() == TurnAction::Attack;
@@ -160,18 +189,29 @@ void Player::UpdateInBattle(sf::Time deltaTime)
 	if (animationPassedTime >= animationDeltaTime)
 	{
 		animationPassedTime = sf::Time::Zero;
-		if (attack)
+		animationCurFrame++;
+		bool animLastFrame = animationCurFrame == numOfBattleFrames[battleAnimationState];
+		if (battleAnimationState == BattleAnimationState::TakeHit && animLastFrame)
 		{
-			if (++animationCurFrame ==
-				numOfBattleFrames[battleAnimationState])
-			{
-				playerAttacked = true;
-				battleAnimationState = BattleAnimationState::Idle;
-				animationCurFrame = 0;
-			}
+			battleAnimationState = IsAlive()
+				? BattleAnimationState::Idle : BattleAnimationState::Death;
+			finishedHit = true;
+			animationCurFrame = 0;
+			animLastFrame = false;
 		}
-		else animationCurFrame = (animationCurFrame + 1)
-			% numOfBattleFrames[battleAnimationState];
+		if (battleAnimationState == BattleAnimationState::Death && animLastFrame)
+		{
+			finishedDeath = true;
+			animationCurFrame--;
+		}
+		if (attack && animLastFrame)
+		{
+			playerAttacked = true;
+			battleAnimationState = BattleAnimationState::Idle;
+			animationCurFrame = 0;
+		}
+		else if (battleAnimationState == BattleAnimationState::Idle)
+			animationCurFrame %= numOfBattleFrames[battleAnimationState];
 	}
 }
 

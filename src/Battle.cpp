@@ -17,29 +17,43 @@ Battle::~Battle()
 
 void Battle::Update(sf::Time deltaTime)
 {
+	static bool turnMakerAttacked = false;
+	Entity *defender = IsPlayerTurn()
+		? dynamic_cast<Entity*>(target)
+		: dynamic_cast<Entity*>(Player::Get());
 	switch (currentStage)
 	{
 	case TurnStage::Waiting:
 		if (!IsPlayerTurn()) MakeTurn(TurnAction::Attack);
 		break;
 	case TurnStage::Action:
+		if (!turnMakerAttacked && turnMaker->IsHitFrame())
+		{
+			defender->TakeHit(turnMaker->Attack());
+			turnMakerAttacked = true;
+		}
 		if (!turnMaker->FinishedActionAnimation()) break;
+		if (!defender->FinishedHitAnimation()) break;
+		if (!defender->IsAlive() && !defender->FinishedDeathAnimation()) break;
 		timer += deltaTime;
 		if (timer < sf::milliseconds(500)) break;
 		currentStage = TurnStage::Waiting;
 		timer = sf::Time::Zero;
-		if (IsPlayerTurn())
-		{
-			curEnemyIndex = 0;
-			turnMaker = Battle::GetEnemies()[0];
-		} else if (++curEnemyIndex == Battle::GetEnemies().size())
-			turnMaker = Player::Get();
-		else turnMaker = Battle::GetEnemies()[curEnemyIndex];
+		turnMakerAttacked = false;
+		do
+			if (IsPlayerTurn())
+			{
+				curEnemyIndex = 0;
+				turnMaker = Battle::GetEnemies()[0];
+			} else if (++curEnemyIndex == Battle::GetEnemies().size())
+				turnMaker = Player::Get();
+			else turnMaker = Battle::GetEnemies()[curEnemyIndex];
+		while (turnMaker->IsOut());
 		break;
 	}
 	player->Update(deltaTime);
 	for (Enemy *enemy : enemies)
-		enemy->Update(deltaTime);
+		if (!enemy->IsOut()) enemy->Update(deltaTime);
 }
 
 void Battle::Render(sf::RenderWindow* window)

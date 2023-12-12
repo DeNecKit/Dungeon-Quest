@@ -5,7 +5,7 @@
 
 EnemyGoblin::EnemyGoblin(unsigned int pos)
 	: Enemy("Гоблин",
-		{ {Stat::HP, 40}, {Stat::ATK, 20}, {Stat::DEF, 0}, {Stat::AGI, 0} },
+		{ {Stat::HP, 30}, {Stat::ATK, 15}, {Stat::DEF, 5}, {Stat::AGI, 5} },
 		"data/goblin.png", 150, sf::milliseconds(150),
 		{ {BattleAnimationState::Idle, 4},
 		  {BattleAnimationState::Attack, 8},
@@ -37,7 +37,7 @@ sf::Vector2f EnemyGoblin::GetHealthBarPos()
 {
 	sf::Vector2f hbs = GuiProgressBar::GetHealthBarSize();
 	float w = hbs.x, h = hbs.y;
-	return sf::Vector2f(position.x - size + size/2 - w/2, position.y + h*10);
+	return sf::Vector2f(position.x - size + size/2 - w/2, position.y + h*9);
 }
 
 sf::FloatRect EnemyGoblin::GetClickHitbox()
@@ -52,4 +52,14 @@ sf::FloatRect EnemyGoblin::GetClickHitbox()
 bool EnemyGoblin::FinishedActionAnimation()
 {
 	return finishedAttack;
+}
+
+bool EnemyGoblin::FinishedHitAnimation()
+{
+	return finishedHit;
+}
+
+bool EnemyGoblin::FinishedDeathAnimation()
+{
+	return finishedDeath;
 }

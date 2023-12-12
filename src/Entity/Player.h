@@ -17,6 +17,9 @@ public:
 	sf::Vector2f GetHealthBarPos() override;
 	unsigned int Attack() override;
 	bool FinishedActionAnimation() override;
+	bool FinishedHitAnimation() override;
+	bool FinishedDeathAnimation() override;
+	void TakeHit(unsigned int damage) override;
 
 	static sf::Vector2f GetPos();
 	static float GetSize();

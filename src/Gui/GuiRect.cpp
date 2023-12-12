@@ -18,3 +18,9 @@ void GuiRect::Render(sf::RenderWindow *window)
 {
 	window->draw(rect);
 }
+
+void GuiRect::ScaleSize(sf::Vector2f factors)
+{
+	rect.setSize(sf::Vector2f(
+		dimensions.width * factors.x, dimensions.height * factors.y));
+}

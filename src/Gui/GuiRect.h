@@ -11,6 +11,7 @@ public:
 	void ProcessEvent(const sf::Event&) override;
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow *window) override;
+	void ScaleSize(sf::Vector2f factors);
 
 private:
 	sf::RectangleShape rect;
