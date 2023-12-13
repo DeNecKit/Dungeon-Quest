@@ -47,7 +47,7 @@ void ItemTemplate::Init()
 		new ItemTemplate(ItemType::Boots, L"Кожанные ботинки", 13,
 			{{Stat::HP, 1},{Stat::ATK, 0},{Stat::DEF, 1},{Stat::AGI, 0}}),
 		new ItemTemplate(ItemType::Sword, L"Королевский меч", 1,
-			{{Stat::HP, 0},{Stat::ATK, 18},{Stat::DEF, 5},{Stat::AGI, 0}}),
+			{{Stat::HP, 0},{Stat::ATK, 15},{Stat::DEF, 1},{Stat::AGI, 0}}),
 		new ItemTemplate(ItemType::Key, L"Ключ", 34)
 	});
 }

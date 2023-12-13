@@ -96,7 +96,7 @@ void Enemy::Render(sf::RenderWindow *window)
 	window->draw(s);
 	if (GameManager::IsMouseOver(GetClickHitbox()) &&
 		Battle::IsPlayerTurn() && Battle::GetStage() == TurnStage::Waiting)
-		window->draw(*targetHover);
+		if (!IsOut() && !Battle::IsEnd()) window->draw(*targetHover);
 }
 
 unsigned int Enemy::Attack()

@@ -19,7 +19,7 @@ public:
 private:
 	GuiProgressBar *playerHealthBar;
 	std::vector<GuiProgressBar*> enemiesHealthBar;
-	GuiList *actionsMenu, *pauseMenu, *inventoryGui;
+	GuiList *actionsMenu, *inventoryGui, *victoryMenu, *defeatMenu;
 	Enemy *lastTarget;
 	sf::RectangleShape targetRect;
 };

@@ -27,12 +27,7 @@ GuiText::GuiText(sf::FloatRect dims, const sf::String &str,
 
 void GuiText::ProcessEvent(const sf::Event&) {}
 
-void GuiText::Update(sf::Time deltaTime)
-{
-	if (!alignCenter) return;
-	innerDimensions = centerText(dimensions, text);
-	text.setPosition(innerDimensions.getPosition());
-}
+void GuiText::Update(sf::Time deltaTime) {}
 
 void GuiText::Render(sf::RenderWindow *window)
 {
@@ -52,4 +47,7 @@ void GuiText::Render(sf::RenderWindow *window)
 void GuiText::SetString(const sf::String& str)
 {
 	text.setString(str);
+	if (!alignCenter) return;
+	innerDimensions = centerText(dimensions, text);
+	text.setPosition(innerDimensions.getPosition());
 }

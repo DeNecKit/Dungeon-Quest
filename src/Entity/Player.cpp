@@ -289,8 +289,7 @@ sf::Vector2f Player::GetFixedPos(float deltaX, float deltaY,
 
 float Player::GenerateRequiredDistance()
 {
-	//return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
-	return 10.f;
+	return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
 }
 
 sf::Vector2f Player::GetPos()

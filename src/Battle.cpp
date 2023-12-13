@@ -2,12 +2,13 @@
 #include "SceneManager.h"
 #include "Scene/SceneBattle.h"
 #include "Scene/SceneGame.h"
-
+#include "Scene/SceneMainMenu.h"
 
 Battle::Battle(Player* player, std::vector<Enemy*> enemies)
 	: player(player), enemies(enemies), target(enemies[0]),
 	chosenAction(TurnAction::None), currentStage(TurnStage::Waiting),
-	timer(sf::Time::Zero), turnMaker(Player::Get()), curEnemyIndex(0) {}
+	timer(sf::Time::Zero), turnMaker(Player::Get()), curEnemyIndex(0),
+	isVictory(false), isDefeat(false) {}
 
 Battle::~Battle()
 {
@@ -25,6 +26,14 @@ void Battle::Update(sf::Time deltaTime)
 	{
 	case TurnStage::Waiting:
 		if (!IsPlayerTurn()) MakeTurn(TurnAction::Attack);
+		else
+		{
+			int i = 0;
+			while (target->IsOut() && i < enemies.size())
+				target = enemies[i++];
+			if (target->IsOut())
+				isVictory = true;
+		}
 		break;
 	case TurnStage::Action:
 		if (!turnMakerAttacked && turnMaker->IsHitFrame())
@@ -40,14 +49,15 @@ void Battle::Update(sf::Time deltaTime)
 		currentStage = TurnStage::Waiting;
 		timer = sf::Time::Zero;
 		turnMakerAttacked = false;
+		if (Player::Get()->IsOut()) isDefeat = true;
 		do
 			if (IsPlayerTurn())
 			{
 				curEnemyIndex = 0;
-				turnMaker = Battle::GetEnemies()[0];
-			} else if (++curEnemyIndex == Battle::GetEnemies().size())
+				turnMaker = enemies[0];
+			} else if (++curEnemyIndex == enemies.size())
 				turnMaker = Player::Get();
-			else turnMaker = Battle::GetEnemies()[curEnemyIndex];
+			else turnMaker = enemies[curEnemyIndex];
 		while (turnMaker->IsOut());
 		break;
 	}
@@ -71,9 +81,10 @@ void Battle::Start(Player *player, std::vector<Enemy*> enemies)
 
 void Battle::End()
 {
+	if (instance->isDefeat) SceneManager::ChangeScene<SceneMainMenu>();
+	else SceneManager::ChangeScene<SceneGame>();
 	delete instance;
 	instance = nullptr;
-	SceneManager::ChangeScene<SceneGame>();
 }
 
 std::vector<Enemy*> Battle::GetEnemies()
@@ -110,4 +121,19 @@ Entity* Battle::GetTurnMaker()
 Battle* Battle::Get()
 {
 	return instance;
+}
+
+bool Battle::IsVictory()
+{
+	return instance->isVictory;
+}
+
+bool Battle::IsDefeat()
+{
+	return instance->isDefeat;
+}
+
+bool Battle::IsEnd()
+{
+	return IsVictory() || IsDefeat();
 }

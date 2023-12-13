@@ -26,6 +26,9 @@ public:
 	static TurnStage GetStage();
 	static Entity *GetTurnMaker();
 	static Battle *Get();
+	static bool IsVictory();
+	static bool IsDefeat();
+	static bool IsEnd();
 
 private:
 	Player *player;
@@ -35,6 +38,7 @@ private:
 	sf::Time timer;
 	Entity *turnMaker;
 	unsigned int curEnemyIndex;
+	bool isVictory, isDefeat;
 
 	static inline Battle *instance = nullptr;
 };

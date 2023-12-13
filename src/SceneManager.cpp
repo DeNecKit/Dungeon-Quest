@@ -30,8 +30,7 @@ void SceneManager::ProccessEvent(const sf::Event &event)
 {
 	if (isSceneChanged)
 	{
-		if (dynamic_cast<SceneGame*>(currentScene) &&
-			dynamic_cast<SceneMainMenu*>(tmpScene))
+		if (dynamic_cast<SceneMainMenu*>(tmpScene))
 			Level::Reset();
 		delete currentScene;
 		currentScene = tmpScene;
