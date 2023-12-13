@@ -3,6 +3,7 @@
 #include "Scene/SceneBattle.h"
 #include "Scene/SceneGame.h"
 #include "Scene/SceneMainMenu.h"
+#include <cstdlib>
 
 Battle::Battle(Player* player, std::vector<Enemy*> enemies)
 	: player(player), enemies(enemies), target(enemies[0]),
@@ -36,8 +37,33 @@ void Battle::Update(sf::Time deltaTime)
 		}
 		break;
 	case TurnStage::Action:
-		if (!turnMakerAttacked && turnMaker->IsHitFrame())
+		if (chosenAction == TurnAction::Flee)
+			if (std::rand() % 2)
+			{
+				Battle::End();
+				return;
+			} else
+			{
+				SceneBattle::Message(L"Не удалось сбежать!");
+				currentStage = TurnStage::Waiting;
+				PlayerEndTurn();
+			}
+		else if (chosenAction == TurnAction::UseItem)
 		{
+			if (chosenItem == nullptr)
+			{
+				SceneBattle::ShowInventory(true);
+			} else
+			{
+				// TODO
+				chosenItem = nullptr;
+				PlayerEndTurn();
+				SceneBattle::ShowInventory(false);
+			}
+			currentStage = TurnStage::Waiting;
+		}
+		if (!turnMakerAttacked && turnMaker->IsHitFrame())
+		{ 
 			defender->TakeHit(turnMaker->Attack());
 			turnMakerAttacked = true;
 		}
@@ -118,9 +144,23 @@ Entity* Battle::GetTurnMaker()
 	return instance->turnMaker;
 }
 
+void Battle::ChooseItem(Item *item)
+{
+	instance->chosenItem = item;
+	MakeTurn(TurnAction::UseItem);
+}
+
 Battle* Battle::Get()
 {
 	return instance;
+}
+
+void Battle::PlayerEndTurn()
+{
+	curEnemyIndex = 0;
+	turnMaker = enemies[0];
+	while (turnMaker->IsOut())
+		turnMaker = enemies[++curEnemyIndex];
 }
 
 bool Battle::IsVictory()

@@ -21,6 +21,8 @@ public:
 	void SetItem(unsigned int pos, Item *item);
 	void SetParent(unsigned int pos,  TileChest *parentChest);
 
+	static GuiList *CreatePlayerInventory();
+
 private:
 	GuiRect rect;
 	std::vector<Gui*> children;

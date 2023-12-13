@@ -6,6 +6,8 @@
 #include "../GameManager.h"
 #include "../Entity/Player.h"
 
+sf::Time msgTime = sf::Time::Zero;
+
 void setTargetRect(sf::RectangleShape &targetRect)
 {
 	sf::FloatRect hitbox = Battle::Get()->target->GetClickHitbox();
@@ -16,9 +18,19 @@ void setTargetRect(sf::RectangleShape &targetRect)
 	targetRect.setOutlineColor(sf::Color(0, 255, 0, 100));
 }
 
-SceneBattle::SceneBattle()
-	: inventoryGui(nullptr), lastTarget(Battle::Get()->target)
+void setActionMenuEnabled(GuiList *actionsMenu, bool enabled)
 {
+	for (Gui* gui : actionsMenu->GetChildren())
+	{
+		GuiButton* btn = dynamic_cast<GuiButton*>(gui);
+		btn->SetEnabled(enabled);
+	}
+}
+
+SceneBattle::SceneBattle()
+	: lastTarget(Battle::Get()->target), isInvMenu(false)
+{
+	instance = this;
 	Player::InBattle(true);
 	sf::Vector2f hbs = GuiProgressBar::GetHealthBarSize();
 	playerHealthBar = new GuiProgressBar(
@@ -28,18 +40,23 @@ SceneBattle::SceneBattle()
 		enemiesHealthBar.push_back(new GuiProgressBar(
 		sf::FloatRect(enemy->GetHealthBarPos(), hbs), Gui::HealthBarFillColor,
 			(unsigned int&)enemy->GetHP(), enemy->GetStats()[Stat::HP]));
+	const float ww = 1920.f, hww = ww/2.f, wh = 1080.f, hwh = wh/2.f;
+	messageText = new GuiText(sf::FloatRect(50.f, 50.f, 1.f, 50.f), L"", 24, false);
 	const float bw = 250.f, bh = 75.f, d = 25.f, w = bw*3 + d*4, h = bh + d*2,
-		x = d*3, y = GameManager::WindowHeight() - d*3 - h;
+		x = d, y = GameManager::WindowHeight() - d - h;
 	actionsMenu = new GuiList(sf::FloatRect(x, y, w, h));
 	actionsMenu->Append(new GuiButton(sf::FloatRect(x+d, y+d, bw, bh),
 		L"Атака", 24, [](const sf::Event&) { Battle::MakeTurn(TurnAction::Attack); }));
 	actionsMenu->Append(new GuiButton(sf::FloatRect(x+d*2+bw, y+d, bw, bh),
-		L"Предмет", 24, [](const sf::Event&) {}));
+		L"Предмет", 24, [](const sf::Event&) { Battle::MakeTurn(TurnAction::UseItem); }));
 	actionsMenu->Append(new GuiButton(sf::FloatRect(x+d*3+bw*2, y+d, bw, bh),
-		L"Побег", 24, [](const sf::Event&) { Battle::End(); }));
-	const float hww = GameManager::WindowWidth()/2.f,
-		hwh = GameManager::WindowHeight()/2.f,
-		mbw = 500.f, mbh = 100.f, bd = 50.f,
+		L"Побег", 24, [](const sf::Event&) { Battle::MakeTurn(TurnAction::Flee); }));
+	inventoryGui = GuiList::CreatePlayerInventory();
+	const sf::FloatRect id = inventoryGui->dimensions;
+	inventoryCancel = new GuiButton(sf::FloatRect(
+		id.left + id.width/2 - bw/2, id.top + id.height + d, bw, bh),
+		L"Отмена", 24, [](const sf::Event&) { ShowInventory(false); });
+	const float mbw = 500.f, mbh = 100.f, bd = 50.f,
 		vmw = mbw + bd*2, vmh = mbh*2 + bd*3,
 		vmx = hww - vmw/2, vmy = hwh - vmh/2;
 	victoryMenu = new GuiList(sf::FloatRect(vmx, vmy, vmw, vmh));
@@ -61,7 +78,9 @@ SceneBattle::~SceneBattle()
 	for (GuiProgressBar *enemyBar : enemiesHealthBar)
 		delete enemyBar;
 	delete actionsMenu;
+	delete messageText;
 	Player::InBattle(false);
+	instance = nullptr;
 }
 
 void SceneBattle::ProcessEvent(const sf::Event &event)
@@ -70,6 +89,12 @@ void SceneBattle::ProcessEvent(const sf::Event &event)
 	{
 		if (Battle::IsVictory()) victoryMenu->ProcessEvent(event);
 		else defeatMenu->ProcessEvent(event);
+		return;
+	}
+	if (isInvMenu)
+	{
+		inventoryGui->ProcessEvent(event);
+		inventoryCancel->ProcessEvent(event);
 		return;
 	}
 	if (Battle::IsPlayerTurn()) actionsMenu->ProcessEvent(event);
@@ -87,24 +112,29 @@ void SceneBattle::Update(sf::Time deltaTime)
 		else defeatMenu->Update(deltaTime);
 		return;
 	}
+	if (isInvMenu)
+	{
+		inventoryGui->Update(deltaTime);
+		inventoryCancel->Update(deltaTime);
+		return;
+	}
+	setActionMenuEnabled(instance->actionsMenu,
+		Battle::IsPlayerTurn() && Battle::GetStage() == TurnStage::Waiting);
 	Battle::Get()->Update(deltaTime);
+	if (Battle::Get() == nullptr) return;
 	playerHealthBar->Update(deltaTime);
 	int i = 0;
 	for (GuiProgressBar* enemyBar : enemiesHealthBar)
 		if (!Battle::GetEnemies()[i++]->IsOut())
 			enemyBar->Update(deltaTime);
-	for (Gui *gui : actionsMenu->GetChildren())
-	{
-		GuiButton *btn = dynamic_cast<GuiButton*>(gui);
-		btn->SetEnabled(Battle::IsPlayerTurn() &&
-			Battle::GetStage() == TurnStage::Waiting);
-	}
 	if (Battle::IsPlayerTurn()) actionsMenu->Update(deltaTime);
 	if (lastTarget != Battle::Get()->target)
 	{
 		setTargetRect(targetRect);
 		lastTarget = Battle::Get()->target;
 	}
+	if (msgTime > sf::Time::Zero)
+		msgTime = std::max(msgTime - deltaTime, sf::Time::Zero);
 }
 
 void SceneBattle::RenderGUI(sf::RenderWindow *window)
@@ -114,6 +144,8 @@ void SceneBattle::RenderGUI(sf::RenderWindow *window)
 	for (GuiProgressBar *enemyBar : enemiesHealthBar)
 		enemyBar->Render(window);
 	window->draw(targetRect);
+	if (msgTime > sf::Time::Zero)
+		messageText->Render(window);
 	if (Battle::IsEnd())
 	{
 		sf::RectangleShape r((sf::Vector2f)window->getSize());
@@ -121,8 +153,14 @@ void SceneBattle::RenderGUI(sf::RenderWindow *window)
 		window->draw(r);
 		if (Battle::IsVictory()) victoryMenu->Render(window);
 		else defeatMenu->Render(window);
+		return;
 	}
-	else actionsMenu->Render(window);
+	actionsMenu->Render(window);
+	if (isInvMenu)
+	{
+		inventoryGui->Render(window);
+		inventoryCancel->Render(window);
+	}
 }
 
 void SceneBattle::RenderSFML(sf::RenderWindow *window)
@@ -130,4 +168,21 @@ void SceneBattle::RenderSFML(sf::RenderWindow *window)
 	if (Battle::Get() == nullptr) return;
 	window->clear(sf::Color(58, 51, 62));
 	Battle::Get()->Render(window);
+}
+
+void SceneBattle::Message(const sf::String& str)
+{
+	msgTime = sf::seconds(1.f);
+	instance->messageText->SetString(str);
+}
+
+void SceneBattle::ShowInventory(bool show)
+{
+	instance->isInvMenu = show;
+	if (show) setActionMenuEnabled(instance->actionsMenu, false);
+}
+
+bool SceneBattle::IsInventoryOpen()
+{
+	return instance->isInvMenu;
 }

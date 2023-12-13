@@ -11,7 +11,7 @@
 GuiText *fpsText = nullptr;
 GuiRect *fpsBackground = nullptr;
 float fps = 0.f;
-bool showFps = true;
+bool showFps = false;
 
 void GameManager::Init()
 {

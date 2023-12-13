@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "../GameManager.h"
 #include "../Battle.h"
+#include "../Scene/SceneBattle.h"
 
 Enemy::Enemy(const sf::String &name, std::map<Stat, unsigned int> stats,
 	const char *tilesetPath, unsigned int texSize, sf::Time animDeltaTime,
@@ -96,7 +97,8 @@ void Enemy::Render(sf::RenderWindow *window)
 	window->draw(s);
 	if (GameManager::IsMouseOver(GetClickHitbox()) &&
 		Battle::IsPlayerTurn() && Battle::GetStage() == TurnStage::Waiting)
-		if (!IsOut() && !Battle::IsEnd()) window->draw(*targetHover);
+		if (!IsOut() && !Battle::IsEnd() && !SceneBattle::IsInventoryOpen())
+			window->draw(*targetHover);
 }
 
 unsigned int Enemy::Attack()

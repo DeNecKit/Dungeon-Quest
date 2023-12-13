@@ -12,12 +12,12 @@ public:
 	virtual void Render(sf::RenderWindow*) = 0;
 	virtual sf::Vector2f GetHealthBarPos() = 0;
 	virtual unsigned int Attack() = 0;
-	int &GetHP();
 	virtual bool FinishedActionAnimation() = 0;
 	virtual bool FinishedHitAnimation() = 0;
 	virtual bool FinishedDeathAnimation() = 0;
-	bool IsHitFrame();
 	virtual void TakeHit(unsigned int damage) = 0;
+	int &GetHP();
+	bool IsHitFrame();
 	bool IsAlive();
 	bool IsOut();
 

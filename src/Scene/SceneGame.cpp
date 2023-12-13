@@ -43,15 +43,7 @@ SceneGame::SceneGame()
 		x0 = ix + d, y0 = iy + s + d,
 		x1 = ex + d, y1 = ey + s + d,
 		x2 = cx + d, y2 = cy + s + d;
-	inventoryGui = new GuiList(sf::FloatRect(ix, iy, iw, ih),
-		Gui::ButtonFillColor, Gui::ButtonOutlineColor);
-	inventoryGui->Append(new GuiText(
-		sf::FloatRect(ix, iy, iw, s), L"Инвентарь", 48));
-	for (int y = 0; y < m; y++)
-		for (int x = 0; x < n; x++)
-			inventoryGui->Append(new GuiItemSlot(
-				sf::FloatRect(x0 + x*(s+d), y0 + y*(s+d), s, s),
-				nullptr, y*5+x, SlotType::Any, Player::GetItem(y*5+x)));
+	inventoryGui = GuiList::CreatePlayerInventory();
 	equipmentGui = new GuiList(sf::FloatRect(ex, ey, ew, eh),
 		Gui::ButtonFillColor, Gui::ButtonOutlineColor);
 	equipmentGui->Append(new GuiText(

@@ -1,5 +1,6 @@
 #include "GuiItemSlot.h"
 #include "../Scene/SceneGame.h"
+#include "../Battle.h"
 
 GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest *parentChest,
 	unsigned int pos, SlotType type, Item *item)
@@ -11,6 +12,8 @@ GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest *parentChest,
 
 void GuiItemSlot::ProcessEvent(const sf::Event &event)
 {
+	if (click.IsPressed() && event.type == sf::Event::MouseButtonReleased
+		&& Battle::Get() != nullptr) Battle::ChooseItem(item);
 	click.ProcessEvent(event);
 }
 

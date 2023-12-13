@@ -4,6 +4,7 @@
 #include "../Gui/GuiProgressBar.h"
 #include "../Gui/GuiList.h"
 #include "../Entity/Enemy.h"
+#include "../Gui/GuiButton.h"
 #include <vector>
 
 class SceneBattle final : public Scene
@@ -15,11 +16,19 @@ public:
 	void Update(sf::Time deltaTime) override;
 	void RenderGUI(sf::RenderWindow*) override;
 	void RenderSFML(sf::RenderWindow*) override;
+	static void Message(const sf::String &str);
+	static void ShowInventory(bool show);
+	static bool IsInventoryOpen();
 
 private:
 	GuiProgressBar *playerHealthBar;
 	std::vector<GuiProgressBar*> enemiesHealthBar;
 	GuiList *actionsMenu, *inventoryGui, *victoryMenu, *defeatMenu;
+	GuiButton *inventoryCancel;
+	GuiText *messageText;
 	Enemy *lastTarget;
 	sf::RectangleShape targetRect;
+	bool isInvMenu;
+
+	static inline SceneBattle *instance;
 };

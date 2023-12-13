@@ -14,8 +14,7 @@ EnemyGoblin::EnemyGoblin(unsigned int pos)
 {
 	animationPassedTime = sf::milliseconds(std::rand() % 150);
 	animationCurFrame = std::rand() % 8;
-	float ww = (float)GameManager::WindowWidth(),
-		wh = (float)GameManager::WindowHeight();
+	float ww = 1920.f, wh = 1080.f;
 	switch (pos)
 	{
 	case 1:
