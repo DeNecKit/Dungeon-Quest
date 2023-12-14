@@ -1,14 +1,24 @@
 #include "GuiItemSlot.h"
 #include "../Scene/SceneGame.h"
+#include "../Scene/SceneBattle.h"
 #include "../Battle.h"
+#include "../ResourceManager.h"
 
-GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest *parentChest,
-	unsigned int pos, SlotType type, Item *item)
+GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest* parentChest,
+	unsigned int pos, SlotType type, Item* item)
 	: Gui(dims), type(type), item(item), origPos(dimensions.getPosition()),
 	rect(dims, Gui::ItemSlotFillColor, Gui::ItemSlotOutlineColor),
 	pos(pos), parentChest(parentChest),
 	click(dims, [](const sf::Event&) {}, true,
-		new GuiDraggable(sf::milliseconds(32))) {}
+		new GuiDraggable(sf::milliseconds(32))),
+	lastCount(item == nullptr ? 1 : item->GetCount()), countText(sf::FloatRect(
+		dims.left + dims.width * 0.7f, dims.top + dims.height * 0.7f,
+		dims.width * 0.2f, dims.height * 0.2f),
+		"", 16, true, ResourceManager::GetMainFont(),
+		Gui::TextColor, sf::Color::Black)
+{
+	if (lastCount > 1) countText.SetString(std::to_string(lastCount));
+}
 
 void GuiItemSlot::ProcessEvent(const sf::Event &event)
 {
@@ -32,7 +42,12 @@ void GuiItemSlot::Update(sf::Time deltaTime)
 		lastMousePos = curMousePos;
 
 		if (click.DragReleased())
-			for (Gui* gui : SceneGame::GetInventoryGui())
+		{
+			std::vector<Gui*> inventory;
+			inventory = dynamic_cast<SceneGame*>(SceneManager::GetCurrentScene())
+				? SceneGame::GetInventoryGui()
+				: SceneBattle::GetInventoryGui();
+			for (Gui *gui : inventory)
 				if (gui != this && dynamic_cast<GuiItemSlot*>(gui)
 					&& gui->IsMouseOver())
 				{
@@ -58,7 +73,24 @@ void GuiItemSlot::Update(sf::Time deltaTime)
 					}
 					break;
 				}
+		}
 	}
+	if (item != nullptr)
+	{
+		if (lastCount != item->GetCount())
+		{
+			lastCount = item->GetCount();
+			countText.SetString(lastCount > 1 ? std::to_string(lastCount) : "");
+		}
+		if (item->GetCount() == 0)
+		{
+			Item::Delete(item);
+			item = nullptr;
+			if (parentChest == nullptr)
+				Player::SetItem(pos, nullptr);
+			else throw new std::exception();
+		}
+	} else if (lastCount > 1) lastCount = 1;
 }
 
 void GuiItemSlot::Render(sf::RenderWindow *window)
@@ -72,10 +104,16 @@ void GuiItemSlot::Render(sf::RenderWindow *window)
 			dimensions.left + dimensions.width / 2.f - spSize / 2.f,
 			dimensions.top + dimensions.height / 2.f - spSize / 2.f);
 		if (click.ShouldDrag())
-			SceneGame::RenderOnTop(&sprite);
+			if (dynamic_cast<SceneGame*>(SceneManager::GetCurrentScene()))
+				SceneGame::RenderOnTop(&sprite);
+			else SceneBattle::RenderOnTop(&sprite);
 		else window->draw(sprite);
 	}
-	if (!click.ShouldDrag()) click.Render(window);
+	if (!click.ShouldDrag())
+	{
+		if (lastCount > 1) countText.Render(window);
+		click.Render(window);
+	}
 }
 
 unsigned int GuiItemSlot::GetPos()

@@ -29,6 +29,8 @@ public:
 	static std::map<Stat, unsigned int> GetStats();
 	static sf::Vector2f GetScreenPos();
 	static float GetScrenSize();
+	static unsigned int GetMaxHP();
+	static void Heal(unsigned int healing);
 	static Player *Get();
 
 private:

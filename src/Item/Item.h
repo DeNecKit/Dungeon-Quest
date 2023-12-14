@@ -12,9 +12,11 @@ public:
 	unsigned int GetCount();
 	ItemType GetType();
 	ItemTemplate *GetTemplate();
+	void Use();
 
 	static Item *Create(unsigned int itemTemplateId,
 		unsigned int count = 1);
+	static void Delete(Item *item);
 	static void Init();
 	static void Shutdown();
 

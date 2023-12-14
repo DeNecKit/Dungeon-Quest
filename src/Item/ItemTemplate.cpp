@@ -1,8 +1,11 @@
 #include "ItemTemplate.h"
+#include "../Entity/Player.h"
 
 ItemTemplate::ItemTemplate(ItemType type, const sf::String &name,
-	unsigned int textureId, std::map<Stat, const int> stats)
-	: type(type), name(name), textureId(textureId), stats(stats) {}
+	unsigned int textureId, std::map<Stat, const int> stats,
+	bool isUsable, void (*onClick)())
+	: type(type), name(name), textureId(textureId),
+	stats(stats), isUsable(isUsable), onClick(onClick) {}
 
 sf::Sprite ItemTemplate::GetSprite()
 {
@@ -29,6 +32,16 @@ std::map<Stat, const int> ItemTemplate::GetStats()
 	return stats;
 }
 
+bool ItemTemplate::IsUsable()
+{
+	return isUsable;
+}
+
+void ItemTemplate::Click()
+{
+	onClick();
+}
+
 void ItemTemplate::Init()
 {
 	size = (int)(75 * GameManager::ResCoefX());
@@ -48,7 +61,9 @@ void ItemTemplate::Init()
 			{{Stat::HP, 1},{Stat::ATK, 0},{Stat::DEF, 1},{Stat::AGI, 0}}),
 		new ItemTemplate(ItemType::Sword, L"Королевский меч", 1,
 			{{Stat::HP, 0},{Stat::ATK, 15},{Stat::DEF, 1},{Stat::AGI, 0}}),
-		new ItemTemplate(ItemType::Key, L"Ключ", 34)
+		new ItemTemplate(ItemType::Key, L"Ключ", 34),
+		new ItemTemplate(ItemType::Potion, L"Зелье лечения", 30,
+			nullStats, true, []() { Player::Heal(15); })
 	});
 }
 
@@ -60,7 +75,6 @@ void ItemTemplate::Shutdown()
 	delete itemTemplates;
 }
 
-
 unsigned int ItemTemplate::GetSize()
 {
 	return size;
@@ -69,4 +83,9 @@ unsigned int ItemTemplate::GetSize()
 std::vector<ItemTemplate*> ItemTemplate::GetItemTemplates()
 {
 	return *itemTemplates;
+}
+
+std::map<Stat, const int> ItemTemplate::GetNullStats()
+{
+	return nullStats;
 }

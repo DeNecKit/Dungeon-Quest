@@ -7,6 +7,7 @@ class SceneManager
 public:
 	static void Init();
 	template<typename T> static void ChangeScene();
+	static Scene *GetCurrentScene();
 	static void ProccessEvent(const sf::Event &);
 	static void Update(sf::Time);
 	static void RenderGUI(sf::RenderWindow*);

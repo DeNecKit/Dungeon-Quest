@@ -31,9 +31,25 @@ ItemTemplate *Item::GetTemplate()
 	return itemTemplate;
 }
 
+void Item::Use()
+{
+	itemTemplate->Click();
+	count--;
+}
+
 Item* Item::Create(unsigned int itemTemplateId, unsigned int count)
 {
 	return new Item(ItemTemplate::GetItemTemplates()[itemTemplateId], count);
+}
+
+void Item::Delete(Item *item)
+{
+	for (int i = 0; i < itemMemory->size(); i++)
+	{
+		if (itemMemory->at(i) == item)
+			itemMemory->at(i) = nullptr;
+	}
+	delete item;
 }
 
 void Item::Init()
@@ -43,13 +59,10 @@ void Item::Init()
 
 void Item::Shutdown()
 {
-	//for (Item *item : itemMemory)
-		//delete item;
-	//itemMemory.clear();
 	for (int i = 0; i < itemMemory->size(); i++)
 	{
 		Item *item = itemMemory->at(i);
-		delete item;
+		if (item != nullptr) delete item;
 	}
 	delete itemMemory;
 }

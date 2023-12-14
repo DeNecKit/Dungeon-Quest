@@ -3,6 +3,7 @@
 #include "Gui.h"
 #include "GuiRect.h"
 #include "GuiClickable.h"
+#include "GuiText.h"
 #include "../Item/Item.h"
 #include "../Entity/Player.h"
 #include "../Tile/TileChest.h"
@@ -28,8 +29,9 @@ public:
 private:
 	GuiRect rect;
 	GuiClickable click;
+	GuiText countText;
 	sf::Sprite sprite;
 	sf::Vector2i lastMousePos;
 	sf::Vector2f origPos;
-	unsigned int pos;
+	unsigned int pos, lastCount;
 };

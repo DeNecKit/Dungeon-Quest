@@ -28,14 +28,14 @@ void setActionMenuEnabled(GuiList *actionsMenu, bool enabled)
 }
 
 SceneBattle::SceneBattle()
-	: lastTarget(Battle::Get()->target), isInvMenu(false)
+	: lastTarget(Battle::Get()->target), isInvMenu(false), renderOnTop(nullptr)
 {
 	instance = this;
 	Player::InBattle(true);
 	sf::Vector2f hbs = GuiProgressBar::GetHealthBarSize();
 	playerHealthBar = new GuiProgressBar(
 		sf::FloatRect(Player::Get()->GetHealthBarPos(), hbs), Gui::HealthBarFillColor,
-		(unsigned int&)Player::Get()->GetHP(), Player::GetStats()[Stat::HP]);
+		(unsigned int&)Player::Get()->GetHP(), Player::GetMaxHP());
 	for (Enemy *enemy : Battle::GetEnemies())
 		enemiesHealthBar.push_back(new GuiProgressBar(
 		sf::FloatRect(enemy->GetHealthBarPos(), hbs), Gui::HealthBarFillColor,
@@ -114,6 +114,7 @@ void SceneBattle::Update(sf::Time deltaTime)
 	}
 	if (isInvMenu)
 	{
+		Battle::Get()->Update(deltaTime);
 		inventoryGui->Update(deltaTime);
 		inventoryCancel->Update(deltaTime);
 		return;
@@ -124,7 +125,7 @@ void SceneBattle::Update(sf::Time deltaTime)
 	if (Battle::Get() == nullptr) return;
 	playerHealthBar->Update(deltaTime);
 	int i = 0;
-	for (GuiProgressBar* enemyBar : enemiesHealthBar)
+	for (GuiProgressBar *enemyBar : enemiesHealthBar)
 		if (!Battle::GetEnemies()[i++]->IsOut())
 			enemyBar->Update(deltaTime);
 	if (Battle::IsPlayerTurn()) actionsMenu->Update(deltaTime);
@@ -161,6 +162,11 @@ void SceneBattle::RenderGUI(sf::RenderWindow *window)
 		inventoryGui->Render(window);
 		inventoryCancel->Render(window);
 	}
+	if (renderOnTop != nullptr)
+	{
+		window->draw(*renderOnTop);
+		renderOnTop = nullptr;
+	}
 }
 
 void SceneBattle::RenderSFML(sf::RenderWindow *window)
@@ -179,10 +185,26 @@ void SceneBattle::Message(const sf::String& str)
 void SceneBattle::ShowInventory(bool show)
 {
 	instance->isInvMenu = show;
-	if (show) setActionMenuEnabled(instance->actionsMenu, false);
+	if (show)
+	{
+		setActionMenuEnabled(instance->actionsMenu, false);
+		for (int i = 0; i < 15; i++)
+			instance->inventoryGui->SetItem(i, Player::GetItem(i));
+	}
+	else Battle::SetTurnStage(TurnStage::Waiting);
 }
 
 bool SceneBattle::IsInventoryOpen()
 {
 	return instance->isInvMenu;
+}
+
+std::vector<Gui*> SceneBattle::GetInventoryGui()
+{
+	return instance->inventoryGui->GetChildren();
+}
+
+void SceneBattle::RenderOnTop(sf::Drawable* r)
+{
+	instance->renderOnTop = r;
 }

@@ -26,6 +26,11 @@ template void SceneManager::ChangeScene<SceneMainMenu>();
 template void SceneManager::ChangeScene<SceneGame>();
 template void SceneManager::ChangeScene<SceneBattle>();
 
+Scene* SceneManager::GetCurrentScene()
+{
+	return currentScene;
+}
+
 void SceneManager::ProccessEvent(const sf::Event &event)
 {
 	if (isSceneChanged)

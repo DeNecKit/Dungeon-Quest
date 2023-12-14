@@ -19,6 +19,8 @@ public:
 	static void Message(const sf::String &str);
 	static void ShowInventory(bool show);
 	static bool IsInventoryOpen();
+	static std::vector<Gui*> GetInventoryGui();
+	static void RenderOnTop(sf::Drawable *r);
 
 private:
 	GuiProgressBar *playerHealthBar;
@@ -29,6 +31,7 @@ private:
 	Enemy *lastTarget;
 	sf::RectangleShape targetRect;
 	bool isInvMenu;
+	sf::Drawable *renderOnTop;
 
 	static inline SceneBattle *instance;
 };

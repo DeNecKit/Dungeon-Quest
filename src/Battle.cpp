@@ -9,7 +9,7 @@ Battle::Battle(Player* player, std::vector<Enemy*> enemies)
 	: player(player), enemies(enemies), target(enemies[0]),
 	chosenAction(TurnAction::None), currentStage(TurnStage::Waiting),
 	timer(sf::Time::Zero), turnMaker(Player::Get()), curEnemyIndex(0),
-	isVictory(false), isDefeat(false) {}
+	isVictory(false), isDefeat(false), chosenItem(nullptr) {}
 
 Battle::~Battle()
 {
@@ -50,12 +50,12 @@ void Battle::Update(sf::Time deltaTime)
 			}
 		else if (chosenAction == TurnAction::UseItem)
 		{
-			if (chosenItem == nullptr)
-			{
+			if (chosenItem == nullptr ||
+				!chosenItem->GetTemplate()->IsUsable())
 				SceneBattle::ShowInventory(true);
-			} else
+			else
 			{
-				// TODO
+				chosenItem->Use();
 				chosenItem = nullptr;
 				PlayerEndTurn();
 				SceneBattle::ShowInventory(false);
@@ -129,6 +129,11 @@ void Battle::MakeTurn(TurnAction action)
 	instance->currentStage = TurnStage::Action;
 }
 
+void Battle::SetTurnStage(TurnStage turnStage)
+{
+	instance->currentStage = turnStage;
+}
+
 TurnAction Battle::GetChosenAction()
 {
 	return instance->chosenAction;
@@ -139,7 +144,7 @@ TurnStage Battle::GetStage()
 	return instance->currentStage;
 }
 
-Entity* Battle::GetTurnMaker()
+Entity *Battle::GetTurnMaker()
 {
 	return instance->turnMaker;
 }

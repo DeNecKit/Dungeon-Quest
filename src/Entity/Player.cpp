@@ -39,7 +39,6 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 		{ BattleAnimationState::Death, 6 }
 	};
 	stats = {{Stat::HP, 40}, {Stat::ATK, 5}, {Stat::DEF, 5}, {Stat::AGI, 5}};
-	hp = stats[Stat::HP];
 	std::ifstream dataFile("data/player.json");
 	if (!dataFile.is_open())
 		throw std::exception();
@@ -49,6 +48,7 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 		inventory[i] = nullptr;
 	for (json &item : data["start-inventory"])
 		inventory[item["pos"]] = Item::Create(item["id"], item["count"]);
+	hp = GetMaxHP();
 }
 
 void Player::Update(sf::Time deltaTime)
@@ -106,6 +106,20 @@ void Player::TakeHit(unsigned int damage)
 	hp = std::max(hp - dmg, 0);
 	battleAnimationState = BattleAnimationState::TakeHit;
 	animationCurFrame = 0;
+}
+
+unsigned int Player::GetMaxHP()
+{
+	unsigned int heal = currentPlayer->stats[Stat::HP];
+	for (int i = 15; i < 20; i++)
+		if (currentPlayer->inventory[i]) heal +=
+			currentPlayer->inventory[i]->GetTemplate()->GetStats()[Stat::HP];
+	return heal;
+}
+
+void Player::Heal(unsigned int healing)
+{
+	currentPlayer->hp = std::min(currentPlayer->hp + healing, GetMaxHP());
 }
 
 void Player::UpdateInGame(sf::Time deltaTime)
@@ -289,8 +303,8 @@ sf::Vector2f Player::GetFixedPos(float deltaX, float deltaY,
 
 float Player::GenerateRequiredDistance()
 {
-	//return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
-	return 10.f;
+	return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
+	//return 10.f;
 }
 
 sf::Vector2f Player::GetPos()
@@ -303,7 +317,7 @@ float Player::GetSize()
 	return Level::GetTileSize() * sizeCoef;
 }
 
-Item* Player::GetItem(unsigned int pos)
+Item *Player::GetItem(unsigned int pos)
 {
 	return currentPlayer->inventory[pos];
 }

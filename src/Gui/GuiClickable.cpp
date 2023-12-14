@@ -24,6 +24,7 @@ void GuiClickable::ProcessEvent(const sf::Event &event)
 	if (isHovered) isPressed = isPressed ||
 		event.type == sf::Event::MouseButtonPressed;
 	else isPressed = false;
+	if (ShouldDrag()) isPressed = false;
 	if (event.type == sf::Event::MouseButtonReleased)
 	{
 		if (isHovered && isPressed && !ShouldDrag()) OnClick(event);

@@ -23,6 +23,7 @@ public:
 	static std::vector<Enemy*> GetEnemies();
 	static bool IsPlayerTurn();
 	static void MakeTurn(TurnAction action);
+	static void SetTurnStage(TurnStage turnStage);
 	static TurnAction GetChosenAction();
 	static TurnStage GetStage();
 	static Entity *GetTurnMaker();
