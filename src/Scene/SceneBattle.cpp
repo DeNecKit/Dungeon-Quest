@@ -79,6 +79,10 @@ SceneBattle::~SceneBattle()
 		delete enemyBar;
 	delete actionsMenu;
 	delete messageText;
+	delete inventoryGui;
+	delete inventoryCancel;
+	delete victoryMenu;
+	delete defeatMenu;
 	Player::InBattle(false);
 	instance = nullptr;
 }

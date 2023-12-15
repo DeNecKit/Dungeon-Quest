@@ -99,6 +99,7 @@ void GameManager::Close()
 void GameManager::Shutdown()
 {
 	delete fpsText;
+	delete fpsBackground;
 	delete window;
 	SceneManager::Shutdown();
 	ResourceManager::Shutdown();

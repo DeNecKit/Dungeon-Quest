@@ -13,7 +13,7 @@ sf::Sprite Item::GetSprite()
 
 unsigned int Item::GetSize()
 {
-	return itemTemplate->GetSize();
+	return ItemTemplate::GetSize();
 }
 
 unsigned int Item::GetCount()
@@ -52,9 +52,25 @@ void Item::Delete(Item *item)
 	delete item;
 }
 
+sf::Sprite &Item::GetEquipmentSlotSprite(ItemType slot)
+{
+	return equipmentSlots->at(slot);
+}
+
 void Item::Init()
 {
 	itemMemory = new std::vector<Item*>();
+	eqSlotsTexture = new sf::Texture();
+	if (!eqSlotsTexture->loadFromFile("data/equipment-slots.png"))
+		throw new std::exception();
+	equipmentSlots = new std::map<ItemType, sf::Sprite>();
+	for (int i = 0; i < 5; i++)
+	{
+		sf::Sprite s = sf::Sprite(*eqSlotsTexture, sf::IntRect(i*32, 0, 32, 32));
+		float factor = GetSize() / 32.f;
+		s.setScale(factor, factor);
+		equipmentSlots->insert({ (ItemType)((int)ItemType::Sword + i), s });
+	}
 }
 
 void Item::Shutdown()
@@ -65,4 +81,6 @@ void Item::Shutdown()
 		if (item != nullptr) delete item;
 	}
 	delete itemMemory;
+	delete equipmentSlots;
+	delete eqSlotsTexture;
 }

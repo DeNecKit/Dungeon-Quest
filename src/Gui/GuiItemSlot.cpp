@@ -96,10 +96,11 @@ void GuiItemSlot::Update(sf::Time deltaTime)
 void GuiItemSlot::Render(sf::RenderWindow *window)
 {
 	rect.Render(window);
+	int spSize = (int)ItemTemplate::GetSize();
+	bool renderSlot = false;
 	if (item != nullptr)
 	{
 		sprite = item->GetSprite();
-		int spSize = (int)ItemTemplate::GetSize();
 		sprite.setPosition(
 			dimensions.left + dimensions.width / 2.f - spSize / 2.f,
 			dimensions.top + dimensions.height / 2.f - spSize / 2.f);
@@ -108,12 +109,20 @@ void GuiItemSlot::Render(sf::RenderWindow *window)
 				SceneGame::RenderOnTop(&sprite);
 			else SceneBattle::RenderOnTop(&sprite);
 		else window->draw(sprite);
-	}
+	} else renderSlot = true;
 	if (!click.ShouldDrag())
 	{
 		if (lastCount > 1) countText.Render(window);
-		click.Render(window);
+	} else renderSlot = true;
+	if (type >= SlotType::Sword && renderSlot)
+	{
+		sf::Sprite s = Item::GetEquipmentSlotSprite((ItemType)type);
+		s.setPosition(
+			origPos.x + dimensions.width / 2.f - spSize / 2.f,
+			origPos.y + dimensions.height / 2.f - spSize / 2.f);
+		window->draw(s);
 	}
+	if (!click.ShouldDrag()) click.Render(window);
 }
 
 unsigned int GuiItemSlot::GetPos()
