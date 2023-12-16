@@ -9,8 +9,7 @@
 #include "../Level.h"
 
 SceneGame::SceneGame()
-	: isInterTextVisible(false), isPaused(false), isInvMenu(false),
-	renderOnTop(nullptr), openedChest(nullptr)
+	: isInterTextVisible(false), isPaused(false), isInvMenu(false), openedChest(nullptr)
 {
 	instance = this;
 	const float hww = 1920.f/2, hwh = 1080.f/2;
@@ -45,7 +44,7 @@ SceneGame::SceneGame()
 		x2 = cx + d, y2 = cy + s + d;
 	inventoryGui = GuiList::CreatePlayerInventory();
 	equipmentGui = new GuiList(sf::FloatRect(ex, ey, ew, eh),
-		Gui::ButtonFillColor, Gui::ButtonOutlineColor);
+		true, Gui::ButtonFillColor, Gui::ButtonOutlineColor);
 	equipmentGui->Append(new GuiText(
 		sf::FloatRect(ex, ey, ew, s), L"Экипировка", 48));
 	for (int x = 0; x < n; x++)
@@ -53,7 +52,7 @@ SceneGame::SceneGame()
 			sf::FloatRect(x1 + x*(s+d), y1, s, s),
 			nullptr, 15+x, (SlotType)(x + 1), Player::GetItem(15+x)));
 	chestGui = new GuiList(sf::FloatRect(cx, cy, cw, ch),
-		Gui::ButtonFillColor, Gui::ButtonOutlineColor);
+		true, Gui::ButtonFillColor, Gui::ButtonOutlineColor);
 	chestGui->Append(new GuiText(
 		sf::FloatRect(cx, cy, cw, s), L"Сундук", 48));
 	for (int y = 0; y < m; y++)
@@ -124,10 +123,13 @@ void SceneGame::RenderGUI(sf::RenderWindow *window)
 		equipmentGui->Render(window);
 		if (openedChest != nullptr) chestGui->Render(window);
 	}
-	if (renderOnTop != nullptr)
+	if (renderOnTop.size() > 0)
 	{
-		window->draw(*renderOnTop);
-		renderOnTop = nullptr;
+		for (std::variant<sf::Drawable*, Gui*> obj : renderOnTop)
+			if (std::holds_alternative<sf::Drawable*>(obj))
+				window->draw(*std::get<sf::Drawable*>(obj));
+			else std::get<Gui*>(obj)->Render(window);
+		renderOnTop.clear();
 	}
 }
 
@@ -163,9 +165,15 @@ void SceneGame::OpenChest(TileChest *chest)
 	}
 }
 
-void SceneGame::RenderOnTop(sf::Drawable *r)
+void SceneGame::RefreshPlayerInventory()
 {
-	instance->renderOnTop = r;
+	for (int i = 0; i < 15; i++)
+		instance->inventoryGui->SetItem(i, Player::GetItem(i));
+}
+
+void SceneGame::RenderOnTop(std::variant<sf::Drawable*, Gui*> obj)
+{
+	instance->renderOnTop.push_back(obj);
 }
 
 std::vector<Gui*> SceneGame::GetInventoryGui()

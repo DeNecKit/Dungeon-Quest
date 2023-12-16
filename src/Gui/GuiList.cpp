@@ -4,14 +4,23 @@
 #include "../Tile/TileChest.h"
 #include "GuiText.h"
 
-GuiList::GuiList(sf::FloatRect dims,
+GuiList::GuiList(sf::FloatRect dims, bool isInventory,
 	sf::Color fillColor, sf::Color outlineColor)
-	: Gui(dims), rect(dims, fillColor, outlineColor) {}
+	: Gui(dims), rect(dims, fillColor, outlineColor),
+	isInventory(isInventory), showItemPopup(false), itemPopup(nullptr)
+{
+	if (isInventory)
+	{
+		itemPopup = new GuiList(sf::FloatRect(100.f, 100.f, 100.f, 100.f));
+		itemPopup->Append(new GuiText(sf::FloatRect(100.f, 100.f, 0.f, 0.f), "", 24, false));
+	}
+}
 
 GuiList::~GuiList()
 {
 	for (Gui *element : children)
 		delete element;
+	if (itemPopup != nullptr) delete itemPopup;
 }
 
 void GuiList::ProcessEvent(const sf::Event &event)
@@ -24,6 +33,7 @@ void GuiList::Update(sf::Time deltaTime)
 {
 	for (Gui *element : children)
 		element->Update(deltaTime);
+	if (isInventory) UpdateItemPopup();
 }
 
 void GuiList::Render(sf::RenderWindow *window)
@@ -31,6 +41,7 @@ void GuiList::Render(sf::RenderWindow *window)
 	rect.Render(window);
 	for (Gui *element : children)
 		element->Render(window);
+	if (showItemPopup) itemPopup->Render(window);
 }
 
 void GuiList::Append(Gui *element)
@@ -54,6 +65,22 @@ void GuiList::SetParent(unsigned int pos, TileChest *parentChest)
 	slot->parentChest = parentChest;
 }
 
+void GuiList::UpdateItemPopup()
+{
+	showItemPopup = false;
+	for (Gui *gui : children)
+	{
+		GuiItemSlot *slot = dynamic_cast<GuiItemSlot*>(gui);
+		if (slot == nullptr) continue;
+		if (slot->item != nullptr && slot->IsMouseOver() &&
+			!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			showItemPopup = true;
+			break;
+		}
+	}
+}
+
 GuiList *GuiList::CreatePlayerInventory()
 {
 	const float hww = 1920.f / 2, hwh = 1080.f / 2,
@@ -68,7 +95,7 @@ GuiList *GuiList::CreatePlayerInventory()
 		x1 = ex + d, y1 = ey + s + d,
 		x2 = cx + d, y2 = cy + s + d;
 	GuiList *inventoryGui = new GuiList(sf::FloatRect(ix, iy, iw, ih),
-		Gui::ButtonFillColor, Gui::ButtonOutlineColor);
+		true, Gui::ButtonFillColor, Gui::ButtonOutlineColor);
 	inventoryGui->Append(new GuiText(
 		sf::FloatRect(ix, iy, iw, s), L"Инвентарь", 48));
 	for (int y = 0; y < m; y++)

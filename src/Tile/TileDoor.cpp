@@ -22,8 +22,25 @@ void TileDoor::ProcessEvent(const sf::Event &event)
 		std::abs(py - y) < tileSize * 1.2f)
 	{
 		SceneGame::InteractionNotify();
-		isOpen = event.type == sf::Event::KeyPressed
-			&& event.key.code == sf::Keyboard::F;
+		if (event.type == sf::Event::KeyPressed
+			&& event.key.code == sf::Keyboard::F)
+			if (id == 37 || Player::HasItem(ItemTemplate::Get(6)))
+			{
+				isOpen = true;
+				Item *key = nullptr;
+				for (int i = 0; i < 20; i++)
+				{
+					Item *item = Player::GetItem(i);
+					if (item != nullptr && item->GetTemplate() == ItemTemplate::Get(6))
+					{
+						key = item;
+						break;
+					}
+				}
+				if (key == nullptr) throw new std::exception();
+				key->Use();
+				SceneGame::RefreshPlayerInventory();
+			} else isOpen = id != 37;
 	}
 }
 

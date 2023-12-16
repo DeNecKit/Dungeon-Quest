@@ -10,7 +10,8 @@
 class GuiList : public Gui
 {
 public:
-	GuiList(sf::FloatRect dims, sf::Color fillColor = MenuFillColor,
+	GuiList(sf::FloatRect dims, bool isInventory = false,
+		sf::Color fillColor = MenuFillColor,
 		sf::Color outlineColor = MenuOutlineColor);
 	~GuiList();
 	void ProcessEvent(const sf::Event&) override;
@@ -24,6 +25,10 @@ public:
 	static GuiList *CreatePlayerInventory();
 
 private:
+	void UpdateItemPopup();
+
 	GuiRect rect;
 	std::vector<Gui*> children;
+	GuiList *itemPopup;
+	bool isInventory, showItemPopup;
 };

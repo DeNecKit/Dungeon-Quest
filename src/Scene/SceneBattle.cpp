@@ -44,7 +44,7 @@ SceneBattle::SceneBattle()
 	messageText = new GuiText(sf::FloatRect(50.f, 50.f, 1.f, 50.f), L"", 24, false);
 	const float bw = 250.f, bh = 75.f, d = 25.f, w = bw*3 + d*4, h = bh + d*2,
 		x = d, y = GameManager::WindowHeight() - d - h;
-	actionsMenu = new GuiList(sf::FloatRect(x, y, w, h));
+	actionsMenu = new GuiList(sf::FloatRect(x, y, w, h), true);
 	actionsMenu->Append(new GuiButton(sf::FloatRect(x+d, y+d, bw, bh),
 		L"Атака", 24, [](const sf::Event&) { Battle::MakeTurn(TurnAction::Attack); }));
 	actionsMenu->Append(new GuiButton(sf::FloatRect(x+d*2+bw, y+d, bw, bh),

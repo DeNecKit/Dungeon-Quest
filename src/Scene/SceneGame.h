@@ -5,6 +5,7 @@
 #include "../Gui/GuiList.h"
 #include "../Gui/Gui.h"
 #include "../Tile/TileChest.h"
+#include <variant>
 
 class SceneGame final : public Scene
 {
@@ -19,7 +20,8 @@ public:
 	static void InteractionNotify();
 	static void SetPause(bool pause);
 	static void OpenChest(TileChest *chest);
-	static void RenderOnTop(sf::Drawable *r);
+	static void RefreshPlayerInventory();
+	static void RenderOnTop(std::variant<sf::Drawable*, Gui*> obj);
 	static std::vector<Gui*> GetInventoryGui();
 
 private:
@@ -28,7 +30,8 @@ private:
 		*inventoryGui, *equipmentGui, *chestGui;
 	TileChest *openedChest;
 	bool isInterTextVisible, isPaused, isInvMenu;
-	sf::Drawable *renderOnTop;
+	std::vector<std::variant<sf::Drawable*, Gui*>> renderOnTop;
+	std::vector<Gui*> renderOnTopGui;
 
 	static inline SceneGame *instance;
 };

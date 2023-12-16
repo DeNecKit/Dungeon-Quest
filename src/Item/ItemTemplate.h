@@ -22,12 +22,14 @@ public:
 	std::map<Stat, const int> GetStats();
 	bool IsUsable();
 	void Click();
+	const sf::String &GetName();
 
 	static void Init();
 	static void Shutdown();
 	static unsigned int GetSize();
 	static std::vector<ItemTemplate*> GetItemTemplates();
 	static std::map<Stat, const int> GetNullStats();
+	static ItemTemplate *Get(unsigned int index);
 
 protected:
 	ItemType type;

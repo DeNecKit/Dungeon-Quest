@@ -24,6 +24,7 @@ public:
 	static sf::Vector2f GetPos();
 	static float GetSize();
 	static Item *GetItem(unsigned int pos);
+	static bool HasItem(ItemTemplate *itemTemplate);
 	static void SetItem(unsigned int pos, Item *item);
 	static void InBattle(bool set);
 	static std::map<Stat, unsigned int> GetStats();

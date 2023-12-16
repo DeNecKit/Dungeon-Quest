@@ -51,3 +51,9 @@ void GuiText::SetString(const sf::String& str)
 	innerDimensions = centerText(dimensions, text);
 	text.setPosition(innerDimensions.getPosition());
 }
+
+void GuiText::SetDimensions(sf::FloatRect dims)
+{
+	dimensions = dims;
+	innerDimensions = alignCenter ? centerText(dims, text) : dims;
+}

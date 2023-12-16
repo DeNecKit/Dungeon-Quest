@@ -322,6 +322,15 @@ Item *Player::GetItem(unsigned int pos)
 	return currentPlayer->inventory[pos];
 }
 
+bool Player::HasItem(ItemTemplate *itemTemplate)
+{
+	for (int i = 0; i < 20; i++)
+		if (currentPlayer->inventory[i] != nullptr &&
+			currentPlayer->inventory[i]->GetTemplate() == itemTemplate)
+			return true;
+	return false;
+}
+
 void Player::SetItem(unsigned int pos, Item *item)
 {
 	currentPlayer->inventory[pos] = item;

@@ -37,7 +37,12 @@ void Item::Use()
 	count--;
 }
 
-Item* Item::Create(unsigned int itemTemplateId, unsigned int count)
+const sf::String &Item::GetName()
+{
+	return itemTemplate->GetName();
+}
+
+Item *Item::Create(unsigned int itemTemplateId, unsigned int count)
 {
 	return new Item(ItemTemplate::GetItemTemplates()[itemTemplateId], count);
 }

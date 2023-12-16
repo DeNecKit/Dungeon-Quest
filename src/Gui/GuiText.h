@@ -15,6 +15,7 @@ public:
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
 	void SetString(const sf::String &str);
+	void SetDimensions(sf::FloatRect dims);
 
 private:
 	sf::FloatRect innerDimensions;

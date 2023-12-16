@@ -97,7 +97,7 @@ void GuiItemSlot::Render(sf::RenderWindow *window)
 {
 	rect.Render(window);
 	int spSize = (int)ItemTemplate::GetSize();
-	bool renderSlot = false;
+	bool renderSlot = item == nullptr || click.ShouldDrag();
 	if (item != nullptr)
 	{
 		sprite = item->GetSprite();
@@ -105,15 +105,32 @@ void GuiItemSlot::Render(sf::RenderWindow *window)
 			dimensions.left + dimensions.width / 2.f - spSize / 2.f,
 			dimensions.top + dimensions.height / 2.f - spSize / 2.f);
 		if (click.ShouldDrag())
+		{
 			if (dynamic_cast<SceneGame*>(SceneManager::GetCurrentScene()))
 				SceneGame::RenderOnTop(&sprite);
 			else SceneBattle::RenderOnTop(&sprite);
-		else window->draw(sprite);
-	} else renderSlot = true;
-	if (!click.ShouldDrag())
-	{
-		if (lastCount > 1) countText.Render(window);
-	} else renderSlot = true;
+			if (lastCount > 1)
+			{
+				countText.SetDimensions(sf::FloatRect(
+					dimensions.left + dimensions.width * 0.7f,
+					dimensions.top + dimensions.height * 0.7f,
+					dimensions.width * 0.2f, dimensions.height * 0.2f));
+				SceneGame::RenderOnTop(&countText);
+			}
+		}
+		else
+		{
+			window->draw(sprite);
+			if (lastCount > 1)
+			{
+				countText.Render(window);
+				countText.SetDimensions(sf::FloatRect(
+					origPos.x + dimensions.width * 0.7f,
+					origPos.y + dimensions.height * 0.7f,
+					dimensions.width * 0.2f, dimensions.height * 0.2f));
+			}
+		}
+	}
 	if (type >= SlotType::Sword && renderSlot)
 	{
 		sf::Sprite s = Item::GetEquipmentSlotSprite((ItemType)type);

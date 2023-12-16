@@ -42,6 +42,11 @@ void ItemTemplate::Click()
 	onClick();
 }
 
+const sf::String &ItemTemplate::GetName()
+{
+	return name;
+}
+
 void ItemTemplate::Init()
 {
 	size = (int)(75 * GameManager::ResCoefX());
@@ -88,4 +93,9 @@ std::vector<ItemTemplate*> ItemTemplate::GetItemTemplates()
 std::map<Stat, const int> ItemTemplate::GetNullStats()
 {
 	return nullStats;
+}
+
+ItemTemplate *ItemTemplate::Get(unsigned int index)
+{
+	return (*itemTemplates)[index];
 }
