@@ -62,3 +62,17 @@ bool EnemyGoblin::FinishedDeathAnimation()
 {
 	return finishedDeath;
 }
+
+unsigned int EnemyGoblin::DropExp()
+{
+	return std::rand() % 5 + 3;
+}
+
+std::vector<Item*> EnemyGoblin::DropLoot()
+{
+	int c = 0;
+	std::vector<Item*> res;
+	while (std::rand() % 5 && c++ < 3);
+	if (c > 0) res.push_back(Item::Create(7, c));
+	return res;
+}

@@ -53,7 +53,7 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	curLevel = 1;
 	curExp = 0;
 	maxLevel = data["max-lvl"];
-	for (unsigned int i = 0; i < maxLevel; i++)
+	for (unsigned int i = 0; i < maxLevel-1; i++)
 		reqExpList.push_back(data["req-exp"][i]);
 	reqExp = reqExpList[0];
 	levelString = new sf::String(L"Уровень 1");
@@ -358,8 +358,8 @@ sf::Vector2f Player::GetFixedPos(float deltaX, float deltaY,
 
 float Player::GenerateRequiredDistance()
 {
-	return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
-	//return 10.f;
+	//return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
+	return 10.f;
 }
 
 sf::Vector2f Player::GetPos()

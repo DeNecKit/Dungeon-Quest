@@ -1,9 +1,11 @@
 #include "GuiClickable.h"
 
 GuiClickable::GuiClickable(sf::FloatRect dims,
-	void (*onClick)(const sf::Event&), bool doHover, GuiDraggable *drag)
+	void (*onClick)(const sf::Event&), bool doHover,
+	GuiDraggable *drag, bool isClickable)
 	: Gui(dims), OnClick(onClick), isPressed(false),
-	doHover(doHover), isHovered(false), drag(drag), dragReleased(false)
+	doHover(doHover), isHovered(false), drag(drag),
+	dragReleased(false), isClickable(isClickable)
 {
 	hoverRect = sf::RectangleShape(dimensions.getSize());
 	hoverRect.setPosition(dimensions.getPosition());
@@ -21,12 +23,12 @@ GuiClickable::~GuiClickable()
 void GuiClickable::ProcessEvent(const sf::Event &event)
 {
 	isHovered = IsMouseOver();
-	if (isHovered) isPressed = isPressed ||
+	if (isHovered && isClickable) isPressed = isPressed ||
 		event.type == sf::Event::MouseButtonPressed &&
 		event.mouseButton.button == sf::Mouse::Left;
 	else isPressed = false;
 	if (ShouldDrag()) isPressed = false;
-	if (event.type == sf::Event::MouseButtonReleased)
+	if (isClickable && event.type == sf::Event::MouseButtonReleased)
 	{
 		if (isHovered && isPressed && !ShouldDrag()) OnClick(event);
 		if (ShouldDrag())
@@ -40,7 +42,7 @@ void GuiClickable::ProcessEvent(const sf::Event &event)
 
 void GuiClickable::Update(sf::Time deltaTime)
 {
-	if (drag != nullptr && isHovered && isPressed)
+	if (isClickable && drag != nullptr && isHovered && isPressed)
 		drag->Update(deltaTime);
 }
 

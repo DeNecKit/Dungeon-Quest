@@ -4,13 +4,13 @@
 #include "../Battle.h"
 #include "../ResourceManager.h"
 
-GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest* parentChest,
-	unsigned int pos, SlotType type, Item* item)
+GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest *parentChest,
+	unsigned int pos, SlotType type, Item *item, bool isClickable)
 	: Gui(dims), type(type), item(item), origPos(dimensions.getPosition()),
 	rect(dims, Gui::ItemSlotFillColor, Gui::ItemSlotOutlineColor),
-	pos(pos), parentChest(parentChest),
+	pos(pos), parentChest(parentChest), isClickable(isClickable),
 	click(dims, [](const sf::Event&) {}, true,
-		new GuiDraggable(sf::milliseconds(100))),
+		new GuiDraggable(sf::milliseconds(100)), isClickable),
 	lastCount(item == nullptr ? 1 : item->GetCount()), countText(sf::FloatRect(
 		dims.left + dims.width * 0.7f, dims.top + dims.height * 0.7f,
 		dims.width * 0.2f, dims.height * 0.2f),

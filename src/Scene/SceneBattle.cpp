@@ -3,10 +3,14 @@
 #include "SceneGame.h"
 #include "../Battle.h"
 #include "../Gui/GuiButton.h"
+#include "../Gui/GuiItemSlot.h"
 #include "../GameManager.h"
 #include "../Entity/Player.h"
 
 sf::Time msgTime = sf::Time::Zero;
+bool generatedLoot = false;
+unsigned int obtainedExp = 0U;
+std::vector<Item*> obtainedLoot;
 
 void setTargetRect(sf::RectangleShape &targetRect)
 {
@@ -28,7 +32,7 @@ void setActionMenuEnabled(GuiList *actionsMenu, bool enabled)
 }
 
 SceneBattle::SceneBattle()
-	: lastTarget(Battle::Get()->target), isInvMenu(false)
+	: lastTarget(Battle::Get()->target), isInvMenu(false), victoryMenu(nullptr)
 {
 	instance = this;
 	Player::InBattle(true);
@@ -59,10 +63,6 @@ SceneBattle::SceneBattle()
 	const float mbw = 500.f, mbh = 100.f, bd = 50.f,
 		vmw = mbw + bd*2, vmh = mbh*2 + bd*3,
 		vmx = hww - vmw/2, vmy = hwh - vmh/2;
-	victoryMenu = new GuiList(sf::FloatRect(vmx, vmy, vmw, vmh));
-	victoryMenu->Append(new GuiText(sf::FloatRect(vmx+bd, vmy+bd, mbw, mbh), L"Победа!", 48));
-	victoryMenu->Append(new GuiButton(sf::FloatRect(vmx+bd, vmy+mbh+bd*2, mbw, mbh),
-		L"Продолжить", 24, [](const sf::Event&) { Battle::End(); }));
 	const float dmw = mbw + bd*2, dmh = mbh*2 + bd*3,
 		dmx = hww - dmw/2, dmy = hwh - dmh/2;
 	defeatMenu = new GuiList(sf::FloatRect(dmx, dmy, dmw, dmh));
@@ -70,6 +70,9 @@ SceneBattle::SceneBattle()
 	defeatMenu->Append(new GuiButton(sf::FloatRect(dmx+bd, dmy+mbh+bd*2, mbw, mbh),
 		L"Вернуться в главное меню", 24, [](const sf::Event&) { Battle::End(); }));
 	setTargetRect(targetRect);
+	generatedLoot = false;
+	obtainedExp = 0U;
+	obtainedLoot.clear();
 }
 
 SceneBattle::~SceneBattle()
@@ -81,7 +84,7 @@ SceneBattle::~SceneBattle()
 	delete messageText;
 	delete inventoryGui;
 	delete inventoryCancel;
-	delete victoryMenu;
+	if (victoryMenu != nullptr) delete victoryMenu;
 	delete defeatMenu;
 	Player::InBattle(false);
 	instance = nullptr;
@@ -109,23 +112,68 @@ void SceneBattle::ProcessEvent(const sf::Event &event)
 
 void SceneBattle::Update(sf::Time deltaTime)
 {
-	if (Battle::Get() == nullptr) return;
-	if (Battle::IsEnd())
-	{
-		if (Battle::IsVictory()) victoryMenu->Update(deltaTime);
-		else defeatMenu->Update(deltaTime);
-		return;
-	}
-	if (isInvMenu)
-	{
+	if (Battle::Get() != nullptr)
 		Battle::Get()->Update(deltaTime);
+	if (Battle::Get() == nullptr) return;
+	if (isInvMenu && !Battle::IsEnd())
+	{
 		inventoryGui->Update(deltaTime);
 		inventoryCancel->Update(deltaTime);
 		return;
 	}
+	if (Battle::IsEnd())
+	{
+		if (!generatedLoot)
+		{
+			for (Enemy* enemy : Battle::GetEnemies())
+			{
+				obtainedExp += enemy->DropExp();
+				auto loot = enemy->DropLoot();
+				obtainedLoot.insert(obtainedLoot.end(), loot.begin(), loot.end());
+			}
+			for (size_t i = obtainedLoot.size() - 1; i > 0; i--)
+				if (obtainedLoot[i]->GetTemplate() == obtainedLoot[i-1]->GetTemplate())
+				{
+					obtainedLoot[i]->SetCount(
+						obtainedLoot[i]->GetCount() + obtainedLoot[i-1]->GetCount());
+					Item::Delete(obtainedLoot[i - 1]);
+					obtainedLoot.erase(obtainedLoot.begin() + i-1);
+				}
+			const bool droppedLoot = obtainedLoot.size() > 0;
+			const int bc = droppedLoot ? 4 : 3;
+			const float hww = GameManager::WindowWidth() / 2.f,
+				hwh = GameManager::WindowHeight()/2.f,
+				bw = 500.f, bh = 100.f, bd = 50.f,
+				vmw = bw+bd*2, vmh = bh*bc+bd*(bc+1),
+				vmx = hww-vmw/2, vmy = hwh-vmh/2;
+			victoryMenu = new GuiList(sf::FloatRect(vmx, vmy, vmw, vmh));
+			victoryMenu->Append(new GuiText(
+				sf::FloatRect(vmx+bd, vmy+bd, bw, bh), L"Победа!", 48));
+			victoryMenu->Append(
+				new GuiText(sf::FloatRect(vmx+bd, vmy+bh+bd*2, bw, bh),
+					L"+" + std::to_wstring(obtainedExp) + L" опыта", 24));
+			if (droppedLoot)
+			{
+				const size_t n = obtainedLoot.size();
+				const float s = 100.f, h = 125.f,
+					x = vmx+vmw/2-(s*n+bd*(n-1))/2, y = vmy+bh*2+bd*3;
+				auto loot = new GuiList(sf::FloatRect(vmx+bd, y, bw, h), true);
+				for (int i = 0; i < n; i++)
+					loot->Append(new GuiItemSlot(sf::FloatRect(x+(s+bd)*i, y+h/2-s/2, s, s),
+						nullptr, i, SlotType::Any, obtainedLoot[i], false));
+				victoryMenu->Append(loot);
+			}
+			victoryMenu->Append(new GuiButton(
+				sf::FloatRect(vmx+bd, vmy+bh*(bc-1)+bd*bc, bw, bh),
+				L"Продолжить", 24, [](const sf::Event&) { Battle::End(); }));
+			generatedLoot = true;
+		}
+		if (Battle::IsVictory()) victoryMenu->Update(deltaTime);
+		else defeatMenu->Update(deltaTime);
+		return;
+	}
 	setActionMenuEnabled(instance->actionsMenu,
 		Battle::IsPlayerTurn() && Battle::GetStage() == TurnStage::Waiting);
-	Battle::Get()->Update(deltaTime);
 	if (Battle::Get() == nullptr) return;
 	playerHealthBar->Update(deltaTime);
 	int i = 0;
@@ -158,13 +206,14 @@ void SceneBattle::RenderGUI(sf::RenderWindow *window)
 		window->draw(r);
 		if (Battle::IsVictory()) victoryMenu->Render(window);
 		else defeatMenu->Render(window);
-		return;
-	}
-	actionsMenu->Render(window);
-	if (isInvMenu)
+	} else
 	{
-		inventoryGui->Render(window);
-		inventoryCancel->Render(window);
+		actionsMenu->Render(window);
+		if (isInvMenu)
+		{
+			inventoryGui->Render(window);
+			inventoryCancel->Render(window);
+		}
 	}
 	if (renderOnTop.size() > 0)
 	{

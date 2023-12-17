@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Entity.h"
+#include "../Item/Item.h"
 #include <map>
+#include <vector>
 
 class Enemy : public Entity
 {
@@ -19,6 +21,8 @@ public:
 	void TakeHit(unsigned int damage) override;
 	std::map<Stat, unsigned int> GetStats();
 	virtual sf::FloatRect GetClickHitbox() = 0;
+	virtual unsigned int DropExp() = 0;
+	virtual std::vector<Item*> DropLoot() = 0;
 
 protected:
 	const sf::String &name;

@@ -21,6 +21,11 @@ unsigned int Item::GetCount()
 	return count;
 }
 
+void Item::SetCount(unsigned int count)
+{
+	this->count = count;
+}
+
 ItemType Item::GetType()
 {
 	return itemTemplate == nullptr ? ItemType::None : itemTemplate->GetType();

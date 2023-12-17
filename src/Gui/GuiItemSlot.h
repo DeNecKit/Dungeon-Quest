@@ -16,7 +16,7 @@ class GuiItemSlot : public Gui
 public:
 	GuiItemSlot(sf::FloatRect dims, TileChest *parentChest,
 		unsigned int pos, SlotType type = SlotType::Any,
-		Item *item = nullptr);
+		Item *item = nullptr, bool isClickable = true);
 	void ProcessEvent(const sf::Event&) override;
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
@@ -34,4 +34,5 @@ private:
 	sf::Vector2i lastMousePos;
 	sf::Vector2f origPos;
 	unsigned int pos, lastCount;
+	bool isClickable;
 };

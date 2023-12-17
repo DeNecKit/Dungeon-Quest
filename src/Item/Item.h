@@ -10,6 +10,7 @@ public:
 	Item(ItemTemplate *itemTemplate, unsigned int count);
 	sf::Sprite GetSprite();
 	unsigned int GetCount();
+	void SetCount(unsigned int count);
 	ItemType GetType();
 	ItemTemplate *GetTemplate();
 	void Use();

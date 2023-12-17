@@ -11,4 +11,6 @@ public:
 	bool FinishedActionAnimation() override;
 	bool FinishedHitAnimation() override;
 	bool FinishedDeathAnimation() override;
+	unsigned int DropExp() override;
+	std::vector<Item*> DropLoot() override;
 };
