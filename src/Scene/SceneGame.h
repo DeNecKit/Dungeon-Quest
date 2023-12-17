@@ -31,7 +31,6 @@ private:
 	TileChest *openedChest;
 	bool isInterTextVisible, isPaused, isInvMenu;
 	std::vector<std::variant<sf::Drawable*, Gui*>> renderOnTop;
-	std::vector<Gui*> renderOnTopGui;
 
 	static inline SceneGame *instance;
 };

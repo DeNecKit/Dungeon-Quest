@@ -28,7 +28,7 @@ void setActionMenuEnabled(GuiList *actionsMenu, bool enabled)
 }
 
 SceneBattle::SceneBattle()
-	: lastTarget(Battle::Get()->target), isInvMenu(false), renderOnTop(nullptr)
+	: lastTarget(Battle::Get()->target), isInvMenu(false)
 {
 	instance = this;
 	Player::InBattle(true);
@@ -166,10 +166,13 @@ void SceneBattle::RenderGUI(sf::RenderWindow *window)
 		inventoryGui->Render(window);
 		inventoryCancel->Render(window);
 	}
-	if (renderOnTop != nullptr)
+	if (renderOnTop.size() > 0)
 	{
-		window->draw(*renderOnTop);
-		renderOnTop = nullptr;
+		for (std::variant<sf::Drawable*, Gui*> obj : renderOnTop)
+			if (std::holds_alternative<sf::Drawable*>(obj))
+				window->draw(*std::get<sf::Drawable*>(obj));
+			else std::get<Gui*>(obj)->Render(window);
+		renderOnTop.clear();
 	}
 }
 
@@ -208,7 +211,7 @@ std::vector<Gui*> SceneBattle::GetInventoryGui()
 	return instance->inventoryGui->GetChildren();
 }
 
-void SceneBattle::RenderOnTop(sf::Drawable* r)
+void SceneBattle::RenderOnTop(std::variant<sf::Drawable*, Gui*> obj)
 {
-	instance->renderOnTop = r;
+	instance->renderOnTop.push_back(obj);
 }

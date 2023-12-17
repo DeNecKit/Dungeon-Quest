@@ -10,7 +10,7 @@ GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest* parentChest,
 	rect(dims, Gui::ItemSlotFillColor, Gui::ItemSlotOutlineColor),
 	pos(pos), parentChest(parentChest),
 	click(dims, [](const sf::Event&) {}, true,
-		new GuiDraggable(sf::milliseconds(32))),
+		new GuiDraggable(sf::milliseconds(100))),
 	lastCount(item == nullptr ? 1 : item->GetCount()), countText(sf::FloatRect(
 		dims.left + dims.width * 0.7f, dims.top + dims.height * 0.7f,
 		dims.width * 0.2f, dims.height * 0.2f),
@@ -23,7 +23,7 @@ GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest* parentChest,
 void GuiItemSlot::ProcessEvent(const sf::Event &event)
 {
 	if (click.IsPressed() && event.type == sf::Event::MouseButtonReleased
-		&& Battle::Get() != nullptr) Battle::ChooseItem(item);
+		&& !click.ShouldDrag() && Battle::Get() != nullptr) Battle::ChooseItem(item);
 	click.ProcessEvent(event);
 }
 
@@ -38,7 +38,14 @@ void GuiItemSlot::Update(sf::Time deltaTime)
 				dimensions.getPosition().x + (curMousePos - lastMousePos).x,
 				dimensions.getPosition().y + (curMousePos - lastMousePos).y,
 				dimensions.width, dimensions.height);
-		else dimensions = sf::FloatRect(origPos, dimensions.getSize());
+		else
+		{
+			dimensions = sf::FloatRect(origPos, dimensions.getSize());
+			countText.SetDimensions(sf::FloatRect(
+				dimensions.left + dimensions.width * 0.7f,
+				dimensions.top + dimensions.height * 0.7f,
+				dimensions.width * 0.2f, dimensions.height * 0.2f));
+		}
 		lastMousePos = curMousePos;
 
 		if (click.DragReleased())
@@ -115,7 +122,9 @@ void GuiItemSlot::Render(sf::RenderWindow *window)
 					dimensions.left + dimensions.width * 0.7f,
 					dimensions.top + dimensions.height * 0.7f,
 					dimensions.width * 0.2f, dimensions.height * 0.2f));
-				SceneGame::RenderOnTop(&countText);
+				if (dynamic_cast<SceneGame*>(SceneManager::GetCurrentScene()))
+					SceneGame::RenderOnTop(&countText);
+				else SceneBattle::RenderOnTop(&countText);
 			}
 		}
 		else

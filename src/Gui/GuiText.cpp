@@ -23,6 +23,9 @@ GuiText::GuiText(sf::FloatRect dims, const sf::String &str,
 	text.setFillColor(textColor);
 	innerDimensions = alignCenter ? centerText(dimensions, text) : dimensions;
 	text.setPosition(innerDimensions.getPosition());
+	innerDimensions = sf::FloatRect(innerDimensions.getPosition(),
+		text.getLocalBounds().getSize() + text.getLocalBounds().getPosition());
+	dimensions = innerDimensions;
 }
 
 void GuiText::ProcessEvent(const sf::Event&) {}
@@ -44,11 +47,10 @@ void GuiText::Render(sf::RenderWindow *window)
 	window->draw(text);
 }
 
-void GuiText::SetString(const sf::String& str)
+void GuiText::SetString(const sf::String &str)
 {
 	text.setString(str);
-	if (!alignCenter) return;
-	innerDimensions = centerText(dimensions, text);
+	if (alignCenter) innerDimensions = centerText(dimensions, text);
 	text.setPosition(innerDimensions.getPosition());
 }
 
@@ -56,4 +58,10 @@ void GuiText::SetDimensions(sf::FloatRect dims)
 {
 	dimensions = dims;
 	innerDimensions = alignCenter ? centerText(dims, text) : dims;
+}
+
+void GuiText::Stretch()
+{
+	dimensions = sf::FloatRect(dimensions.getPosition(),
+		text.getLocalBounds().getSize() + text.getLocalBounds().getPosition());
 }

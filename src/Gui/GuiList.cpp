@@ -3,6 +3,9 @@
 #include "../Entity/Player.h"
 #include "../Tile/TileChest.h"
 #include "GuiText.h"
+#include "../GameManager.h"
+#include "../Scene/SceneGame.h"
+#include "../Scene/SceneBattle.h"
 
 GuiList::GuiList(sf::FloatRect dims, bool isInventory,
 	sf::Color fillColor, sf::Color outlineColor)
@@ -12,7 +15,9 @@ GuiList::GuiList(sf::FloatRect dims, bool isInventory,
 	if (isInventory)
 	{
 		itemPopup = new GuiList(sf::FloatRect(100.f, 100.f, 100.f, 100.f));
-		itemPopup->Append(new GuiText(sf::FloatRect(100.f, 100.f, 0.f, 0.f), "", 24, false));
+		itemPopup->Append(new GuiText(sf::FloatRect(), "", 18, false));
+		itemPopup->Append(new GuiText(sf::FloatRect(0.f, 50.f, 0.f, 0.f), "", 18, false));
+		itemPopup->Minimize();
 	}
 }
 
@@ -41,7 +46,10 @@ void GuiList::Render(sf::RenderWindow *window)
 	rect.Render(window);
 	for (Gui *element : children)
 		element->Render(window);
-	if (showItemPopup) itemPopup->Render(window);
+	if (showItemPopup)
+		if (dynamic_cast<SceneGame*>(SceneManager::GetCurrentScene()))
+			SceneGame::RenderOnTop(itemPopup);
+		else SceneBattle::RenderOnTop(itemPopup);
 }
 
 void GuiList::Append(Gui *element)
@@ -65,6 +73,29 @@ void GuiList::SetParent(unsigned int pos, TileChest *parentChest)
 	slot->parentChest = parentChest;
 }
 
+void GuiList::Minimize()
+{
+	sf::Vector2f newSize = sf::Vector2f(0.f, 0.f),
+		startPos = dimensions.getPosition();
+	for (Gui *gui : children)
+	{
+		sf::FloatRect relDims = sf::FloatRect(
+			gui->dimensions.getPosition() - startPos, gui->dimensions.getSize());
+		if (relDims.left + relDims.width > newSize.x)
+			newSize = sf::Vector2f(relDims.left + relDims.width, newSize.y);
+		if (relDims.top + relDims.height > newSize.y)
+			newSize = sf::Vector2f(newSize.x, relDims.top + relDims.height);
+	}
+	dimensions = sf::FloatRect(startPos, newSize);
+	rect.SetDimensions(dimensions);
+}
+
+void GuiList::SetDimensions(sf::FloatRect dims)
+{
+	dimensions = dims;
+	rect.SetDimensions(dims);
+}
+
 void GuiList::UpdateItemPopup()
 {
 	showItemPopup = false;
@@ -76,6 +107,29 @@ void GuiList::UpdateItemPopup()
 			!sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			showItemPopup = true;
+			GuiText *name = dynamic_cast<GuiText*>(itemPopup->children[0]),
+				*desc = dynamic_cast<GuiText*>(itemPopup->children[1]);
+			name->SetString(slot->item->GetName());
+			name->Stretch();
+			desc->SetString(slot->item->GetDescription());
+			desc->Stretch();
+			itemPopup->Minimize();
+			itemPopup->SetDimensions(sf::FloatRect(
+				itemPopup->dimensions.left, itemPopup->dimensions.top,
+				itemPopup->dimensions.width + 25.f, itemPopup->dimensions.height));
+			sf::Vector2f mPos = (sf::Vector2f)sf::Mouse::getPosition(
+				*GameManager::GetWindow()) + sf::Vector2f(15.f, 15.f);
+			sf::Vector2f size = itemPopup->dimensions.getSize() + sf::Vector2f(0.f, 25.f),
+				deltaPos = sf::Vector2f();
+			if ((mPos + size).x > GameManager::WindowWidth())
+				deltaPos = sf::Vector2f(-size.x, 0.f);
+			if ((mPos + size).y > GameManager::WindowHeight())
+				deltaPos = sf::Vector2f(deltaPos.x, -size.y);
+			itemPopup->SetDimensions(sf::FloatRect(mPos + deltaPos, size));
+			name->SetDimensions(sf::FloatRect(
+				mPos + sf::Vector2f(25.f, 25.f) + deltaPos, name->dimensions.getSize()));
+			desc->SetDimensions(sf::FloatRect(
+				mPos + sf::Vector2f(25.f, 75.f) + deltaPos, desc->dimensions.getSize()));
 			break;
 		}
 	}

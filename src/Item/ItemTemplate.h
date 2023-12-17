@@ -12,17 +12,19 @@ enum class ItemType
 class ItemTemplate
 {
 public:
-	ItemTemplate(ItemType type, const sf::String &name,
+	ItemTemplate(ItemType type, sf::String name,
 		unsigned int textureId,
 		std::map<Stat, const int> stats = nullStats,
 		bool isUsable = false, void (*onClick)() = []() {});
+	~ItemTemplate();
 	sf::Sprite GetSprite();
-	sf::Texture* GetTileset();
+	sf::Texture *GetTileset();
 	ItemType GetType();
 	std::map<Stat, const int> GetStats();
 	bool IsUsable();
 	void Click();
 	const sf::String &GetName();
+	const sf::String &GetDescription();
 
 	static void Init();
 	static void Shutdown();
@@ -33,15 +35,20 @@ public:
 
 protected:
 	ItemType type;
-	const sf::String &name;
+	sf::String name;
 	unsigned int textureId;
 	std::map<Stat, const int> stats;
 	bool isUsable;
 	void (*onClick)();
+	sf::String *description;
 
 	static inline sf::Texture *tileset;
 	static inline unsigned int size;
 	static inline std::vector<ItemTemplate*>* itemTemplates;
 	static inline std::map<Stat, const int> nullStats
 		= { {Stat::HP, 0}, {Stat::ATK, 0}, {Stat::DEF, 0}, {Stat::AGI, 0} };
+	static inline std::map<Stat, sf::String> statNames
+		= { {Stat::HP, L" к макс. очкам здоровья"},
+			{Stat::ATK, L" к атаке"}, {Stat::DEF, L" к защите"},
+			{Stat::AGI, L" к ловкости"} };
 };

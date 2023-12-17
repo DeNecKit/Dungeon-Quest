@@ -42,6 +42,11 @@ const sf::String &Item::GetName()
 	return itemTemplate->GetName();
 }
 
+const sf::String &Item::GetDescription()
+{
+	return itemTemplate->GetDescription();
+}
+
 Item *Item::Create(unsigned int itemTemplateId, unsigned int count)
 {
 	return new Item(ItemTemplate::GetItemTemplates()[itemTemplateId], count);

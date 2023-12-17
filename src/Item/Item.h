@@ -14,6 +14,7 @@ public:
 	ItemTemplate *GetTemplate();
 	void Use();
 	const sf::String &GetName();
+	const sf::String &GetDescription();
 
 	static unsigned int GetSize();
 	static Item *Create(unsigned int itemTemplateId,

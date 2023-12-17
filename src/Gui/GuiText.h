@@ -16,6 +16,7 @@ public:
 	void Render(sf::RenderWindow*) override;
 	void SetString(const sf::String &str);
 	void SetDimensions(sf::FloatRect dims);
+	void Stretch();
 
 private:
 	sf::FloatRect innerDimensions;

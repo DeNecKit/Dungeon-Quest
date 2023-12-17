@@ -6,6 +6,7 @@
 #include "../Entity/Enemy.h"
 #include "../Gui/GuiButton.h"
 #include <vector>
+#include <variant>
 
 class SceneBattle final : public Scene
 {
@@ -20,7 +21,7 @@ public:
 	static void ShowInventory(bool show);
 	static bool IsInventoryOpen();
 	static std::vector<Gui*> GetInventoryGui();
-	static void RenderOnTop(sf::Drawable *r);
+	static void RenderOnTop(std::variant<sf::Drawable*, Gui*> obj);
 
 private:
 	GuiProgressBar *playerHealthBar;
@@ -31,7 +32,7 @@ private:
 	Enemy *lastTarget;
 	sf::RectangleShape targetRect;
 	bool isInvMenu;
-	sf::Drawable *renderOnTop;
+	std::vector<std::variant<sf::Drawable*, Gui*>> renderOnTop;
 
 	static inline SceneBattle *instance;
 };

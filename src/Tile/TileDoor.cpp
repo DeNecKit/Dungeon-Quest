@@ -24,7 +24,7 @@ void TileDoor::ProcessEvent(const sf::Event &event)
 		SceneGame::InteractionNotify();
 		if (event.type == sf::Event::KeyPressed
 			&& event.key.code == sf::Keyboard::F)
-			if (id == 37 || Player::HasItem(ItemTemplate::Get(6)))
+			if (id == 37 && Player::HasItem(ItemTemplate::Get(6)))
 			{
 				isOpen = true;
 				Item *key = nullptr;

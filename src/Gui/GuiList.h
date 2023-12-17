@@ -21,6 +21,8 @@ public:
 	std::vector<Gui*> GetChildren();
 	void SetItem(unsigned int pos, Item *item);
 	void SetParent(unsigned int pos,  TileChest *parentChest);
+	void Minimize();
+	void SetDimensions(sf::FloatRect dims);
 
 	static GuiList *CreatePlayerInventory();
 

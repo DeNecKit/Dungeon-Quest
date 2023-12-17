@@ -12,6 +12,7 @@ public:
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow *window) override;
 	void ScaleSize(sf::Vector2f factors);
+	void SetDimensions(sf::FloatRect dims);
 
 private:
 	sf::RectangleShape rect;

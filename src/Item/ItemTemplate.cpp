@@ -1,11 +1,16 @@
 #include "ItemTemplate.h"
 #include "../Entity/Player.h"
 
-ItemTemplate::ItemTemplate(ItemType type, const sf::String &name,
+ItemTemplate::ItemTemplate(ItemType type, sf::String name,
 	unsigned int textureId, std::map<Stat, const int> stats,
 	bool isUsable, void (*onClick)())
-	: type(type), name(name), textureId(textureId),
+	: type(type), name(name), textureId(textureId), description(nullptr),
 	stats(stats), isUsable(isUsable), onClick(onClick) {}
+
+ItemTemplate::~ItemTemplate()
+{
+	if (description != nullptr) delete description;
+}
 
 sf::Sprite ItemTemplate::GetSprite()
 {
@@ -45,6 +50,38 @@ void ItemTemplate::Click()
 const sf::String &ItemTemplate::GetName()
 {
 	return name;
+}
+
+const sf::String &ItemTemplate::GetDescription()
+{
+	if (description == nullptr)
+		switch (type)
+		{
+		case ItemType::Potion:
+			switch (textureId)
+			{
+			case 30:
+				description = new sf::String(L"Восстанавливает 15 очков здоровья");
+				break;
+			default: throw new std::exception();
+			}
+			break;
+		case ItemType::Key:
+			description = new sf::String(L"Ключ для выходной двери уровня");
+			break;
+		default:
+			description = new sf::String();
+			bool added = false;
+			for (auto &[statType, stat] : stats)
+				if (stat != 0)
+				{
+					if (added) *description += "\n";
+					else added = true;
+					*description += "+" + std::to_string(stat) + statNames[statType];
+				}
+			break;
+		}
+	return *description;
 }
 
 void ItemTemplate::Init()
