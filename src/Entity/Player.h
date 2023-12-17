@@ -30,8 +30,13 @@ public:
 	static std::map<Stat, unsigned int> GetStats();
 	static sf::Vector2f GetScreenPos();
 	static float GetScrenSize();
-	static unsigned int GetMaxHP();
+	static unsigned int &GetMaxHP();
 	static void Heal(unsigned int healing);
+	static void UpdateStatsString();
+	static const sf::String &GetLevelString();
+	static const sf::String &GetStatsString();
+	static unsigned int &GetExp();
+	static unsigned int &GetReqExp();
 	static Player *Get();
 
 private:
@@ -54,6 +59,9 @@ private:
 	std::map<Stat, unsigned int> stats;
 	Item *inventory[20] = {};
 	float walkedDistance, requiredDistance;
+	unsigned int curLevel, maxLevel, curExp, reqExp;
+	std::vector<unsigned int> reqExpList;
+	sf::String *levelString, *statsString;
 
 	static inline Player *currentPlayer;
 	static inline const float speed = 300.f,

@@ -77,6 +77,8 @@ void GuiItemSlot::Update(sf::Time deltaTime)
 						if (parentChest == nullptr)
 							Player::SetItem(pos, tmp);
 						else parentChest->SetItem(pos, tmp);
+						if (type > SlotType::Any || other->type > SlotType::Any)
+							SceneGame::UpdateStatsText();
 					}
 					break;
 				}

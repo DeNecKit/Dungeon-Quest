@@ -14,6 +14,7 @@ using json = nlohmann::json;
 bool playerAttacked = false;
 bool finishedHit = false;
 bool finishedDeath = false;
+unsigned int heal;
 
 Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	: Entity(3), isInBattle(false), direction(startDir),
@@ -49,6 +50,15 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	for (json &item : data["start-inventory"])
 		inventory[item["pos"]] = Item::Create(item["id"], item["count"]);
 	hp = GetMaxHP();
+	curLevel = 1;
+	curExp = 0;
+	maxLevel = data["max-lvl"];
+	for (unsigned int i = 0; i < maxLevel; i++)
+		reqExpList.push_back(data["req-exp"][i]);
+	reqExp = reqExpList[0];
+	levelString = new sf::String(L"Уровень 1");
+	statsString = new sf::String();
+	UpdateStatsString();
 }
 
 void Player::Update(sf::Time deltaTime)
@@ -108,9 +118,9 @@ void Player::TakeHit(unsigned int damage)
 	animationCurFrame = 0;
 }
 
-unsigned int Player::GetMaxHP()
+unsigned int &Player::GetMaxHP()
 {
-	unsigned int heal = currentPlayer->stats[Stat::HP];
+	heal = currentPlayer->stats[Stat::HP];
 	for (int i = 15; i < 20; i++)
 		if (currentPlayer->inventory[i]) heal +=
 			currentPlayer->inventory[i]->GetTemplate()->GetStats()[Stat::HP];
@@ -120,6 +130,51 @@ unsigned int Player::GetMaxHP()
 void Player::Heal(unsigned int healing)
 {
 	currentPlayer->hp = std::min(currentPlayer->hp + healing, GetMaxHP());
+}
+
+void Player::UpdateStatsString()
+{
+	sf::String *str = currentPlayer->statsString;
+	*str = "";
+	std::map<Stat, sf::String> statNames = {
+		{ Stat::HP, L"Макс. очки здоровья: "}, { Stat::ATK, L"Атака: "},
+		{ Stat::DEF, L"Защита: "}, { Stat::AGI, L"Ловкость: "} };
+	std::map<Stat, unsigned int> curStats = currentPlayer->stats;
+	for (int i = 15; i < 20; i++)
+	{
+		if (currentPlayer->inventory[i] == nullptr) continue;
+		for (Stat statType = Stat::HP; statType <= Stat::AGI;
+			statType = (Stat)((int)statType + 1))
+			curStats[statType] += currentPlayer->inventory[i]
+				->GetTemplate()->GetStats()[statType];
+	}
+	bool added = false;
+	for (auto &[statType, stat] : curStats)
+	{
+		if (added) *str += "\n";
+		else added = true;
+		*str += statNames[statType] + std::to_string(stat);
+	}
+}
+
+const sf::String &Player::GetLevelString()
+{
+	return *currentPlayer->levelString;
+}
+
+const sf::String& Player::GetStatsString()
+{
+	return *currentPlayer->statsString;
+}
+
+unsigned int &Player::GetExp()
+{
+	return currentPlayer->curExp;
+}
+
+unsigned int& Player::GetReqExp()
+{
+	return currentPlayer->reqExp;
 }
 
 void Player::UpdateInGame(sf::Time deltaTime)

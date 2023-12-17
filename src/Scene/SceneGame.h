@@ -23,10 +23,11 @@ public:
 	static void RefreshPlayerInventory();
 	static void RenderOnTop(std::variant<sf::Drawable*, Gui*> obj);
 	static std::vector<Gui*> GetInventoryGui();
+	static void UpdateStatsText();
 
 private:
 	GuiText *interText;
-	GuiList *pauseMenu,
+	GuiList *pauseMenu, *statusGui,
 		*inventoryGui, *equipmentGui, *chestGui;
 	TileChest *openedChest;
 	bool isInterTextVisible, isPaused, isInvMenu;

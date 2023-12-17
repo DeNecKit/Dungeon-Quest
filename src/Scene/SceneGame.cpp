@@ -5,6 +5,7 @@
 #include "../ResourceManager.h"
 #include "../Gui/GuiButton.h"
 #include "../Gui/GuiItemSlot.h"
+#include "../Gui/GuiProgressBar.h"
 #include "../Item/ItemTemplate.h"
 #include "../Level.h"
 
@@ -59,6 +60,19 @@ SceneGame::SceneGame()
 		for (int x = 0; x < n; x++)
 			chestGui->Append(new GuiItemSlot(
 				sf::FloatRect(x2 + x*(s+d), y2 + y*(s+d), s, s), nullptr, y*5+x));
+
+	const float sw = cw*0.6f, sh = eh, sx = cx+cw/2-sw/2, sy = ey,
+		sth1 = sh*0.25f, sth2 = sh - sth1,
+		stx1 = sx, stx2 = sx+34.f, sty1 = sy, sty2 = sy+sth1+42.f,
+		spbw = sw*0.75f, spbh = sth1/3, spbx = sx+sw/2-spbw/2, spby = sty1+75.f;
+	statusGui = new GuiList(sf::FloatRect(sx, sy, sw, sh),
+		false, Gui::ButtonFillColor, Gui::ButtonOutlineColor);
+	statusGui->Append(new GuiText(
+		sf::FloatRect(stx1, sty1, sw, sth1), Player::GetLevelString(), 32));
+	statusGui->Append(new GuiProgressBar(sf::FloatRect(spbx, spby, spbw, spbh),
+		sf::Color::Green, Player::GetExp(), Player::GetReqExp()));
+	statusGui->Append(new GuiText(
+		sf::FloatRect(stx2, sty2, sw, sth2), Player::GetStatsString(), 24, false));
 }
 
 SceneGame::~SceneGame()
@@ -68,6 +82,7 @@ SceneGame::~SceneGame()
 	delete inventoryGui;
 	delete equipmentGui;
 	delete chestGui;
+	delete statusGui;
 }
 
 void SceneGame::ProcessEvent(const sf::Event &event)
@@ -108,6 +123,7 @@ void SceneGame::Update(sf::Time deltaTime)
 	{
 		inventoryGui->Update(deltaTime);
 		equipmentGui->Update(deltaTime);
+		statusGui->Update(deltaTime);
 		if (openedChest != nullptr) chestGui->Update(deltaTime);
 	} else pauseMenu->Update(deltaTime);
 }
@@ -121,6 +137,7 @@ void SceneGame::RenderGUI(sf::RenderWindow *window)
 	{
 		inventoryGui->Render(window);
 		equipmentGui->Render(window);
+		statusGui->Render(window);
 		if (openedChest != nullptr) chestGui->Render(window);
 	}
 	if (renderOnTop.size() > 0)
@@ -184,4 +201,11 @@ std::vector<Gui*> SceneGame::GetInventoryGui()
 	inv.insert(inv.end(), eq.begin(), eq.end());
 	inv.insert(inv.end(), ch.begin(), ch.end());
 	return inv;
+}
+
+void SceneGame::UpdateStatsText()
+{
+	Player::UpdateStatsString();
+	dynamic_cast<GuiText*>(instance->statusGui->GetChildren()[2])
+		->SetString(Player::GetStatsString());
 }
