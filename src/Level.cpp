@@ -11,7 +11,7 @@ using json = nlohmann::json;
 #include "Scene/SceneGame.h"
 
 Level::Level(const sf::String &tilesetTexturePath,
-	const char *dataPath, PlayerDirection startDir)
+	const char *dataPath, PlayerDirection startDir) : isBossDefeated(false)
 {
 	ItemTemplate::Init();
 	Item::Init();
@@ -61,8 +61,13 @@ Level::Level(const sf::String &tilesetTexturePath,
 				tile = new Tile(id, sf::Vector2u(x, y));
 			}
 			otherTiles.push_back(tile);
+			if (id == 39) endTile = {(float)x*GetTileSize(), (float)y*GetTileSize()};
 		}
 	}
+
+	bossTile = sf::Vector2f(
+		(float)data["boss-tile"]["x"] * GetTileSize(),
+		(float)data["boss-tile"]["y"] * GetTileSize());
 }
 
 Level::~Level()
@@ -150,9 +155,34 @@ void Level::RenderTile(unsigned int id, float x, float y)
 	GameManager::GetWindow()->draw(s);
 }
 
+sf::Vector2f Level::GetBossTile()
+{
+	return currentLevel->bossTile;
+}
+
+sf::Vector2f Level::GetEndTile()
+{
+	return currentLevel->endTile;
+}
+
+bool Level::IsBossDefeated()
+{
+	return currentLevel->isBossDefeated;
+}
+
+bool Level::SetBossDefeated()
+{
+	return currentLevel->isBossDefeated = true;
+}
+
 Level *Level::Level1()
 {
 	 return new Level("data/tileset.png", "data/lvl-01.json", PlayerDirection::Right);
+}
+
+Level *Level::Level2()
+{
+	return new Level("data/tileset.png", "data/lvl-02.json", PlayerDirection::Right);
 }
 
 Level* Level::Get()

@@ -6,6 +6,7 @@
 #include "../Battle.h"
 #include "../Gui/GuiProgressBar.h"
 #include "EnemyGoblin.h"
+#include "EnemyGoblinKing.h"
 #include <cmath>
 #include <fstream>
 #include <cstdlib>
@@ -64,7 +65,7 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 			{Stat::AGI, data["stats-diff"][i][3]} });
 	}
 	reqExp = reqExpList[0];
-	levelString = new sf::String(L"Уровень 1");
+	levelString = new sf::String(L"Уровень игрока: 1");
 	statsString = new sf::String();
 	UpdateStatsString();
 }
@@ -151,7 +152,7 @@ void Player::UpdateStatsString()
 	sf::String *str = currentPlayer->statsString;
 	*str = "";
 	std::map<Stat, sf::String> statNames = {
-		{ Stat::HP, L"Макс. очки здоровья: "}, { Stat::ATK, L"Атака: "},
+		{ Stat::HP, L"Очки здоровья: "}, { Stat::ATK, L"Атака: "},
 		{ Stat::DEF, L"Защита: "}, { Stat::AGI, L"Ловкость: "} };
 	std::map<Stat, unsigned int> curStats = currentPlayer->stats;
 	for (int i = 15; i < 20; i++)
@@ -167,7 +168,9 @@ void Player::UpdateStatsString()
 	{
 		if (added) *str += "\n";
 		else added = true;
-		*str += statNames[statType] + std::to_string(stat);
+		unsigned int baseStat = currentPlayer->stats[statType];
+		*str += statNames[statType] + std::to_string(stat) + " (" +
+			std::to_string(baseStat) + " + " + std::to_string(stat - baseStat) + ")";
 	}
 	Heal(0);
 }
@@ -233,13 +236,32 @@ void Player::AddExp(unsigned int exp)
 	}
 	if (updateGui)
 	{
-		*p->levelString = L"Уровень " + std::to_wstring(p->curLevel);
+		*p->levelString = L"Уровень игрока: " + std::to_wstring(p->curLevel);
 		UpdateStatsString();
 	}
 }
 
 void Player::UpdateInGame(sf::Time deltaTime)
 {
+	float s = (float)Level::GetTileSize(), ds = s * 1.1f,
+		bx = Level::GetBossTile().x, by = Level::GetBossTile().y;
+	if (!Level::IsBossDefeated() &&
+		position.x > bx-ds && position.x < bx+s+ds &&
+		position.y > by-ds && position.y < by+s+ds)
+	{
+		Battle::Start(this, {
+			new EnemyGoblinKing(1), new EnemyGoblin(2), new EnemyGoblin(3) }, false);
+		Level::SetBossDefeated();
+		return;
+	}
+	const float ex = Level::GetBossTile().x, ey = Level::GetBossTile().y;
+	if (position.x > ex-ds && position.x < ex+s+ds &&
+		position.y > ey-ds && position.y < ey+s+ds)
+	{
+		Level::Change(Level::Level2());
+		return;
+	}
+
 	float sprint = sf::Keyboard::isKeyPressed(
 		sf::Keyboard::LShift) ? sprintCoef : 1.f;
 

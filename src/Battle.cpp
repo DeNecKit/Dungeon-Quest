@@ -5,11 +5,13 @@
 #include "Scene/SceneMainMenu.h"
 #include <cstdlib>
 
-Battle::Battle(Player* player, std::vector<Enemy*> enemies)
+Battle::Battle(Player* player,
+	std::vector<Enemy*> enemies, bool canEscape)
 	: player(player), enemies(enemies), target(enemies[0]),
 	chosenAction(TurnAction::None), currentStage(TurnStage::Waiting),
 	timer(sf::Time::Zero), turnMaker(Player::Get()), curEnemyIndex(0),
-	isVictory(false), isDefeat(false), chosenItem(nullptr) {}
+	isVictory(false), isDefeat(false), chosenItem(nullptr),
+	canEscape(canEscape) {}
 
 Battle::~Battle()
 {
@@ -92,16 +94,17 @@ void Battle::Update(sf::Time deltaTime)
 		if (!enemy->IsOut()) enemy->Update(deltaTime);
 }
 
-void Battle::Render(sf::RenderWindow* window)
+void Battle::Render(sf::RenderWindow *window)
 {
 	player->Render(window);
 	for (Enemy *enemy : enemies)
 		enemy->Render(window);
 }
 
-void Battle::Start(Player *player, std::vector<Enemy*> enemies)
+void Battle::Start(Player *player,
+	std::vector<Enemy*> enemies, bool canEscape)
 {
-	instance = new Battle(player, enemies);
+	instance = new Battle(player, enemies, canEscape);
 	SceneManager::ChangeScene<SceneBattle>();
 }
 
@@ -153,6 +156,11 @@ void Battle::ChooseItem(Item *item)
 {
 	instance->chosenItem = item;
 	MakeTurn(TurnAction::UseItem);
+}
+
+bool Battle::CanEscape()
+{
+	return instance->canEscape;
 }
 
 Battle* Battle::Get()

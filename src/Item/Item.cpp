@@ -59,12 +59,15 @@ Item *Item::Create(unsigned int itemTemplateId, unsigned int count)
 
 void Item::Delete(Item *item)
 {
+	bool found = false;
 	for (int i = 0; i < itemMemory->size(); i++)
-	{
 		if (itemMemory->at(i) == item)
+		{
 			itemMemory->at(i) = nullptr;
-	}
-	delete item;
+			found = true;
+			break;
+		}
+	if (found) delete item;
 }
 
 sf::Sprite &Item::GetEquipmentSlotSprite(ItemType slot)

@@ -11,14 +11,16 @@ enum class TurnStage { Waiting, Action };
 class Battle
 {
 public:
-	Battle(Player *player, std::vector<Enemy*> enemies);
+	Battle(Player *player,
+		std::vector<Enemy*> enemies, bool canEscape);
 	~Battle();
 	void Update(sf::Time deltaTime);
 	void Render(sf::RenderWindow*);
 	
 	Enemy *target;
 
-	static void Start(Player *player, std::vector<Enemy*> enemies);
+	static void Start(Player *player,
+		std::vector<Enemy*> enemies, bool canEscape = true);
 	static void End();
 	static std::vector<Enemy*> GetEnemies();
 	static bool IsPlayerTurn();
@@ -28,6 +30,7 @@ public:
 	static TurnStage GetStage();
 	static Entity *GetTurnMaker();
 	static void ChooseItem(Item *item);
+	static bool CanEscape();
 	static bool IsVictory();
 	static bool IsDefeat();
 	static bool IsEnd();
@@ -45,6 +48,7 @@ private:
 	unsigned int curEnemyIndex;
 	bool isVictory, isDefeat;
 	Item *chosenItem;
+	bool canEscape;
 
 	static inline Battle *instance = nullptr;
 };

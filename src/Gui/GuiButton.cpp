@@ -15,7 +15,7 @@ GuiButton::GuiButton(sf::FloatRect dims, const sf::String &str,
 
 void GuiButton::ProcessEvent(const sf::Event &event)
 {
-	click.ProcessEvent(event);
+	if (enabled) click.ProcessEvent(event);
 }
 
 void GuiButton::Update(sf::Time deltaTime) {}

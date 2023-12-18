@@ -63,16 +63,18 @@ SceneGame::SceneGame()
 
 	const float sw = cw*0.6f, sh = eh, sx = cx+cw/2-sw/2, sy = ey,
 		sth1 = sh*0.25f, sth2 = sh - sth1,
-		stx1 = sx, stx2 = sx+34.f, sty1 = sy, sty2 = sy+sth1+42.f,
+		stx1 = sx, stx2 = sx+34.f, sty1 = sy-5.f, sty2 = sy+sth1+75.f,
 		spbw = sw*0.75f, spbh = sth1/3, spbx = sx+sw/2-spbw/2, spby = sty1+75.f;
 	statusGui = new GuiList(sf::FloatRect(sx, sy, sw, sh),
 		false, Gui::ButtonFillColor, Gui::ButtonOutlineColor);
 	statusGui->Append(new GuiText(
-		sf::FloatRect(stx1, sty1, sw, sth1), Player::GetLevelString(), 32));
+		sf::FloatRect(stx1, sty1, sw, sth1), Player::GetLevelString(), 24));
 	statusGui->Append(new GuiProgressBar(sf::FloatRect(spbx, spby, spbw, spbh),
 		sf::Color(8, 144, 0), Player::GetExp(), Player::GetReqExp()));
+	statusGui->Append(new GuiProgressBar(sf::FloatRect(spbx, spby+spbh+15, spbw, spbh),
+		Gui::HealthBarFillColor, (unsigned int&)Player::Get()->GetHP(), Player::GetMaxHP()));
 	statusGui->Append(new GuiText(
-		sf::FloatRect(stx2, sty2, sw, sth2), Player::GetStatsString(), 24, false));
+		sf::FloatRect(stx2, sty2, sw, sth2), Player::GetStatsString(), 20, false));
 }
 
 SceneGame::~SceneGame()
@@ -206,6 +208,6 @@ std::vector<Gui*> SceneGame::GetInventoryGui()
 void SceneGame::UpdateStatsText()
 {
 	Player::UpdateStatsString();
-	dynamic_cast<GuiText*>(instance->statusGui->GetChildren()[2])
+	dynamic_cast<GuiText*>(instance->statusGui->GetChildren()[3])
 		->SetString(Player::GetStatsString());
 }

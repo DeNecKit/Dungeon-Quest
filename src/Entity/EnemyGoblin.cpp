@@ -1,5 +1,4 @@
 #include "EnemyGoblin.h"
-#include "../GameManager.h"
 #include "../Gui/GuiProgressBar.h"
 #include <cstdlib>
 
@@ -13,7 +12,7 @@ EnemyGoblin::EnemyGoblin(unsigned int pos)
 		  {BattleAnimationState::Death, 4} }, 6, 750.f)
 {
 	animationPassedTime = sf::milliseconds(std::rand() % 150);
-	animationCurFrame = std::rand() % 8;
+	animationCurFrame = std::rand() % 4;
 	float ww = 1920.f, wh = 1080.f;
 	switch (pos)
 	{
@@ -21,10 +20,10 @@ EnemyGoblin::EnemyGoblin(unsigned int pos)
 		position = sf::Vector2f(ww + 129, wh/2 - size/2);
 		break;
 	case 2:
-		position = sf::Vector2f(ww - 250, -150.f);
+		position = sf::Vector2f(ww - 300, -150.f);
 		break;
 	case 3:
-		position = sf::Vector2f(ww - 250, wh - size + 150);
+		position = sf::Vector2f(ww - 300, wh - size + 150);
 		break;
 	default:
 		throw new std::exception();
@@ -70,8 +69,14 @@ unsigned int EnemyGoblin::DropExp()
 
 std::vector<Item*> EnemyGoblin::DropLoot()
 {
+	static bool swordDropped = false;
 	std::vector<Item*> res;
 	if (std::rand() % 2)
 		res.push_back(Item::Create(7, 1));
+	if (!swordDropped && std::rand() % 20 == 0)
+	{
+		res.push_back(Item::Create(9, 1));
+		swordDropped = true;
+	}
 	return res;
 }

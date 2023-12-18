@@ -21,7 +21,12 @@ public:
 	static std::vector<Tile*> GetOtherTiles();
 	static sf::Vector2f CalcTilePos(float x, float y, bool &isOnScreen);
 	static void RenderTile(unsigned int id, float x, float y);
+	static sf::Vector2f GetBossTile();
+	static sf::Vector2f GetEndTile();
+	static bool IsBossDefeated();
+	static bool SetBossDefeated();
 	static Level *Level1();
+	static Level *Level2();
 	static Level *Get();
 	static void Change(Level*);
 	static void Reset();
@@ -32,6 +37,8 @@ private:
 	std::vector<Tile*> otherTiles;
 	sf::Texture tilesetTexture;
 	Player *player;
+	sf::Vector2f bossTile, endTile;
+	bool isBossDefeated;
 
 	static inline Level *currentLevel = nullptr;
 };

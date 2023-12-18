@@ -1,5 +1,6 @@
 #include "ItemTemplate.h"
 #include "../Entity/Player.h"
+#include <cmath>
 
 ItemTemplate::ItemTemplate(ItemType type, sf::String name,
 	unsigned int textureId, std::map<Stat, const int> stats,
@@ -77,7 +78,8 @@ const sf::String &ItemTemplate::GetDescription()
 				{
 					if (added) *description += "\n";
 					else added = true;
-					*description += "+" + std::to_string(stat) + statNames[statType];
+					*description += (stat > 0 ? "+" : "-") +
+						std::to_string(std::abs(stat)) + statNames[statType];
 				}
 			break;
 		}
@@ -92,7 +94,7 @@ void ItemTemplate::Init()
 		throw new std::exception();
 	itemTemplates = new std::vector<ItemTemplate*>({
 		new ItemTemplate(ItemType::Sword, L"Рыцарский меч", 0,
-			{{Stat::HP, 0},{Stat::ATK, 10},{Stat::DEF, 0},{Stat::AGI, 0}}),
+			{{Stat::HP, 0},{Stat::ATK, 100},{Stat::DEF, 0},{Stat::AGI, 0}}),
 		new ItemTemplate(ItemType::Helmet, L"Кожанный шлем", 10,
 			{{Stat::HP, 1},{Stat::ATK, 0},{Stat::DEF, 1},{Stat::AGI, 0}}),
 		new ItemTemplate(ItemType::Chestplate, L"Кожанный нагрудник", 11,
@@ -102,10 +104,14 @@ void ItemTemplate::Init()
 		new ItemTemplate(ItemType::Boots, L"Кожанные ботинки", 13,
 			{{Stat::HP, 1},{Stat::ATK, 0},{Stat::DEF, 1},{Stat::AGI, 0}}),
 		new ItemTemplate(ItemType::Sword, L"Королевский меч", 1,
-			{{Stat::HP, 0},{Stat::ATK, 15},{Stat::DEF, 1},{Stat::AGI, 0}}),
+			{{Stat::HP, 0},{Stat::ATK, 16},{Stat::DEF, 1},{Stat::AGI, 0}}),
 		new ItemTemplate(ItemType::Key, L"Ключ", 34),
 		new ItemTemplate(ItemType::Potion, L"Зелье лечения", 30,
-			nullStats, true, []() { Player::Heal(15); })
+			nullStats, true, []() { Player::Heal(15); }),
+		new ItemTemplate(ItemType::Sword, L"Магический меч", 2,
+			{{Stat::HP, 0}, {Stat::ATK, 24}, {Stat::DEF, -5}, {Stat::AGI, 5}}),
+		new ItemTemplate(ItemType::Sword, L"Меч адского камня", 3,
+			{{Stat::HP, -15}, {Stat::ATK, 30}, {Stat::DEF, 0}, {Stat::AGI, 0}})
 	});
 }
 

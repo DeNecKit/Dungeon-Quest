@@ -27,7 +27,7 @@ void setActionMenuEnabled(GuiList *actionsMenu, bool enabled)
 	for (Gui* gui : actionsMenu->GetChildren())
 	{
 		GuiButton* btn = dynamic_cast<GuiButton*>(gui);
-		btn->SetEnabled(enabled);
+		if (Battle::CanEscape()) btn->SetEnabled(enabled);
 	}
 }
 
@@ -75,6 +75,8 @@ SceneBattle::SceneBattle()
 	for (auto item : obtainedLoot)
 		Item::Delete(item);
 	obtainedLoot.clear();
+	if (!Battle::CanEscape())
+		dynamic_cast<GuiButton*>(actionsMenu->GetChildren()[2])->SetEnabled(false);
 }
 
 SceneBattle::~SceneBattle()
@@ -115,7 +117,7 @@ void SceneBattle::ProcessEvent(const sf::Event &event)
 void SceneBattle::Update(sf::Time deltaTime)
 {
 	if (Battle::Get() != nullptr)
-		Battle::Get()->Update(deltaTime);
+		if (!Battle::IsEnd()) Battle::Get()->Update(deltaTime);
 	if (Battle::Get() == nullptr) return;
 	if (isInvMenu && !Battle::IsEnd())
 	{
@@ -148,12 +150,11 @@ void SceneBattle::Update(sf::Time deltaTime)
 					}
 				if (!found) obtainedLoot.push_back(tmpLoot[i]);
 			}
-			for (auto item : obtainedLoot) Player::AddItem(item);
+			for (auto item : obtainedLoot) Player::AddItem(new Item(*item));
 			Player::AddExp(obtainedExp);
 			const bool droppedLoot = obtainedLoot.size() > 0;
 			const int bc = droppedLoot ? 4 : 3;
-			const float hww = GameManager::WindowWidth() / 2.f,
-				hwh = GameManager::WindowHeight()/2.f,
+			const float hww = 1920.f/2, hwh = 1080.f/2,
 				bw = 500.f, bh = 100.f, bd = 50.f,
 				vmw = bw+bd*2, vmh = bh*bc+bd*(bc+1),
 				vmx = hww-vmw/2, vmy = hwh-vmh/2;
@@ -185,7 +186,6 @@ void SceneBattle::Update(sf::Time deltaTime)
 	}
 	setActionMenuEnabled(instance->actionsMenu,
 		Battle::IsPlayerTurn() && Battle::GetStage() == TurnStage::Waiting);
-	if (Battle::Get() == nullptr) return;
 	playerHealthBar->Update(deltaTime);
 	int i = 0;
 	for (GuiProgressBar *enemyBar : enemiesHealthBar)
