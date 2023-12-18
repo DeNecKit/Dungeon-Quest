@@ -72,6 +72,8 @@ SceneBattle::SceneBattle()
 	setTargetRect(targetRect);
 	generatedLoot = false;
 	obtainedExp = 0U;
+	for (auto item : obtainedLoot)
+		Item::Delete(item);
 	obtainedLoot.clear();
 }
 
@@ -125,20 +127,29 @@ void SceneBattle::Update(sf::Time deltaTime)
 	{
 		if (!generatedLoot)
 		{
+			std::vector<Item*> tmpLoot;
 			for (Enemy* enemy : Battle::GetEnemies())
 			{
 				obtainedExp += enemy->DropExp();
 				auto loot = enemy->DropLoot();
-				obtainedLoot.insert(obtainedLoot.end(), loot.begin(), loot.end());
+				tmpLoot.insert(tmpLoot.end(), loot.begin(), loot.end());
 			}
-			for (size_t i = obtainedLoot.size() - 1; i > 0; i--)
-				if (obtainedLoot[i]->GetTemplate() == obtainedLoot[i-1]->GetTemplate())
-				{
-					obtainedLoot[i]->SetCount(
-						obtainedLoot[i]->GetCount() + obtainedLoot[i-1]->GetCount());
-					Item::Delete(obtainedLoot[i - 1]);
-					obtainedLoot.erase(obtainedLoot.begin() + i-1);
-				}
+			for (size_t i = 0; i < tmpLoot.size(); i++)
+			{
+				bool found = false;
+				for (size_t j = 0; j < obtainedLoot.size(); j++)
+					if (tmpLoot[i]->GetTemplate() == obtainedLoot[j]->GetTemplate())
+					{
+						obtainedLoot[j]->SetCount(
+							obtainedLoot[j]->GetCount() + tmpLoot[i]->GetCount());
+						Item::Delete(tmpLoot[i]);
+						found = true;
+						break;
+					}
+				if (!found) obtainedLoot.push_back(tmpLoot[i]);
+			}
+			for (auto item : obtainedLoot) Player::AddItem(item);
+			Player::AddExp(obtainedExp);
 			const bool droppedLoot = obtainedLoot.size() > 0;
 			const int bc = droppedLoot ? 4 : 3;
 			const float hww = GameManager::WindowWidth() / 2.f,

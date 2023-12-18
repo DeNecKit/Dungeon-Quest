@@ -1,20 +1,21 @@
 #include "Player.h"
-#include "../Level.h"
 #include "../GameManager.h"
+#include "../Scene/SceneGame.h"
+#include "../Scene/SceneBattle.h"
+#include "../Level.h"
+#include "../Battle.h"
+#include "../Gui/GuiProgressBar.h"
+#include "EnemyGoblin.h"
 #include <cmath>
 #include <fstream>
+#include <cstdlib>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
-#include <cstdlib>
-#include "../Scene/SceneBattle.h"
-#include "../Battle.h"
-#include "EnemyGoblin.h"
-#include "../Gui/GuiProgressBar.h"
 
 bool playerAttacked = false;
 bool finishedHit = false;
 bool finishedDeath = false;
-unsigned int heal;
+unsigned int maxHP;
 
 Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	: Entity(3), isInBattle(false), direction(startDir),
@@ -54,11 +55,24 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	curExp = 0;
 	maxLevel = data["max-lvl"];
 	for (unsigned int i = 0; i < maxLevel-1; i++)
+	{
 		reqExpList.push_back(data["req-exp"][i]);
+		statsDiff.push_back({
+			{Stat::HP, data["stats-diff"][i][0]},
+			{Stat::ATK, data["stats-diff"][i][1]},
+			{Stat::DEF, data["stats-diff"][i][2]},
+			{Stat::AGI, data["stats-diff"][i][3]} });
+	}
 	reqExp = reqExpList[0];
 	levelString = new sf::String(L"Уровень 1");
 	statsString = new sf::String();
 	UpdateStatsString();
+}
+
+Player::~Player()
+{
+	delete levelString;
+	delete statsString;
 }
 
 void Player::Update(sf::Time deltaTime)
@@ -120,11 +134,11 @@ void Player::TakeHit(unsigned int damage)
 
 unsigned int &Player::GetMaxHP()
 {
-	heal = currentPlayer->stats[Stat::HP];
+	maxHP = currentPlayer->stats[Stat::HP];
 	for (int i = 15; i < 20; i++)
-		if (currentPlayer->inventory[i]) heal +=
+		if (currentPlayer->inventory[i]) maxHP +=
 			currentPlayer->inventory[i]->GetTemplate()->GetStats()[Stat::HP];
-	return heal;
+	return maxHP;
 }
 
 void Player::Heal(unsigned int healing)
@@ -155,6 +169,7 @@ void Player::UpdateStatsString()
 		else added = true;
 		*str += statNames[statType] + std::to_string(stat);
 	}
+	Heal(0);
 }
 
 const sf::String &Player::GetLevelString()
@@ -175,6 +190,52 @@ unsigned int &Player::GetExp()
 unsigned int& Player::GetReqExp()
 {
 	return currentPlayer->reqExp;
+}
+
+void Player::AddItem(Item *item)
+{
+	bool found = false;
+	for (unsigned int i = 0; i < 20; i++)
+	{
+		auto curItem = GetItem(i);
+		if (curItem != nullptr && curItem->GetTemplate() == item->GetTemplate())
+		{
+			curItem->SetCount(curItem->GetCount() + item->GetCount());
+			found = true;
+			break;
+		}
+	}
+	if (!found)
+		for (unsigned int i = 0; i < 20; i++)
+			if (Player::GetItem(i) == nullptr)
+			{
+				Player::SetItem(i, item);
+				found = true;
+				break;
+			}
+}
+
+void Player::AddExp(unsigned int exp)
+{
+	auto p = currentPlayer;
+	p->curExp += exp;
+	bool updateGui = false;
+	while (p->curExp >= p->reqExp)
+	{
+		p->curExp -= p->reqExp;
+		p->reqExp = p->reqExpList[p->curLevel];
+		// TODO: if lvl == 19
+		for (Stat statType = Stat::HP; statType <= Stat::AGI;
+			statType = (Stat)((int)statType + 1))
+			p->stats[statType] += p->statsDiff[p->curLevel-1][statType];
+		p->curLevel++;
+		updateGui = true;
+	}
+	if (updateGui)
+	{
+		*p->levelString = L"Уровень " + std::to_wstring(p->curLevel);
+		UpdateStatsString();
+	}
 }
 
 void Player::UpdateInGame(sf::Time deltaTime)
@@ -358,8 +419,7 @@ sf::Vector2f Player::GetFixedPos(float deltaX, float deltaY,
 
 float Player::GenerateRequiredDistance()
 {
-	//return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
-	return 10.f;
+	return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
 }
 
 sf::Vector2f Player::GetPos()

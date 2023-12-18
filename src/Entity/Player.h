@@ -12,6 +12,7 @@ class Player : public Entity
 public:
 	Player(sf::Vector2u startPos,
 		PlayerDirection startDir);
+	~Player();
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
 	sf::Vector2f GetHealthBarPos() override;
@@ -37,6 +38,8 @@ public:
 	static const sf::String &GetStatsString();
 	static unsigned int &GetExp();
 	static unsigned int &GetReqExp();
+	static void AddItem(Item*);
+	static void AddExp(unsigned int exp);
 	static Player *Get();
 
 private:
@@ -61,6 +64,7 @@ private:
 	float walkedDistance, requiredDistance;
 	unsigned int curLevel, maxLevel, curExp, reqExp;
 	std::vector<unsigned int> reqExpList;
+	std::vector<std::map<Stat, unsigned int>> statsDiff;
 	sf::String *levelString, *statsString;
 
 	static inline Player *currentPlayer;

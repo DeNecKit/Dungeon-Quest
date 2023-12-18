@@ -21,6 +21,8 @@ public:
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
 	unsigned int GetPos();
+	bool IsPressed();
+	bool ShouldDrag();
 
 	Item *item;
 	SlotType type;

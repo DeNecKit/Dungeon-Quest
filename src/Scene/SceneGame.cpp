@@ -70,7 +70,7 @@ SceneGame::SceneGame()
 	statusGui->Append(new GuiText(
 		sf::FloatRect(stx1, sty1, sw, sth1), Player::GetLevelString(), 32));
 	statusGui->Append(new GuiProgressBar(sf::FloatRect(spbx, spby, spbw, spbh),
-		sf::Color::Green, Player::GetExp(), Player::GetReqExp()));
+		sf::Color(8, 144, 0), Player::GetExp(), Player::GetReqExp()));
 	statusGui->Append(new GuiText(
 		sf::FloatRect(stx2, sty2, sw, sth2), Player::GetStatsString(), 24, false));
 }

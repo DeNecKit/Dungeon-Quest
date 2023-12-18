@@ -104,7 +104,7 @@ void GuiList::UpdateItemPopup()
 		GuiItemSlot *slot = dynamic_cast<GuiItemSlot*>(gui);
 		if (slot == nullptr) continue;
 		if (slot->item != nullptr && slot->IsMouseOver() &&
-			!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			!slot->IsPressed() && !slot->ShouldDrag())
 		{
 			showItemPopup = true;
 			GuiText *name = dynamic_cast<GuiText*>(itemPopup->children[0]),

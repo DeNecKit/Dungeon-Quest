@@ -1,11 +1,11 @@
 #include "GuiProgressBar.h"
 
 GuiProgressBar::GuiProgressBar(sf::FloatRect dims,
-	sf::Color barClr, unsigned int &val, unsigned int &maxVal,
-	unsigned int chSize, sf::Font *font)
+	sf::Color barClr, unsigned int& val, unsigned int& maxVal,
+	unsigned int chSize, sf::Font* font)
 	: Gui(dims), bar(dims, barClr), value(val), maxValue(maxVal),
 	background(dims, sf::Color::Black, ButtonOutlineColor),
-	text(dims, "", chSize, font) {}
+	text(dims, "", chSize, true, font, Gui::TextColor, sf::Color::Black) {}
 
 void GuiProgressBar::ProcessEvent(const sf::Event&) {}
 

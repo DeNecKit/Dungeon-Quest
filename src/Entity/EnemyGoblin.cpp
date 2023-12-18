@@ -70,9 +70,8 @@ unsigned int EnemyGoblin::DropExp()
 
 std::vector<Item*> EnemyGoblin::DropLoot()
 {
-	int c = 0;
 	std::vector<Item*> res;
-	while (std::rand() % 5 && c++ < 3);
-	if (c > 0) res.push_back(Item::Create(7, c));
+	if (std::rand() % 2)
+		res.push_back(Item::Create(7, 1));
 	return res;
 }

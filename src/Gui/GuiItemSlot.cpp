@@ -157,3 +157,13 @@ unsigned int GuiItemSlot::GetPos()
 {
 	return pos;
 }
+
+bool GuiItemSlot::IsPressed()
+{
+	return click.IsPressed();
+}
+
+bool GuiItemSlot::ShouldDrag()
+{
+	return click.ShouldDrag();
+}

@@ -92,7 +92,7 @@ void ItemTemplate::Init()
 		throw new std::exception();
 	itemTemplates = new std::vector<ItemTemplate*>({
 		new ItemTemplate(ItemType::Sword, L"Рыцарский меч", 0,
-			{{Stat::HP, 0},{Stat::ATK, 100},{Stat::DEF, 0},{Stat::AGI, 0}}),
+			{{Stat::HP, 0},{Stat::ATK, 10},{Stat::DEF, 0},{Stat::AGI, 0}}),
 		new ItemTemplate(ItemType::Helmet, L"Кожанный шлем", 10,
 			{{Stat::HP, 1},{Stat::ATK, 0},{Stat::DEF, 1},{Stat::AGI, 0}}),
 		new ItemTemplate(ItemType::Chestplate, L"Кожанный нагрудник", 11,
