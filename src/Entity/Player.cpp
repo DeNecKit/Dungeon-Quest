@@ -74,6 +74,7 @@ Player::~Player()
 {
 	delete levelString;
 	delete statsString;
+	currentPlayer = nullptr;
 }
 
 void Player::Update(sf::Time deltaTime)
@@ -151,9 +152,9 @@ void Player::UpdateStatsString()
 {
 	sf::String *str = currentPlayer->statsString;
 	*str = "";
-	std::map<Stat, sf::String> statNames = {
+	auto statNames = new std::map<Stat, sf::String>({
 		{ Stat::HP, L"Очки здоровья: "}, { Stat::ATK, L"Атака: "},
-		{ Stat::DEF, L"Защита: "}, { Stat::AGI, L"Ловкость: "} };
+		{ Stat::DEF, L"Защита: "}, { Stat::AGI, L"Ловкость: "} });
 	std::map<Stat, unsigned int> curStats = currentPlayer->stats;
 	for (int i = 15; i < 20; i++)
 	{
@@ -169,10 +170,13 @@ void Player::UpdateStatsString()
 		if (added) *str += "\n";
 		else added = true;
 		unsigned int baseStat = currentPlayer->stats[statType];
-		*str += statNames[statType] + std::to_string(stat) + " (" +
-			std::to_string(baseStat) + " + " + std::to_string(stat - baseStat) + ")";
+		int diff = (int)stat - (int)baseStat;
+		*str += statNames->at(statType) + std::to_string(stat) + " (" +
+			std::to_string(baseStat) + (diff < 0 ? " - " : " + ") +
+			std::to_string(std::abs(diff)) + ")";
 	}
 	Heal(0);
+	delete statNames;
 }
 
 const sf::String &Player::GetLevelString()
@@ -254,11 +258,11 @@ void Player::UpdateInGame(sf::Time deltaTime)
 		Level::SetBossDefeated();
 		return;
 	}
-	const float ex = Level::GetBossTile().x, ey = Level::GetBossTile().y;
+	const float ex = Level::GetEndTile().x, ey = Level::GetEndTile().y;
 	if (position.x > ex-ds && position.x < ex+s+ds &&
 		position.y > ey-ds && position.y < ey+s+ds)
 	{
-		Level::Change(Level::Level2());
+		Level::Next();
 		return;
 	}
 
@@ -442,6 +446,13 @@ sf::Vector2f Player::GetFixedPos(float deltaX, float deltaY,
 float Player::GenerateRequiredDistance()
 {
 	return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
+}
+
+void Player::SetStartPos(sf::Vector2u startPos)
+{
+	currentPlayer->position = sf::Vector2f(
+		(float)(startPos.x * Level::GetTileSize()),
+		(float)(startPos.y * Level::GetTileSize()));
 }
 
 sf::Vector2f Player::GetPos()

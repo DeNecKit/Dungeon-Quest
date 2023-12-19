@@ -17,6 +17,7 @@ TileTorch::TileTorch(sf::Vector2u pos, bool left)
 TileTorch::~TileTorch()
 {
 	animationTileset = nullptr;
+	if (Level::IsAnyLevel()) return;
 	if (tileset == nullptr) return;
 	delete tileset;
 	tileset = nullptr;

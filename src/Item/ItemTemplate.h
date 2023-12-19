@@ -47,8 +47,5 @@ protected:
 	static inline std::vector<ItemTemplate*>* itemTemplates;
 	static inline std::map<Stat, const int> nullStats
 		= { {Stat::HP, 0}, {Stat::ATK, 0}, {Stat::DEF, 0}, {Stat::AGI, 0} };
-	static inline std::map<Stat, sf::String> statNames
-		= { {Stat::HP, L" к макс. очкам здоровья"},
-			{Stat::ATK, L" к атаке"}, {Stat::DEF, L" к защите"},
-			{Stat::AGI, L" к ловкости"} };
+	static inline std::map<Stat, sf::String> *statNames;
 };

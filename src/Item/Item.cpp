@@ -1,7 +1,14 @@
 #include "Item.h"
+#include "../Level.h"
 
 Item::Item(ItemTemplate* itemTemplate, unsigned int count)
 	: itemTemplate(itemTemplate), count(count)
+{
+	itemMemory->push_back(this);
+}
+
+Item::Item(const Item &item)
+	: itemTemplate(item.itemTemplate), count(item.count)
 {
 	itemMemory->push_back(this);
 }
@@ -34,6 +41,11 @@ ItemType Item::GetType()
 ItemTemplate *Item::GetTemplate()
 {
 	return itemTemplate;
+}
+
+bool Item::IsUsable()
+{
+	return itemTemplate->IsUsable();
 }
 
 void Item::Use()
@@ -91,13 +103,19 @@ void Item::Init()
 	}
 }
 
-void Item::Shutdown()
+void Item::Clear()
 {
 	for (int i = 0; i < itemMemory->size(); i++)
 	{
-		Item *item = itemMemory->at(i);
+		Item* item = itemMemory->at(i);
 		if (item != nullptr) delete item;
 	}
+	itemMemory->clear();
+}
+
+void Item::Shutdown()
+{
+	Clear();
 	delete itemMemory;
 	delete equipmentSlots;
 	delete eqSlotsTexture;

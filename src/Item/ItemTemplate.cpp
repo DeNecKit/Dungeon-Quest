@@ -1,5 +1,6 @@
 #include "ItemTemplate.h"
 #include "../Entity/Player.h"
+#include "../Level.h"
 #include <cmath>
 
 ItemTemplate::ItemTemplate(ItemType type, sf::String name,
@@ -79,7 +80,7 @@ const sf::String &ItemTemplate::GetDescription()
 					if (added) *description += "\n";
 					else added = true;
 					*description += (stat > 0 ? "+" : "-") +
-						std::to_string(std::abs(stat)) + statNames[statType];
+						std::to_string(std::abs(stat)) + statNames->at(statType);
 				}
 			break;
 		}
@@ -88,6 +89,10 @@ const sf::String &ItemTemplate::GetDescription()
 
 void ItemTemplate::Init()
 {
+	statNames = new std::map<Stat, sf::String>({
+		{Stat::HP, L" к макс. очкам здоровья"},
+		{Stat::ATK, L" к атаке"}, {Stat::DEF, L" к защите"},
+		{Stat::AGI, L" к ловкости"} });
 	size = (int)(75 * GameManager::ResCoefX());
 	tileset = new sf::Texture();
 	if (!tileset->loadFromFile("data/items.png"))
@@ -117,6 +122,7 @@ void ItemTemplate::Init()
 
 void ItemTemplate::Shutdown()
 {
+	delete statNames;
 	delete tileset;
 	for (ItemTemplate* i : *itemTemplates)
 		delete i;

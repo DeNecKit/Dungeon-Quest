@@ -9,7 +9,7 @@
 class Level
 {
 public:
-	Level(const sf::String &tilesetTexturePath,
+	Level(unsigned int num, const sf::String &tilesetTexturePath,
 		const char *dataPath, PlayerDirection startDir);
 	~Level();
 	void ProcessEvent(const sf::Event&);
@@ -28,11 +28,14 @@ public:
 	static Level *Level1();
 	static Level *Level2();
 	static Level *Get();
+	static bool IsAnyLevel();
 	static void Change(Level*);
+	static void Next();
 	static void Reset();
+	static void Shutdown();
 
 private:
-	unsigned int width, height;
+	unsigned int num, width, height;
 	std::vector<unsigned int> tiles, walls;
 	std::vector<Tile*> otherTiles;
 	sf::Texture tilesetTexture;

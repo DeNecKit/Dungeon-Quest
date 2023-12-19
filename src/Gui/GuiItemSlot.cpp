@@ -10,7 +10,7 @@ GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest *parentChest,
 	rect(dims, Gui::ItemSlotFillColor, Gui::ItemSlotOutlineColor),
 	pos(pos), parentChest(parentChest), isClickable(isClickable),
 	click(dims, [](const sf::Event&) {}, true,
-		new GuiDraggable(sf::milliseconds(200)), isClickable),
+		new GuiDraggable(sf::milliseconds(100)), isClickable),
 	lastCount(item == nullptr ? 1 : item->GetCount()), countText(sf::FloatRect(
 		dims.left + dims.width * 0.7f, dims.top + dims.height * 0.7f,
 		dims.width * 0.2f, dims.height * 0.2f),
@@ -22,10 +22,9 @@ GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest *parentChest,
 
 void GuiItemSlot::ProcessEvent(const sf::Event &event)
 {
-	if (click.IsPressed() && event.type == sf::Event::MouseButtonReleased
-		&& !click.ShouldDrag())
+	if (click.IsPressed() && event.type == sf::Event::MouseButtonReleased)
 		if (Battle::Get() != nullptr) Battle::ChooseItem(item);
-		else if (item != nullptr && parentChest == nullptr)
+		else if (item != nullptr && item->IsUsable() && parentChest == nullptr)
 		{
 			item->Use();
 			if (item->GetCount() == 0)
@@ -90,10 +89,7 @@ void GuiItemSlot::Update(sf::Time deltaTime)
 							Player::SetItem(pos, tmp);
 						else parentChest->SetItem(pos, tmp);
 						if (type > SlotType::Any || other->type > SlotType::Any)
-						{
 							SceneGame::UpdateStatsText();
-							//Player::GetMaxHP();
-						}
 					}
 					break;
 				}

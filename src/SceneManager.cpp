@@ -5,11 +5,15 @@
 #include "Scene/SceneGame.h"
 #include "Scene/SceneBattle.h"
 #include "Level.h"
+#include "Item/Item.h"
+#include "Item/ItemTemplate.h"
 
 void SceneManager::Init()
 {
 	currentScene = new SceneMainMenu();
 	isSceneChanged = false;
+	ItemTemplate::Init();
+	Item::Init();
 }
 
 template<typename T>
@@ -36,7 +40,10 @@ void SceneManager::ProccessEvent(const sf::Event &event)
 	if (isSceneChanged)
 	{
 		if (dynamic_cast<SceneMainMenu*>(tmpScene))
+		{
 			Level::Reset();
+			Item::Clear();
+		}
 		delete currentScene;
 		currentScene = tmpScene;
 		tmpScene = nullptr;
@@ -73,4 +80,6 @@ void SceneManager::Shutdown()
 {
 	if (currentScene != nullptr)
 		delete currentScene;
+	Item::Shutdown();
+	ItemTemplate::Shutdown();
 }

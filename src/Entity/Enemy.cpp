@@ -15,7 +15,8 @@ Enemy::Enemy(const sf::String &name, std::map<Stat, unsigned int> stats,
 	animationTileset = new sf::Texture();
 	if (!animationTileset->loadFromFile(tilesetPath))
 		throw new std::exception();
-	hp = stats[Stat::HP];
+	maxHP = stats[Stat::HP];
+	hp = maxHP;
 }
 
 Enemy::~Enemy()
@@ -117,4 +118,9 @@ void Enemy::TakeHit(unsigned int damage)
 std::map<Stat, unsigned int> Enemy::GetStats()
 {
 	return stats;
+}
+
+unsigned int &Enemy::GetMaxHP()
+{
+	return maxHP;
 }

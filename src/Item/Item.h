@@ -8,11 +8,13 @@ class Item
 {
 public:
 	Item(ItemTemplate *itemTemplate, unsigned int count);
+	Item(const Item&);
 	sf::Sprite GetSprite();
 	unsigned int GetCount();
 	void SetCount(unsigned int count);
 	ItemType GetType();
 	ItemTemplate *GetTemplate();
+	bool IsUsable();
 	void Use();
 	const sf::String &GetName();
 	const sf::String &GetDescription();
@@ -23,6 +25,7 @@ public:
 	static void Delete(Item *item);
 	static sf::Sprite &GetEquipmentSlotSprite(ItemType slot);
 	static void Init();
+	static void Clear();
 	static void Shutdown();
 
 private:

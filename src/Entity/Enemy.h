@@ -20,6 +20,7 @@ public:
 	unsigned int Attack() override;
 	void TakeHit(unsigned int damage) override;
 	std::map<Stat, unsigned int> GetStats();
+	unsigned int &GetMaxHP();
 	virtual sf::FloatRect GetClickHitbox() = 0;
 	virtual unsigned int DropExp() = 0;
 	virtual std::vector<Item*> DropLoot() = 0;
@@ -33,4 +34,5 @@ protected:
 	float size;
 	sf::RectangleShape *targetHover;
 	bool finishedAttack, finishedHit, finishedDeath;
+	unsigned int maxHP;
 };

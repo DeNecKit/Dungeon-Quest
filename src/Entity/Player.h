@@ -22,6 +22,7 @@ public:
 	bool FinishedDeathAnimation() override;
 	void TakeHit(unsigned int damage) override;
 
+	static void SetStartPos(sf::Vector2u startPos);
 	static sf::Vector2f GetPos();
 	static float GetSize();
 	static Item *GetItem(unsigned int pos);

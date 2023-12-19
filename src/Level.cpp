@@ -3,18 +3,20 @@
 #include "Tile/TileDoor.h"
 #include "Tile/TileTorch.h"
 #include "Tile/TileChest.h"
-#include <fstream>
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
 #include "SceneManager.h"
 #include "Scene/SceneBattle.h"
 #include "Scene/SceneGame.h"
+#include <fstream>
+#include <vector>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
-Level::Level(const sf::String &tilesetTexturePath,
-	const char *dataPath, PlayerDirection startDir) : isBossDefeated(false)
+auto *levels = new std::vector<Level*>();
+
+Level::Level(unsigned int num, const sf::String &tilesetTexturePath,
+	const char *dataPath, PlayerDirection startDir) : num(num), isBossDefeated(false)
 {
-	ItemTemplate::Init();
-	Item::Init();
+	levels->push_back(this);
 
 	if (!tilesetTexture.loadFromFile(tilesetTexturePath))
 		throw std::exception();
@@ -28,7 +30,15 @@ Level::Level(const sf::String &tilesetTexturePath,
 	unsigned int startPosX = data["start-pos"]["x"],
 		startPosY = data["start-pos"]["y"];
 	sf::Vector2u startPos(startPosX, startPosY);
-	player = new Player(startPos, startDir);
+	player = Player::Get() == nullptr
+		? new Player(startPos, startDir) : Player::Get();
+	if (Player::Get() == nullptr)
+		player = new Player(startPos, startDir);
+	else
+	{
+		player = Player::Get();
+		player->SetStartPos(startPos);
+	}
 
 	width = data["width"];
 	height = data["height"];
@@ -72,11 +82,15 @@ Level::Level(const sf::String &tilesetTexturePath,
 
 Level::~Level()
 {
-	delete player;
+	for (int i = 0; i < levels->size(); i++)
+		if (levels->at(i) == this) levels->at(i) = nullptr;
+	auto levelsCopy = *levels;
+	levels->clear();
+	for (auto lvl : levelsCopy)
+		if (lvl != nullptr) levels->push_back(lvl);
+	if (!IsAnyLevel()) delete player;
 	for (Tile *tile : otherTiles)
 		delete tile;
-	Item::Shutdown();
-	ItemTemplate::Shutdown();
 }
 
 void Level::ProcessEvent(const sf::Event &event)
@@ -177,17 +191,22 @@ bool Level::SetBossDefeated()
 
 Level *Level::Level1()
 {
-	 return new Level("data/tileset.png", "data/lvl-01.json", PlayerDirection::Right);
+	return new Level(1, "data/tileset.png", "data/lvl-01.json", PlayerDirection::Right);
 }
 
 Level *Level::Level2()
 {
-	return new Level("data/tileset.png", "data/lvl-02.json", PlayerDirection::Right);
+	return new Level(2, "data/tileset.png", "data/lvl-02.json", PlayerDirection::Right);
 }
 
-Level* Level::Get()
+Level *Level::Get()
 {
 	return currentLevel;
+}
+
+bool Level::IsAnyLevel()
+{
+	return levels->size() > 0;
 }
 
 void Level::Change(Level *level)
@@ -196,9 +215,25 @@ void Level::Change(Level *level)
 	currentLevel = level;
 }
 
+void Level::Next()
+{
+	Level *nextLevel;
+	switch (currentLevel->num)
+	{
+	case 1: nextLevel = Level2(); break;
+	default: throw new std::exception();
+	}
+	Change(nextLevel);
+}
+
 void Level::Reset()
 {
 	if (currentLevel != nullptr)
 		delete currentLevel;
 	currentLevel = nullptr;
+}
+
+void Level::Shutdown()
+{
+	delete levels;
 }

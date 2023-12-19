@@ -18,7 +18,7 @@ public:
 	static sf::Vector2f GetHealthBarSize();
 
 private:
-	unsigned int &value, maxValue;
+	unsigned int &value, &maxValue;
 	GuiRect background, bar;
 	GuiText text;
 };

@@ -24,10 +24,12 @@ void setTargetRect(sf::RectangleShape &targetRect)
 
 void setActionMenuEnabled(GuiList *actionsMenu, bool enabled)
 {
-	for (Gui* gui : actionsMenu->GetChildren())
+	int i = 0;
+	for (Gui *gui : actionsMenu->GetChildren())
 	{
-		GuiButton* btn = dynamic_cast<GuiButton*>(gui);
-		if (Battle::CanEscape()) btn->SetEnabled(enabled);
+		GuiButton *btn = dynamic_cast<GuiButton*>(gui);
+		if (i++ == 2 && !Battle::CanEscape()) btn->SetEnabled(false);
+		else btn->SetEnabled(enabled);
 	}
 }
 
@@ -43,7 +45,7 @@ SceneBattle::SceneBattle()
 	for (Enemy *enemy : Battle::GetEnemies())
 		enemiesHealthBar.push_back(new GuiProgressBar(
 		sf::FloatRect(enemy->GetHealthBarPos(), hbs), Gui::HealthBarFillColor,
-			(unsigned int&)enemy->GetHP(), enemy->GetStats()[Stat::HP]));
+			(unsigned int&)enemy->GetHP(), enemy->GetMaxHP()));
 	const float ww = 1920.f, hww = ww/2.f, wh = 1080.f, hwh = wh/2.f;
 	messageText = new GuiText(sf::FloatRect(50.f, 50.f, 1.f, 50.f), L"", 24, false);
 	const float bw = 250.f, bh = 75.f, d = 25.f, w = bw*3 + d*4, h = bh + d*2,
@@ -70,11 +72,6 @@ SceneBattle::SceneBattle()
 	defeatMenu->Append(new GuiButton(sf::FloatRect(dmx+bd, dmy+mbh+bd*2, mbw, mbh),
 		L"Вернуться в главное меню", 24, [](const sf::Event&) { Battle::End(); }));
 	setTargetRect(targetRect);
-	generatedLoot = false;
-	obtainedExp = 0U;
-	for (auto item : obtainedLoot)
-		Item::Delete(item);
-	obtainedLoot.clear();
 	if (!Battle::CanEscape())
 		dynamic_cast<GuiButton*>(actionsMenu->GetChildren()[2])->SetEnabled(false);
 }
@@ -91,6 +88,11 @@ SceneBattle::~SceneBattle()
 	if (victoryMenu != nullptr) delete victoryMenu;
 	delete defeatMenu;
 	Player::InBattle(false);
+	generatedLoot = false;
+	obtainedExp = 0U;
+	for (auto item : obtainedLoot)
+		Item::Delete(item);
+	obtainedLoot.clear();
 	instance = nullptr;
 }
 

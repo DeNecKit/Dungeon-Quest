@@ -1,12 +1,13 @@
 #include "GameManager.h"
-#include <SFML/Graphics.hpp>
 #include "SceneManager.h"
 #include "ResourceManager.h"
+#include "Gui/GuiText.h"
+#include "Gui/GuiRect.h"
+#include "Level.h"
+#include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <format>
 #include <ctime>
-#include "Gui/GuiText.h"
-#include "Gui/GuiRect.h"
 
 GuiText *fpsText = nullptr;
 GuiRect *fpsBackground = nullptr;
@@ -101,6 +102,7 @@ void GameManager::Shutdown()
 	delete fpsText;
 	delete fpsBackground;
 	delete window;
+	Level::Shutdown();
 	SceneManager::Shutdown();
 	ResourceManager::Shutdown();
 }
