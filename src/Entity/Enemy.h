@@ -21,6 +21,9 @@ public:
 	void TakeHit(unsigned int damage) override;
 	std::map<Stat, unsigned int> GetStats();
 	unsigned int &GetMaxHP();
+	bool FinishedActionAnimation() override;
+	bool FinishedHitAnimation() override;
+	bool FinishedDeathAnimation() override;
 	virtual sf::FloatRect GetClickHitbox() = 0;
 	virtual unsigned int DropExp() = 0;
 	virtual std::vector<Item*> DropLoot() = 0;

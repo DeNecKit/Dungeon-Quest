@@ -2,10 +2,10 @@
 
 #include "Enemy.h"
 
-class EnemyGoblinKing final : public Enemy
+class EnemyDemonEye final : public Enemy
 {
 public:
-	EnemyGoblinKing(unsigned int pos);
+	EnemyDemonEye(unsigned int pos);
 	sf::Vector2f GetHealthBarPos() override;
 	sf::FloatRect GetClickHitbox() override;
 	unsigned int DropExp() override;

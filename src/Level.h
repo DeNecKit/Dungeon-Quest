@@ -25,6 +25,7 @@ public:
 	static sf::Vector2f GetEndTile();
 	static bool IsBossDefeated();
 	static bool SetBossDefeated();
+	static unsigned int GetNum();
 	static Level *Level1();
 	static Level *Level2();
 	static Level *Get();

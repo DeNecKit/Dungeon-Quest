@@ -7,6 +7,7 @@
 #include "../Gui/GuiProgressBar.h"
 #include "EnemyGoblin.h"
 #include "EnemyGoblinKing.h"
+#include "EnemyDemonEye.h"
 #include <cmath>
 #include <fstream>
 #include <cstdlib>
@@ -161,8 +162,12 @@ void Player::UpdateStatsString()
 		if (currentPlayer->inventory[i] == nullptr) continue;
 		for (Stat statType = Stat::HP; statType <= Stat::AGI;
 			statType = (Stat)((int)statType + 1))
-			curStats[statType] += currentPlayer->inventory[i]
-				->GetTemplate()->GetStats()[statType];
+		{
+			int tmp = std::max(
+				(int)curStats[statType] + currentPlayer->inventory[i]
+				->GetTemplate()->GetStats()[statType], 0);
+			curStats[statType] = tmp;
+		}
 	}
 	bool added = false;
 	for (auto &[statType, stat] : curStats)
@@ -194,7 +199,7 @@ unsigned int &Player::GetExp()
 	return currentPlayer->curExp;
 }
 
-unsigned int& Player::GetReqExp()
+unsigned int &Player::GetReqExp()
 {
 	return currentPlayer->reqExp;
 }
@@ -245,13 +250,18 @@ void Player::AddExp(unsigned int exp)
 	}
 }
 
+void Player::ResetBattleDist()
+{
+	currentPlayer->walkedDistance = 0.f;
+}
+
 void Player::UpdateInGame(sf::Time deltaTime)
 {
-	float s = (float)Level::GetTileSize(), ds = s * 1.1f,
+	float s = (float)Level::GetTileSize(), ps = GetSize(),
 		bx = Level::GetBossTile().x, by = Level::GetBossTile().y;
 	if (!Level::IsBossDefeated() &&
-		position.x > bx-ds && position.x < bx+s+ds &&
-		position.y > by-ds && position.y < by+s+ds)
+		position.x+ps > bx && position.x < bx+s &&
+		position.y+ps > by && position.y < by+s)
 	{
 		Battle::Start(this, {
 			new EnemyGoblinKing(1), new EnemyGoblin(2), new EnemyGoblin(3) }, false);
@@ -259,8 +269,8 @@ void Player::UpdateInGame(sf::Time deltaTime)
 		return;
 	}
 	const float ex = Level::GetEndTile().x, ey = Level::GetEndTile().y;
-	if (position.x > ex-ds && position.x < ex+s+ds &&
-		position.y > ey-ds && position.y < ey+s+ds)
+	if (position.x+ps > ex && position.x < ex+s &&
+		position.y+ps > ey && position.y < ey+s)
 	{
 		Level::Next();
 		return;
@@ -305,21 +315,20 @@ void Player::UpdateInGame(sf::Time deltaTime)
 		animationState = PlayerAnimationState::Walking;
 		walkedDistance += deltaDist;
 		if (walkedDistance > requiredDistance)
+		//if (false)
 		{
 			walkedDistance = 0.f;
 			requiredDistance = GenerateRequiredDistance();
 			std::vector<Enemy*> enemies;
-			int c = 0;
-			bool f[] = { false, false, false };
-			while (c == 0 || c < 3 && std::rand() % 2)
-			{
-				int i;
-				do i = std::rand() % 3;
-				while (f[i]);
-				enemies.push_back(new EnemyGoblin(i + 1));
-				f[i] = true;
-				c++;
-			}
+			int g = std::rand() % 3 + 1;
+			for (int i = 1; i <= 3; i++)
+				//if (i == g || std::rand() % 2)
+					switch (Level::GetNum())
+					{
+					case 1: enemies.push_back(new EnemyGoblin(i)); break;
+					case 2: enemies.push_back(new EnemyDemonEye(i)); break;
+					default: throw new std::exception();
+					}
 			Battle::Start(this, enemies);
 		}
 	} else animationState = PlayerAnimationState::Idle;
@@ -446,6 +455,7 @@ sf::Vector2f Player::GetFixedPos(float deltaX, float deltaY,
 float Player::GenerateRequiredDistance()
 {
 	return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
+	//return 10.f;
 }
 
 void Player::SetStartPos(sf::Vector2u startPos)

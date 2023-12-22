@@ -22,6 +22,7 @@ void SceneManager::ChangeScene()
 	if (dynamic_cast<SceneMainMenu*>(currentScene) &&
 		typeid(T) == typeid(SceneGame))
 		Level::Change(Level::Level1());
+		//Level::Change(Level::Level2());
 	tmpScene = new T();
 	isSceneChanged = true;
 }
@@ -30,7 +31,7 @@ template void SceneManager::ChangeScene<SceneMainMenu>();
 template void SceneManager::ChangeScene<SceneGame>();
 template void SceneManager::ChangeScene<SceneBattle>();
 
-Scene* SceneManager::GetCurrentScene()
+Scene *SceneManager::GetCurrentScene()
 {
 	return currentScene;
 }
@@ -39,12 +40,12 @@ void SceneManager::ProccessEvent(const sf::Event &event)
 {
 	if (isSceneChanged)
 	{
+		delete currentScene;
 		if (dynamic_cast<SceneMainMenu*>(tmpScene))
 		{
 			Level::Reset();
 			Item::Clear();
 		}
-		delete currentScene;
 		currentScene = tmpScene;
 		tmpScene = nullptr;
 		isSceneChanged = false;

@@ -138,7 +138,9 @@
     <ClCompile Include="src\Animatable.cpp" />
     <ClCompile Include="src\Battle.cpp" />
     <ClCompile Include="src\Entity\Enemy.cpp" />
+    <ClCompile Include="src\Entity\EnemyDemonEye.cpp" />
     <ClCompile Include="src\Entity\EnemyGoblinKing.cpp" />
+    <ClCompile Include="src\Entity\EnemyReaper.cpp" />
     <ClCompile Include="src\Entity\Entity.cpp" />
     <ClCompile Include="src\Entity\EnemyGoblin.cpp" />
     <ClCompile Include="src\Entity\Player.cpp" />
@@ -171,8 +173,10 @@
     <ClInclude Include="src\Animatable.h" />
     <ClInclude Include="src\Battle.h" />
     <ClInclude Include="src\Entity\Enemy.h" />
+    <ClInclude Include="src\Entity\EnemyDemonEye.h" />
     <ClInclude Include="src\Entity\EnemyGoblin.h" />
     <ClInclude Include="src\Entity\EnemyGoblinKing.h" />
+    <ClInclude Include="src\Entity\EnemyReaper.h" />
     <ClInclude Include="src\Entity\Entity.h" />
     <ClInclude Include="src\Entity\Player.h" />
     <ClInclude Include="src\GameManager.h" />

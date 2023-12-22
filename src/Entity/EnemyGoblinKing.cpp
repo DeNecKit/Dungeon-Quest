@@ -33,21 +33,6 @@ sf::FloatRect EnemyGoblinKing::GetClickHitbox()
 		sf::Vector2f(size*coef, size*coef*1.25f));
 }
 
-bool EnemyGoblinKing::FinishedActionAnimation()
-{
-	return finishedAttack;
-}
-
-bool EnemyGoblinKing::FinishedHitAnimation()
-{
-	return finishedHit;
-}
-
-bool EnemyGoblinKing::FinishedDeathAnimation()
-{
-	return finishedDeath;
-}
-
 unsigned int EnemyGoblinKing::DropExp()
 {
 	return 100;

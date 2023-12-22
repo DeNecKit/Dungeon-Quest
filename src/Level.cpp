@@ -32,6 +32,7 @@ Level::Level(unsigned int num, const sf::String &tilesetTexturePath,
 	sf::Vector2u startPos(startPosX, startPosY);
 	player = Player::Get() == nullptr
 		? new Player(startPos, startDir) : Player::Get();
+	Player::ResetBattleDist();
 	if (Player::Get() == nullptr)
 		player = new Player(startPos, startDir);
 	else
@@ -71,13 +72,13 @@ Level::Level(unsigned int num, const sf::String &tilesetTexturePath,
 				tile = new Tile(id, sf::Vector2u(x, y));
 			}
 			otherTiles.push_back(tile);
-			if (id == 39) endTile = {(float)x*GetTileSize(), (float)y*GetTileSize()};
 		}
 	}
 
-	bossTile = sf::Vector2f(
-		(float)data["boss-tile"]["x"] * GetTileSize(),
-		(float)data["boss-tile"]["y"] * GetTileSize());
+	bossTile = { (float)data["boss-tile"]["x"] * GetTileSize(),
+				 (float)data["boss-tile"]["y"] * GetTileSize() };
+	endTile = { (float)data["end-tile"]["x"] * GetTileSize(),
+				(float)data["end-tile"]["y"] * GetTileSize() };
 }
 
 Level::~Level()
@@ -187,6 +188,11 @@ bool Level::IsBossDefeated()
 bool Level::SetBossDefeated()
 {
 	return currentLevel->isBossDefeated = true;
+}
+
+unsigned int Level::GetNum()
+{
+	return currentLevel->num;
 }
 
 Level *Level::Level1()

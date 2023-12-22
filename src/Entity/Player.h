@@ -41,6 +41,7 @@ public:
 	static unsigned int &GetReqExp();
 	static void AddItem(Item*);
 	static void AddExp(unsigned int exp);
+	static void ResetBattleDist();
 	static Player *Get();
 
 private:

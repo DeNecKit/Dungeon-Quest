@@ -124,3 +124,18 @@ unsigned int &Enemy::GetMaxHP()
 {
 	return maxHP;
 }
+
+bool Enemy::FinishedActionAnimation()
+{
+	return finishedAttack;
+}
+
+bool Enemy::FinishedHitAnimation()
+{
+	return finishedHit;
+}
+
+bool Enemy::FinishedDeathAnimation()
+{
+	return finishedDeath;
+}
