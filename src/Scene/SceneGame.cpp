@@ -28,7 +28,7 @@ SceneGame::SceneGame()
 	pauseMenu->Append(new GuiButton(sf::FloatRect(lx + d, ly + d*2 + h, w, h),
 		L"Вернуться в игру", 24, [](const sf::Event&) { SetPause(false); }));
 	pauseMenu->Append(new GuiButton(sf::FloatRect(lx + d, ly + d*3 + h*2, w, h),
-		L"Сохранить игру", 24, [](const sf::Event&) {}));
+		L"Сохранить игру", 24, [](const sf::Event&) { Level::Save(); }));
 	pauseMenu->Append(new GuiButton(sf::FloatRect(lx + d, ly + d*4 + h*3, w, h),
 		L"Выйти в главное меню", 24, [](const sf::Event&)
 			{ SceneManager::ChangeScene<SceneMainMenu>(); }));

@@ -2,6 +2,7 @@
 #include "../GameManager.h"
 #include "../ResourceManager.h"
 #include "SceneGame.h"
+#include "SceneLoadGame.h"
 #include "../Level.h"
 
 SceneMainMenu::SceneMainMenu()
@@ -20,7 +21,8 @@ SceneMainMenu::SceneMainMenu()
 			{ SceneManager::ChangeScene<SceneGame>(); });
 
 	btnLoadGame = new GuiButton(sf::FloatRect(x, 650.f, w, 100.f),
-		L"Загрузить игру", 24, [](const sf::Event&) {});
+		L"Загрузить игру", 24, [](const sf::Event&)
+			{ SceneManager::ChangeScene<SceneLoadGame>(); });
 
 	btnExit = new GuiButton(sf::FloatRect(x, 800.f, w, 100.f),
 		L"Выйти", 24, [](const sf::Event&) { GameManager::Close(); });

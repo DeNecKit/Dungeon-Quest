@@ -272,6 +272,28 @@ void Player::ResetBattleDist()
 	currentPlayer->walkedDistance = 0.f;
 }
 
+json Player::Save()
+{
+	json res;
+	auto p = currentPlayer;
+	res["x"] = p->position.x;
+	res["y"] = p->position.y;
+	res["hp"] = p->hp;
+	res["lvl"] = p->curLevel;
+	res["exp"] = p->curExp;
+	std::vector<json> inv;
+	for (int i = 0; i < 20; i++)
+		if (p->inventory[i] != nullptr)
+			inv.push_back({
+				{"pos", i},
+				{"id", p->inventory[i]->GetTemplate()->GetId()},
+				{"count", p->inventory[i]->GetCount()} });
+	res["inventory"] = inv;
+	res["walked-dist"] = p->walkedDistance;
+	res["req-dist"] = p->requiredDistance;
+	return res;
+}
+
 void Player::UpdateInGame(sf::Time deltaTime)
 {
 	float s = (float)Level::GetTileSize(), ps = GetSize(),

@@ -3,6 +3,8 @@
 #include "Entity.h"
 #include "../Item/Item.h"
 #include <map>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 enum class PlayerDirection
 	{ Left, Right };
@@ -43,6 +45,7 @@ public:
 	static void AddItem(Item*);
 	static void AddExp(unsigned int exp);
 	static void ResetBattleDist();
+	static json Save();
 	static Player *Get();
 
 private:

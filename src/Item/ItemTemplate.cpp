@@ -7,7 +7,7 @@ ItemTemplate::ItemTemplate(ItemType type, sf::String name,
 	unsigned int textureId, std::map<Stat, const int> stats,
 	bool isUsable, void (*onClick)())
 	: type(type), name(name), textureId(textureId), description(nullptr),
-	stats(stats), isUsable(isUsable), onClick(onClick) {}
+	stats(stats), isUsable(isUsable), onClick(onClick), id(count++) {}
 
 ItemTemplate::~ItemTemplate()
 {
@@ -80,6 +80,11 @@ const sf::String &ItemTemplate::GetDescription()
 			break;
 		}
 	return *description;
+}
+
+unsigned int ItemTemplate::GetId()
+{
+	return id;
 }
 
 void ItemTemplate::Init()

@@ -9,6 +9,7 @@ public:
 	bool IsWall() override;
 	void ProcessEvent(const sf::Event&) override;
 	void Render(sf::RenderWindow*) override;
+	bool IsOpen();
 
 private:
 	bool isOpen;

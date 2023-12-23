@@ -5,6 +5,7 @@
 #include "Scene/SceneGame.h"
 #include "Scene/SceneBattle.h"
 #include "Scene/SceneWin.h"
+#include "Scene/SceneLoadGame.h"
 #include "Level.h"
 #include "Item/Item.h"
 #include "Item/ItemTemplate.h"
@@ -22,9 +23,9 @@ void SceneManager::ChangeScene()
 {
 	if (dynamic_cast<SceneMainMenu*>(currentScene) &&
 		typeid(T) == typeid(SceneGame))
-		//Level::Change(Level::Level1());
+		Level::Change(Level::Level1());
 		//Level::Change(Level::Level2());
-		Level::Change(Level::Level3());
+		//Level::Change(Level::Level3());
 	tmpScene = new T();
 	isSceneChanged = true;
 }
@@ -33,6 +34,7 @@ template void SceneManager::ChangeScene<SceneMainMenu>();
 template void SceneManager::ChangeScene<SceneGame>();
 template void SceneManager::ChangeScene<SceneBattle>();
 template void SceneManager::ChangeScene<SceneWin>();
+template void SceneManager::ChangeScene<SceneLoadGame>();
 
 Scene *SceneManager::GetCurrentScene()
 {

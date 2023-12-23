@@ -25,6 +25,7 @@ public:
 	void Click();
 	const sf::String &GetName();
 	const sf::String &GetDescription();
+	unsigned int GetId();
 
 	static void Init();
 	static void Shutdown();
@@ -36,7 +37,7 @@ public:
 protected:
 	ItemType type;
 	sf::String name;
-	unsigned int textureId;
+	unsigned int textureId, id;
 	std::map<Stat, const int> stats;
 	bool isUsable;
 	void (*onClick)();
@@ -48,4 +49,5 @@ protected:
 	static inline std::map<Stat, const int> nullStats
 		= { {Stat::HP, 0}, {Stat::ATK, 0}, {Stat::DEF, 0}, {Stat::AGI, 0} };
 	static inline std::map<Stat, sf::String> *statNames;
+	static inline unsigned int count = 0U;
 };

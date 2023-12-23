@@ -49,3 +49,8 @@ void TileDoor::Render(sf::RenderWindow *window)
 	unsigned int tile = isOpen ? (id == 36 ? 48 : 47) : id;
 	Level::RenderTile(tile, position.x, position.y);
 }
+
+bool TileDoor::IsOpen()
+{
+	return isOpen;
+}

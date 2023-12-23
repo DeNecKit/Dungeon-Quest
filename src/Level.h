@@ -10,7 +10,7 @@ class Level
 {
 public:
 	Level(unsigned int num, const sf::String &tilesetTexturePath,
-		const char *dataPath, PlayerDirection startDir);
+		const char *dataPath, PlayerDirection startDir, sf::String *savePath = nullptr);
 	~Level();
 	void ProcessEvent(const sf::Event&);
 	void Update(sf::Time deltaTime);
@@ -33,6 +33,7 @@ public:
 	static bool IsAnyLevel();
 	static void Change(Level*);
 	static void Next();
+	static void Save();
 	static void Reset();
 	static void Shutdown();
 
@@ -44,6 +45,7 @@ private:
 	Player *player;
 	sf::Vector2f bossTile, endTile;
 	bool isBossDefeated;
+	sf::String *savePath;
 
 	static inline Level *currentLevel = nullptr;
 };

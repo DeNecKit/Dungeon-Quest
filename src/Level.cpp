@@ -15,7 +15,8 @@ using json = nlohmann::json;
 auto *levels = new std::vector<Level*>();
 
 Level::Level(unsigned int num, const sf::String &tilesetTexturePath,
-	const char *dataPath, PlayerDirection startDir) : num(num), isBossDefeated(false)
+	const char *dataPath, PlayerDirection startDir, sf::String *savePath)
+	: num(num), isBossDefeated(false)
 {
 	levels->push_back(this);
 
@@ -93,6 +94,7 @@ Level::~Level()
 	if (!IsAnyLevel()) delete player;
 	for (Tile *tile : otherTiles)
 		delete tile;
+	if (savePath != nullptr) delete savePath;
 }
 
 void Level::ProcessEvent(const sf::Event &event)
@@ -238,6 +240,71 @@ void Level::Next()
 	default: throw new std::exception();
 	}
 	Change(nextLevel);
+}
+
+void Level::Save()
+{
+	auto cl = currentLevel;
+	if (cl->savePath == nullptr)
+	{
+		std::ifstream globalRead("data/saves/global.json");
+		if (!globalRead.is_open()) throw std::exception();
+		const int curSave = json::parse(globalRead)["last-save"] + 1;
+		globalRead.close();
+
+		json globalJson = { {"last-save", curSave} };
+		std::ofstream globalWrite("data/saves/global.json");
+		globalWrite << globalJson << std::endl;
+		globalWrite.close();
+
+		std::string curSaveStr = std::to_string(curSave),
+			saveNumStr = std::string(2 - std::min(2, (int)curSaveStr.length()), '0') + curSaveStr;
+		cl->savePath = new sf::String("data/saves/save-" + saveNumStr + ".json");
+	}
+	json save;
+	save["player"] = Player::Save();
+	
+	json lvlSave;
+	lvlSave["num"] = cl->num;
+	std::vector<json> doors, chests;
+	for (Tile *tile : cl->otherTiles)
+	{
+		auto door = dynamic_cast<TileDoor*>(tile);
+		if (door != nullptr)
+		{
+			doors.push_back({
+				{"id", door->GetId()},
+				{"x", (int)door->GetPos().x / GetTileSize() },
+				{"y", (int)door->GetPos().y / GetTileSize() },
+				{"open", door->IsOpen()} });
+			continue;
+		}
+		auto chest = dynamic_cast<TileChest*>(tile);
+		if (chest != nullptr)
+		{
+			json chestJson = {
+				{"x", (int)chest->GetPos().x / GetTileSize() },
+				{"y", (int)chest->GetPos().y / GetTileSize() } };
+			std::vector<json> content;
+			for (int i = 0; i < 15; i++)
+				if (chest->GetItem(i) != nullptr)
+					content.push_back({
+						{"pos", i},
+						{"id", chest->GetItem(i)->GetTemplate()->GetId()},
+						{"count", chest->GetItem(i)->GetCount()} });
+			chestJson["content"] = content;
+			chests.push_back(chestJson);
+		}
+	}
+	lvlSave["doors"] = doors;
+	lvlSave["chests"] = chests;
+	lvlSave["boss-defeated"] = cl->isBossDefeated;
+	
+	save["level"] = lvlSave;
+
+	std::ofstream saveFile(cl->savePath->toAnsiString());
+	saveFile << save << std::endl;
+	saveFile.close();
 }
 
 void Level::Reset()
