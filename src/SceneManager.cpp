@@ -4,6 +4,7 @@
 #include "Scene/SceneMainMenu.h"
 #include "Scene/SceneGame.h"
 #include "Scene/SceneBattle.h"
+#include "Scene/SceneWin.h"
 #include "Level.h"
 #include "Item/Item.h"
 #include "Item/ItemTemplate.h"
@@ -31,6 +32,7 @@ void SceneManager::ChangeScene()
 template void SceneManager::ChangeScene<SceneMainMenu>();
 template void SceneManager::ChangeScene<SceneGame>();
 template void SceneManager::ChangeScene<SceneBattle>();
+template void SceneManager::ChangeScene<SceneWin>();
 
 Scene *SceneManager::GetCurrentScene()
 {

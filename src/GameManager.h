@@ -18,9 +18,6 @@ public:
 
 	static bool IsMouseOver(sf::FloatRect rect);
 
-	static inline const sf::Color backgroundColor
-		= sf::Color(24, 19, 16);
-
 private:
 	static inline sf::RenderWindow *window;
 	static inline bool isWindowClosed;

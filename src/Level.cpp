@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "Scene/SceneBattle.h"
 #include "Scene/SceneGame.h"
+#include "Scene/SceneWin.h"
 #include <fstream>
 #include <vector>
 #include <nlohmann/json.hpp>
@@ -233,6 +234,7 @@ void Level::Next()
 	{
 	case 1: nextLevel = Level2(); break;
 	case 2: nextLevel = Level3(); break;
+	case 3: SceneManager::ChangeScene<SceneWin>(); return;
 	default: throw new std::exception();
 	}
 	Change(nextLevel);

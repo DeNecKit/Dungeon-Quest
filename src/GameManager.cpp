@@ -80,7 +80,7 @@ void GameManager::Update()
 	}
 	SceneManager::Update(dt);
 
-	window->clear(backgroundColor);
+	window->clear(sf::Color(30, 17, 12));
 	SceneManager::RenderSFML(window);
 	SceneManager::RenderGUI(window);
 	if (showFps)
