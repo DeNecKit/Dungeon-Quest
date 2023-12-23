@@ -12,7 +12,7 @@ public:
 		std::map<Stat, unsigned int> stats, const char *tilesetPath,
 		unsigned int texSize, sf::Time animDeltaTime,
 		std::map<BattleAnimationState, unsigned int> numOfFrames,
-		unsigned int hitFrameNum, float size);
+		unsigned int hitFrameNum, float size, bool flip = true);
 	~Enemy();
 	void ProcessEvent(const sf::Event&);
 	void Update(sf::Time deltaTime) override;
@@ -27,6 +27,7 @@ public:
 	virtual sf::FloatRect GetClickHitbox() = 0;
 	virtual unsigned int DropExp() = 0;
 	virtual std::vector<Item*> DropLoot() = 0;
+	unsigned int GetStat(Stat) override;
 
 protected:
 	const sf::String &name;
@@ -38,4 +39,5 @@ protected:
 	sf::RectangleShape *targetHover;
 	bool finishedAttack, finishedHit, finishedDeath;
 	unsigned int maxHP;
+	bool flip;
 };

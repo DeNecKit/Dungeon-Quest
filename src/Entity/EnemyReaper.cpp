@@ -4,30 +4,18 @@
 
 EnemyReaper::EnemyReaper(unsigned int pos)
 	: Enemy("∆нец",
-		{ {Stat::HP, 90}, {Stat::ATK, 35}, {Stat::DEF, 20}, {Stat::AGI, 5} },
-		"data/reaper.png", 140, sf::milliseconds(150),
+		{ {Stat::HP, 100}, {Stat::ATK, 65}, {Stat::DEF, 30}, {Stat::AGI, 5} },
+		"data/reaper.png", 140, sf::milliseconds(100),
 		{ {BattleAnimationState::Idle, 8},
 		  {BattleAnimationState::Attack, 10},
 		  {BattleAnimationState::TakeHit, 3},
-		  {BattleAnimationState::Death, 10} }, 4, 750.f)
+		  {BattleAnimationState::Death, 11} }, 4, 750.f, false)
 {
 	animationPassedTime = sf::milliseconds(std::rand() % 150);
 	animationCurFrame = std::rand() % 8;
 	float ww = 1920.f, wh = 1080.f;
-	switch (pos)
-	{
-	case 1:
-		position = sf::Vector2f(ww, wh/2-size/2);
-		break;
-	case 2:
-		position = sf::Vector2f(ww-425, -30.f);
-		break;
-	case 3:
-		position = sf::Vector2f(ww-425, wh-size+30);
-		break;
-	default:
-		throw new std::exception();
-	}
+	if (pos != 1) throw new std::exception();
+	position = sf::Vector2f(ww-size-100, wh/2-size/2+50);
 	position *= GameManager::ResCoefX();
 }
 
@@ -35,16 +23,16 @@ sf::Vector2f EnemyReaper::GetHealthBarPos()
 {
 	sf::Vector2f hbs = GuiProgressBar::GetHealthBarSize();
 	float w = hbs.x, h = hbs.y;
-	return sf::Vector2f(position.x-size+size/2-w/2, position.y+h*5);
+	return sf::Vector2f(position.x+size/2-w/2+200.f, position.y+h*4);
 }
 
 sf::FloatRect EnemyReaper::GetClickHitbox()
 {
-	sf::Vector2f pos = sf::Vector2f(position.x - size, position.y);
+	sf::Vector2f pos = sf::Vector2f(position.x, position.y);
 	const float coef = 0.6f;
 	return sf::FloatRect(
-		sf::Vector2f(pos.x+size/2*(1-coef), pos.y+size/2*(1-coef)),
-		sf::Vector2f(size*coef, size*coef));
+		pos.x+size/2*(1-coef)+200, pos.y+size/2*(1-coef)-60,
+		size*coef, size*coef);
 }
 
 unsigned int EnemyReaper::DropExp()
@@ -54,5 +42,5 @@ unsigned int EnemyReaper::DropExp()
 
 std::vector<Item*> EnemyReaper::DropLoot()
 {
-	return {Item::Create(16, 1), Item::Create(7, 5)};
+	return {Item::Create(16, 1), Item::Create(24, 5), Item::Create(25, 1)};
 }

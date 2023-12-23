@@ -6,10 +6,10 @@
 Enemy::Enemy(const sf::String &name, std::map<Stat, unsigned int> stats,
 	const char *tilesetPath, unsigned int texSize, sf::Time animDeltaTime,
 	std::map<BattleAnimationState, unsigned int> numOfFrames,
-	unsigned int hitFrameNum, float size)
+	unsigned int hitFrameNum, float size, bool flip)
 	: Entity(hitFrameNum), name(name), stats(stats), textureSize(texSize),
 	numOfFrames(numOfFrames), size(size*GameManager::ResCoefX()), targetHover(nullptr),
-	finishedAttack(false), finishedHit(false), finishedDeath(false)
+	finishedAttack(false), finishedHit(false), finishedDeath(false), flip(flip)
 {
 	animationDeltaTime = animDeltaTime;
 	animationTileset = new sf::Texture();
@@ -94,7 +94,7 @@ void Enemy::Render(sf::RenderWindow *window)
 			textureSize, textureSize));
 	s.setPosition(position);
 	float factor = size / textureSize;
-	s.setScale(factor * -1, factor);
+	s.setScale(factor * (flip ? -1 : 1), factor);
 	window->draw(s);
 	if (GameManager::IsMouseOver(GetClickHitbox()) &&
 		Battle::IsPlayerTurn() && Battle::GetStage() == TurnStage::Waiting)
@@ -138,4 +138,9 @@ bool Enemy::FinishedHitAnimation()
 bool Enemy::FinishedDeathAnimation()
 {
 	return finishedDeath;
+}
+
+unsigned int Enemy::GetStat(Stat stat)
+{
+	return stats[stat];
 }

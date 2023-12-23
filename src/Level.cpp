@@ -205,6 +205,11 @@ Level *Level::Level2()
 	return new Level(2, "data/tileset.png", "data/lvl-02.json", PlayerDirection::Right);
 }
 
+Level *Level::Level3()
+{
+	return new Level(3, "data/tileset.png", "data/lvl-03.json", PlayerDirection::Left);
+}
+
 Level *Level::Get()
 {
 	return currentLevel;
@@ -227,6 +232,7 @@ void Level::Next()
 	switch (currentLevel->num)
 	{
 	case 1: nextLevel = Level2(); break;
+	case 2: nextLevel = Level3(); break;
 	default: throw new std::exception();
 	}
 	Change(nextLevel);

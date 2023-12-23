@@ -4,7 +4,7 @@
 
 EnemyDemonEye::EnemyDemonEye(unsigned int pos)
 	: Enemy("Демонический глаз",
-		{ {Stat::HP, 55}, {Stat::ATK, 20}, {Stat::DEF, 3}, {Stat::AGI, 15} },
+		{ {Stat::HP, 70}, {Stat::ATK, 35}, {Stat::DEF, 5}, {Stat::AGI, 15} },
 		"data/demon-eye.png", 150, sf::milliseconds(150),
 		{ {BattleAnimationState::Idle, 8},
 		  {BattleAnimationState::Attack, 8},
@@ -58,6 +58,8 @@ std::vector<Item*> EnemyDemonEye::DropLoot()
 	std::vector<Item*> res;
 	if (std::rand() % 2)
 		res.push_back(Item::Create(7, std::rand() % 3 + 1));
+	if (std::rand() % 2)
+		res.push_back(Item::Create(24, 1));
 	if (!swordDropped && std::rand() % 20 == 0)
 	{
 		res.push_back(Item::Create(15, 1));

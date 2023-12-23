@@ -4,7 +4,7 @@
 
 EnemyGoblin::EnemyGoblin(unsigned int pos)
 	: Enemy("Гоблин",
-		{ {Stat::HP, 30}, {Stat::ATK, 15}, {Stat::DEF, 5}, {Stat::AGI, 5} },
+		{ {Stat::HP, 30}, {Stat::ATK, 20}, {Stat::DEF, 5}, {Stat::AGI, 5} },
 		"data/goblin.png", 150, sf::milliseconds(150),
 		{ {BattleAnimationState::Idle, 4},
 		  {BattleAnimationState::Attack, 8},
@@ -49,7 +49,7 @@ sf::FloatRect EnemyGoblin::GetClickHitbox()
 
 unsigned int EnemyGoblin::DropExp()
 {
-	return std::rand() % 5 + 3;
+	return std::rand() % 11 + 5;
 }
 
 std::vector<Item*> EnemyGoblin::DropLoot()

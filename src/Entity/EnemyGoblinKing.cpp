@@ -40,5 +40,5 @@ unsigned int EnemyGoblinKing::DropExp()
 
 std::vector<Item*> EnemyGoblinKing::DropLoot()
 {
-	return {Item::Create(8, 1), Item::Create(7, 5)};
+	return {Item::Create(8, 1), Item::Create(7, 5), Item::Create(24, 1)};
 }

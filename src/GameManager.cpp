@@ -62,7 +62,8 @@ bool GameManager::IsRunning()
 void GameManager::Update()
 {
 	sf::Event event;
-	while (window->pollEvent(event))
+	int c = 1;
+	while (window->pollEvent(event) || c--)
 	{
 		SceneManager::ProccessEvent(event);
 		if (event.type == sf::Event::KeyPressed &&

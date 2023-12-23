@@ -28,6 +28,7 @@ public:
 	static unsigned int GetNum();
 	static Level *Level1();
 	static Level *Level2();
+	static Level *Level3();
 	static Level *Get();
 	static bool IsAnyLevel();
 	static void Change(Level*);

@@ -8,6 +8,9 @@
 #include "EnemyGoblin.h"
 #include "EnemyGoblinKing.h"
 #include "EnemyDemonEye.h"
+#include "EnemyReaper.h"
+#include "EnemySkeleton.h"
+#include "EnemyNecromancer.h"
 #include <cmath>
 #include <fstream>
 #include <cstdlib>
@@ -69,6 +72,7 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	levelString = new sf::String(L"Уровень игрока: 1");
 	statsString = new sf::String();
 	UpdateStatsString();
+	AddExp(6000);
 }
 
 Player::~Player()
@@ -135,6 +139,15 @@ void Player::TakeHit(unsigned int damage)
 	animationCurFrame = 0;
 }
 
+unsigned int Player::GetStat(Stat stat)
+{
+	unsigned int res = stats[stat];
+	for (int i = 15; i < 20; i++)
+		if (inventory[i]) res = std::max(
+			res+inventory[i]->GetTemplate()->GetStats()[stat], 0U);
+	return res;
+}
+
 unsigned int &Player::GetMaxHP()
 {
 	maxHP = currentPlayer->stats[Stat::HP];
@@ -163,10 +176,9 @@ void Player::UpdateStatsString()
 		for (Stat statType = Stat::HP; statType <= Stat::AGI;
 			statType = (Stat)((int)statType + 1))
 		{
-			int tmp = std::max(
-				(int)curStats[statType] + currentPlayer->inventory[i]
-				->GetTemplate()->GetStats()[statType], 0);
-			curStats[statType] = tmp;
+			curStats[statType] = std::max(
+				curStats[statType] + currentPlayer->inventory[i]
+				->GetTemplate()->GetStats()[statType], 0U);
 		}
 	}
 	bool added = false;
@@ -230,16 +242,20 @@ void Player::AddItem(Item *item)
 void Player::AddExp(unsigned int exp)
 {
 	auto p = currentPlayer;
+	if (p->curLevel == 20) return;
 	p->curExp += exp;
 	bool updateGui = false;
+	unsigned int hpAdded = 0U;
 	while (p->curExp >= p->reqExp)
 	{
+		if (p->curLevel == 20) break;
 		p->curExp -= p->reqExp;
-		p->reqExp = p->reqExpList[p->curLevel];
-		// TODO: if lvl == 19
+		p->reqExp = p->reqExpList[p->curLevel - (p->curLevel < 19 ? 0 : 1)];
+		if (p->curLevel == 19) p->curExp = p->reqExp;
 		for (Stat statType = Stat::HP; statType <= Stat::AGI;
 			statType = (Stat)((int)statType + 1))
 			p->stats[statType] += p->statsDiff[p->curLevel-1][statType];
+		hpAdded += p->statsDiff[p->curLevel-1][Stat::HP];
 		p->curLevel++;
 		updateGui = true;
 	}
@@ -248,6 +264,7 @@ void Player::AddExp(unsigned int exp)
 		*p->levelString = L"Уровень игрока: " + std::to_wstring(p->curLevel);
 		UpdateStatsString();
 	}
+	Heal(hpAdded);
 }
 
 void Player::ResetBattleDist()
@@ -263,8 +280,21 @@ void Player::UpdateInGame(sf::Time deltaTime)
 		position.x+ps > bx && position.x < bx+s &&
 		position.y+ps > by && position.y < by+s)
 	{
-		Battle::Start(this, {
-			new EnemyGoblinKing(1), new EnemyGoblin(2), new EnemyGoblin(3) }, false);
+		std::vector<Enemy*> enemies;
+		switch (Level::GetNum())
+		{
+		case 1:
+			enemies = { new EnemyGoblinKing(1), new EnemyGoblin(2), new EnemyGoblin(3) };
+			break;
+		case 2:
+			enemies = { new EnemyReaper(1), new EnemyDemonEye(2), new EnemyDemonEye(3) };
+			break;
+		case 3:
+			enemies = { new EnemyNecromancer(1), new EnemySkeleton(2), new EnemySkeleton(3) };
+			break;
+		default: throw new std::exception();
+		}
+		Battle::Start(this, enemies, false);
 		Level::SetBossDefeated();
 		return;
 	}
@@ -315,18 +345,18 @@ void Player::UpdateInGame(sf::Time deltaTime)
 		animationState = PlayerAnimationState::Walking;
 		walkedDistance += deltaDist;
 		if (walkedDistance > requiredDistance)
-		//if (false)
 		{
 			walkedDistance = 0.f;
 			requiredDistance = GenerateRequiredDistance();
 			std::vector<Enemy*> enemies;
 			int g = std::rand() % 3 + 1;
 			for (int i = 1; i <= 3; i++)
-				//if (i == g || std::rand() % 2)
+				if (i == g || std::rand() % 2)
 					switch (Level::GetNum())
 					{
 					case 1: enemies.push_back(new EnemyGoblin(i)); break;
 					case 2: enemies.push_back(new EnemyDemonEye(i)); break;
+					case 3: enemies.push_back(new EnemySkeleton(i)); break;
 					default: throw new std::exception();
 					}
 			Battle::Start(this, enemies);
@@ -455,6 +485,7 @@ sf::Vector2f Player::GetFixedPos(float deltaX, float deltaY,
 float Player::GenerateRequiredDistance()
 {
 	return std::rand() / (float)RAND_MAX * 8*speed + 7*speed;
+	//return 30*speed;
 	//return 10.f;
 }
 

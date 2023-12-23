@@ -16,6 +16,7 @@ public:
 	virtual bool FinishedHitAnimation() = 0;
 	virtual bool FinishedDeathAnimation() = 0;
 	virtual void TakeHit(unsigned int damage) = 0;
+	virtual unsigned int GetStat(Stat) = 0;
 	int &GetHP();
 	bool IsHitFrame();
 	bool IsAlive();

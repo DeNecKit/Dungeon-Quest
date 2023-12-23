@@ -21,6 +21,7 @@ public:
 	bool FinishedHitAnimation() override;
 	bool FinishedDeathAnimation() override;
 	void TakeHit(unsigned int damage) override;
+	unsigned int GetStat(Stat) override;
 
 	static void SetStartPos(sf::Vector2u startPos);
 	static sf::Vector2f GetPos();

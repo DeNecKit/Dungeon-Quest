@@ -21,8 +21,9 @@ void SceneManager::ChangeScene()
 {
 	if (dynamic_cast<SceneMainMenu*>(currentScene) &&
 		typeid(T) == typeid(SceneGame))
-		Level::Change(Level::Level1());
+		//Level::Change(Level::Level1());
 		//Level::Change(Level::Level2());
+		Level::Change(Level::Level3());
 	tmpScene = new T();
 	isSceneChanged = true;
 }

@@ -40,7 +40,7 @@ void Battle::Update(sf::Time deltaTime)
 		break;
 	case TurnStage::Action:
 		if (chosenAction == TurnAction::Flee)
-			if (std::rand() % 2)
+			if (std::rand() % 101 <= 50+(int)Player::Get()->GetStat(Stat::AGI))
 			{
 				Battle::End();
 				return;
