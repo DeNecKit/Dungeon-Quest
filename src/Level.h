@@ -10,7 +10,8 @@ class Level
 {
 public:
 	Level(unsigned int num, const sf::String &tilesetTexturePath,
-		const char *dataPath, PlayerDirection startDir, sf::String *savePath = nullptr);
+		const char *dataPath, PlayerDirection startDir,
+		sf::String *savePath = nullptr, json *loadData = nullptr);
 	~Level();
 	void ProcessEvent(const sf::Event&);
 	void Update(sf::Time deltaTime);
@@ -26,14 +27,15 @@ public:
 	static bool IsBossDefeated();
 	static bool SetBossDefeated();
 	static unsigned int GetNum();
-	static Level *Level1();
-	static Level *Level2();
-	static Level *Level3();
+	static Level *Level1(sf::String *savePath = nullptr, json *loadData = nullptr);
+	static Level *Level2(sf::String *savePath = nullptr, json *loadData = nullptr);
+	static Level *Level3(sf::String *savePath = nullptr, json *loadData = nullptr);
 	static Level *Get();
 	static bool IsAnyLevel();
 	static void Change(Level*);
 	static void Next();
 	static void Save();
+	static void Load(std::string path);
 	static void Reset();
 	static void Shutdown();
 

@@ -8,7 +8,7 @@ class GuiClickable final : public Gui
 {
 public:
 	GuiClickable(sf::FloatRect dims,
-		void (*onClick)(const sf::Event&),
+		void (*onClick)(Gui *self),
 		bool doHover = true, GuiDraggable *drag = nullptr,
 		bool isClickable = true);
 	~GuiClickable();
@@ -21,7 +21,7 @@ public:
 	bool DragReleased();
 
 private:
-	void (*OnClick)(const sf::Event&);
+	void (*OnClick)(Gui *self);
 	bool isPressed, doHover, isHovered;
 	sf::RectangleShape hoverRect, clickRect;
 	GuiDraggable *drag;

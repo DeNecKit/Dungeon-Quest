@@ -2,7 +2,7 @@
 #include "../GameManager.h"
 
 GuiButton::GuiButton(sf::FloatRect dims, const sf::String &str,
-	unsigned int chSize, void (*onClick)(const sf::Event&),
+	unsigned int chSize, void (*onClick)(Gui *self),
 	sf::Color fillColor, sf::Color outlineColor, sf::Font *font)
 	: Gui(dims), rect(dims, fillColor, outlineColor),
 	text(dims, str, chSize, font),
@@ -31,4 +31,9 @@ void GuiButton::Render(sf::RenderWindow *window)
 void GuiButton::SetEnabled(bool enabled)
 {
 	this->enabled = enabled;
+}
+
+GuiClickable *GuiButton::GetClickable()
+{
+	return &click;
 }

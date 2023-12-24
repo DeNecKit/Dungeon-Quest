@@ -17,15 +17,15 @@ SceneMainMenu::SceneMainMenu()
 	title = new GuiText(sf::FloatRect(x, 100.f, w, 200.f), "Dungeon Quest", 96);
 
 	btnNewGame = new GuiButton(sf::FloatRect(x, 500.f, w, 100.f),
-		L"Новая игра", 24, [](const sf::Event&)
+		L"Новая игра", 24, [](Gui *self)
 			{ SceneManager::ChangeScene<SceneGame>(); });
 
 	btnLoadGame = new GuiButton(sf::FloatRect(x, 650.f, w, 100.f),
-		L"Загрузить игру", 24, [](const sf::Event&)
+		L"Загрузить игру", 24, [](Gui *self)
 			{ SceneManager::ChangeScene<SceneLoadGame>(); });
 
 	btnExit = new GuiButton(sf::FloatRect(x, 800.f, w, 100.f),
-		L"Выйти", 24, [](const sf::Event&) { GameManager::Close(); });
+		L"Выйти", 24, [](Gui *self) { GameManager::Close(); });
 }
 
 SceneMainMenu::~SceneMainMenu()

@@ -10,6 +10,7 @@ public:
 	void ProcessEvent(const sf::Event&) override;
 	void Render(sf::RenderWindow*) override;
 	bool IsOpen();
+	void SetOpen(bool open);
 
 private:
 	bool isOpen;

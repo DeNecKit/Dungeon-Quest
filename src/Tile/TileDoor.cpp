@@ -54,3 +54,8 @@ bool TileDoor::IsOpen()
 {
 	return isOpen;
 }
+
+void TileDoor::SetOpen(bool open)
+{
+	isOpen = open;
+}

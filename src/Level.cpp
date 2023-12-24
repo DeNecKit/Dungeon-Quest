@@ -15,10 +15,12 @@ using json = nlohmann::json;
 auto *levels = new std::vector<Level*>();
 
 Level::Level(unsigned int num, const sf::String &tilesetTexturePath,
-	const char *dataPath, PlayerDirection startDir, sf::String *savePath)
-	: num(num), isBossDefeated(false)
+	const char *dataPath, PlayerDirection startDir,
+	sf::String *savePath, json *loadData)
+	: num(num), isBossDefeated(false), savePath(savePath)
 {
 	levels->push_back(this);
+	bool loading = savePath != nullptr && loadData != nullptr;
 
 	if (!tilesetTexture.loadFromFile(tilesetTexturePath))
 		throw std::exception();
@@ -61,6 +63,7 @@ Level::Level(unsigned int num, const sf::String &tilesetTexturePath,
 			switch (id)
 			{
 			case 36: case 37:
+				if (loading) continue;
 				tile = new TileDoor(id, sf::Vector2u(x, y));
 				break;
 			case 91:
@@ -68,6 +71,7 @@ Level::Level(unsigned int num, const sf::String &tilesetTexturePath,
 					tileData["type"] == "left");
 				break;
 			case 84:
+				if (loading) continue;
 				tile = new TileChest(sf::Vector2u(x, y), tileData["content"]);
 				break;
 			default:
@@ -81,6 +85,19 @@ Level::Level(unsigned int num, const sf::String &tilesetTexturePath,
 				 (float)data["boss-tile"]["y"] * GetTileSize() };
 	endTile = { (float)data["end-tile"]["x"] * GetTileSize(),
 				(float)data["end-tile"]["y"] * GetTileSize() };
+
+	if (loading)
+	{
+		isBossDefeated = (*loadData)["boss-defeated"];
+		for (json &door : (*loadData)["doors"])
+		{
+			auto tileDoor = new TileDoor(door["id"], {door["x"], door["y"]});
+			tileDoor->SetOpen(door["open"]);
+			otherTiles.push_back(tileDoor);
+		}
+		for (json &chest : (*loadData)["chests"])
+			otherTiles.push_back(new TileChest({chest["x"], chest["y"]}, chest["content"]));
+	}
 }
 
 Level::~Level()
@@ -198,19 +215,22 @@ unsigned int Level::GetNum()
 	return currentLevel->num;
 }
 
-Level *Level::Level1()
+Level *Level::Level1(sf::String *savePath, json *loadData)
 {
-	return new Level(1, "data/tileset.png", "data/lvl-01.json", PlayerDirection::Right);
+	return new Level(1, "data/tileset.png", "data/lvl-01.json",
+		PlayerDirection::Right, savePath, loadData);
 }
 
-Level *Level::Level2()
+Level *Level::Level2(sf::String *savePath, json *loadData)
 {
-	return new Level(2, "data/tileset.png", "data/lvl-02.json", PlayerDirection::Right);
+	return new Level(2, "data/tileset.png", "data/lvl-02.json",
+		PlayerDirection::Right, savePath, loadData);
 }
 
-Level *Level::Level3()
+Level *Level::Level3(sf::String *savePath, json *loadData)
 {
-	return new Level(3, "data/tileset.png", "data/lvl-03.json", PlayerDirection::Left);
+	return new Level(3, "data/tileset.png", "data/lvl-03.json",
+		PlayerDirection::Left, savePath, loadData);
 }
 
 Level *Level::Get()
@@ -305,6 +325,27 @@ void Level::Save()
 	std::ofstream saveFile(cl->savePath->toAnsiString());
 	saveFile << save << std::endl;
 	saveFile.close();
+}
+
+void Level::Load(std::string path)
+{
+	std::ifstream saveFile(path);
+	if (!saveFile.is_open()) throw new std::exception();
+	json data = json::parse(saveFile),
+		lvlData = data["level"];
+	saveFile.close();
+
+	Level *level;
+	switch ((int)lvlData["num"])
+	{
+	case 1: level = Level1(new sf::String(path), &lvlData); break;
+	case 2: level = Level2(new sf::String(path), &lvlData); break;
+	case 3: level = Level3(new sf::String(path), &lvlData); break;
+	default: throw new std::exception();
+	}
+	currentLevel = level;
+
+	Player::Load(data["player"]);
 }
 
 void Level::Reset()

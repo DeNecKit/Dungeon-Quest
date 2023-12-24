@@ -281,6 +281,7 @@ json Player::Save()
 	res["hp"] = p->hp;
 	res["lvl"] = p->curLevel;
 	res["exp"] = p->curExp;
+	res["dir"] = (int)p->direction;
 	std::vector<json> inv;
 	for (int i = 0; i < 20; i++)
 		if (p->inventory[i] != nullptr)
@@ -292,6 +293,26 @@ json Player::Save()
 	res["walked-dist"] = p->walkedDistance;
 	res["req-dist"] = p->requiredDistance;
 	return res;
+}
+
+void Player::Load(json data)
+{
+	auto p = currentPlayer;
+	while (p->curLevel < data["lvl"])
+		p->AddExp(p->reqExp);
+	p->curExp = data["exp"];
+	p->hp = data["hp"];
+	p->direction = (PlayerDirection)data["dir"];
+	p->requiredDistance = data["req-dist"];
+	p->walkedDistance = data["walked-dist"];
+	p->position = {data["x"], data["y"]};
+	for (int i = 0; i < 20; i++)
+	{
+		Item::Delete(p->inventory[i]);
+		p->inventory[i] = nullptr;
+	}
+	for (json &item : data["inventory"])
+		p->inventory[item["pos"]] = Item::Create(item["id"], item["count"]);
 }
 
 void Player::UpdateInGame(sf::Time deltaTime)

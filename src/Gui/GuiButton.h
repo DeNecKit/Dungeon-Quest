@@ -9,7 +9,7 @@ class GuiButton final : public Gui
 {
 public:
 	GuiButton(sf::FloatRect dims, const sf::String &str,
-		unsigned int chSize, void (*onClick)(const sf::Event&),
+		unsigned int chSize, void (*onClick)(Gui *self),
 		sf::Color fillColor = ButtonFillColor,
 		sf::Color outlineColor = ButtonOutlineColor,
 		sf::Font *font = ResourceManager::GetMainFont());
@@ -17,6 +17,7 @@ public:
 	void Update(sf::Time deltaTime) override;
 	void Render(sf::RenderWindow*) override;
 	void SetEnabled(bool);
+	GuiClickable *GetClickable();
 
 private:
 	GuiRect rect;

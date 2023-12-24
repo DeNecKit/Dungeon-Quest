@@ -9,7 +9,7 @@ SceneWin::SceneWin()
 	text1 = new GuiText({x, y1, w, h}, L"Вы освободили принцессу!", 48);
 	text2 = new GuiText({x, y1+d+h, w, h}, L"Игра пройдена!", 48);
 	back = new GuiButton({x, y1+d*3+h*2, w, h}, L"Вернуться в главное меню", 24,
-		[](const sf::Event&) { SceneManager::ChangeScene<SceneMainMenu>(); });
+		[](Gui *self) { SceneManager::ChangeScene<SceneMainMenu>(); });
 }
 
 SceneWin::~SceneWin()

@@ -46,6 +46,7 @@ public:
 	static void AddExp(unsigned int exp);
 	static void ResetBattleDist();
 	static json Save();
+	static void Load(json);
 	static Player *Get();
 
 private:

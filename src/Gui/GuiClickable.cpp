@@ -1,7 +1,7 @@
 #include "GuiClickable.h"
 
 GuiClickable::GuiClickable(sf::FloatRect dims,
-	void (*onClick)(const sf::Event&), bool doHover,
+	void (*onClick)(Gui *self), bool doHover,
 	GuiDraggable *drag, bool isClickable)
 	: Gui(dims), OnClick(onClick), isPressed(false),
 	doHover(doHover), isHovered(false), drag(drag),
@@ -30,7 +30,7 @@ void GuiClickable::ProcessEvent(const sf::Event &event)
 	if (ShouldDrag()) isPressed = false;
 	if (isClickable && event.type == sf::Event::MouseButtonReleased)
 	{
-		if (isHovered && isPressed && !ShouldDrag()) OnClick(event);
+		if (isHovered && isPressed && !ShouldDrag()) OnClick(this);
 		if (ShouldDrag())
 		{
 			drag->Reset();

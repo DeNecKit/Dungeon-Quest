@@ -52,16 +52,16 @@ SceneBattle::SceneBattle()
 		x = d, y = GameManager::WindowHeight() - d - h;
 	actionsMenu = new GuiList(sf::FloatRect(x, y, w, h), true);
 	actionsMenu->Append(new GuiButton(sf::FloatRect(x+d, y+d, bw, bh),
-		L"Атака", 24, [](const sf::Event&) { Battle::MakeTurn(TurnAction::Attack); }));
+		L"Атака", 24, [](Gui *self) { Battle::MakeTurn(TurnAction::Attack); }));
 	actionsMenu->Append(new GuiButton(sf::FloatRect(x+d*2+bw, y+d, bw, bh),
-		L"Предмет", 24, [](const sf::Event&) { Battle::MakeTurn(TurnAction::UseItem); }));
+		L"Предмет", 24, [](Gui *self) { Battle::MakeTurn(TurnAction::UseItem); }));
 	actionsMenu->Append(new GuiButton(sf::FloatRect(x+d*3+bw*2, y+d, bw, bh),
-		L"Побег", 24, [](const sf::Event&) { Battle::MakeTurn(TurnAction::Flee); }));
+		L"Побег", 24, [](Gui *self) { Battle::MakeTurn(TurnAction::Flee); }));
 	inventoryGui = GuiList::CreatePlayerInventory();
 	const sf::FloatRect id = inventoryGui->dimensions;
 	inventoryCancel = new GuiButton(sf::FloatRect(
 		id.left + id.width/2 - bw/2, id.top + id.height + d, bw, bh),
-		L"Отмена", 24, [](const sf::Event&) { ShowInventory(false); });
+		L"Отмена", 24, [](Gui *self) { ShowInventory(false); });
 	const float mbw = 500.f, mbh = 100.f, bd = 50.f,
 		vmw = mbw + bd*2, vmh = mbh*2 + bd*3,
 		vmx = hww - vmw/2, vmy = hwh - vmh/2;
@@ -70,7 +70,7 @@ SceneBattle::SceneBattle()
 	defeatMenu = new GuiList(sf::FloatRect(dmx, dmy, dmw, dmh));
 	defeatMenu->Append(new GuiText(sf::FloatRect(dmx+bd, dmy + bd, mbw, mbh), L"Поражение!", 48));
 	defeatMenu->Append(new GuiButton(sf::FloatRect(dmx+bd, dmy+mbh+bd*2, mbw, mbh),
-		L"Вернуться в главное меню", 24, [](const sf::Event&) { Battle::End(); }));
+		L"Вернуться в главное меню", 24, [](Gui *self) { Battle::End(); }));
 	setTargetRect(targetRect);
 	if (!Battle::CanEscape())
 		dynamic_cast<GuiButton*>(actionsMenu->GetChildren()[2])->SetEnabled(false);
@@ -179,7 +179,7 @@ void SceneBattle::Update(sf::Time deltaTime)
 			}
 			victoryMenu->Append(new GuiButton(
 				sf::FloatRect(vmx+bd, vmy+bh*(bc-1)+bd*bc, bw, bh),
-				L"Продолжить", 24, [](const sf::Event&) { Battle::End(); }));
+				L"Продолжить", 24, [](Gui *self) { Battle::End(); }));
 			generatedLoot = true;
 		}
 		if (Battle::IsVictory()) victoryMenu->Update(deltaTime);
