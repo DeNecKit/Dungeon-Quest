@@ -278,7 +278,7 @@ void Level::Save()
 		globalWrite.close();
 
 		std::string curSaveStr = std::to_string(curSave),
-			saveNumStr = std::string(2 - std::min(2, (int)curSaveStr.length()), '0') + curSaveStr;
+			saveNumStr = std::string(3 - std::min(3, (int)curSaveStr.length()), '0') + curSaveStr;
 		cl->savePath = new sf::String("data/saves/save-" + saveNumStr + ".json");
 	}
 	json save;

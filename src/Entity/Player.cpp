@@ -72,7 +72,6 @@ Player::Player(sf::Vector2u startPos, PlayerDirection startDir)
 	levelString = new sf::String(L"Уровень игрока: 1");
 	statsString = new sf::String();
 	UpdateStatsString();
-	AddExp(6000);
 }
 
 Player::~Player()

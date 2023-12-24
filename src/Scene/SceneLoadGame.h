@@ -19,13 +19,15 @@ public:
 
 	static std::vector<std::string> GetSavePaths();
 	static unsigned int GetBtnNum(Gui*);
+	static void PrevPage();
+	static void NextPage();
 
 private:
 	void SetPage(unsigned int page);
 
-	GuiText *text;
+	GuiText *text, *pageNum;
 	GuiList *saves;
-	GuiButton *back;
+	GuiButton *back, *pagePrev, *pageNext;
 	std::vector<std::string> savePaths;
 	std::map<Gui*, unsigned int> btnNum;
 	std::vector<sf::String> saveNames;
