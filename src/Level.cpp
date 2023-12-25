@@ -254,8 +254,8 @@ void Level::Next()
 	Level *nextLevel;
 	switch (currentLevel->num)
 	{
-	case 1: nextLevel = Level2(); break;
-	case 2: nextLevel = Level3(); break;
+	case 1: nextLevel = Level2(new sf::String(*currentLevel->savePath)); break;
+	case 2: nextLevel = Level3(new sf::String(*currentLevel->savePath)); break;
 	case 3: SceneManager::ChangeScene<SceneWin>(); return;
 	default: throw new std::exception();
 	}

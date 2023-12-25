@@ -4,7 +4,7 @@
 
 EnemyGoblin::EnemyGoblin(unsigned int pos)
 	: Enemy("Гоблин",
-		{ {Stat::HP, 30}, {Stat::ATK, 20}, {Stat::DEF, 5}, {Stat::AGI, 5} },
+		{ {Stat::HP, 30}, {Stat::ATK, 17}, {Stat::DEF, 5}, {Stat::AGI, 5} },
 		"data/goblin.png", 150, sf::milliseconds(150),
 		{ {BattleAnimationState::Idle, 4},
 		  {BattleAnimationState::Attack, 8},
@@ -56,7 +56,7 @@ std::vector<Item*> EnemyGoblin::DropLoot()
 {
 	static bool swordDropped = false;
 	std::vector<Item*> res;
-	if (std::rand() % 2)
+	if (std::rand() % 5 > 0)
 		res.push_back(Item::Create(7, 1));
 	if (!swordDropped && std::rand() % 20 == 0)
 	{

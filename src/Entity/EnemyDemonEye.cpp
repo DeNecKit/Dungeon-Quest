@@ -56,9 +56,9 @@ std::vector<Item*> EnemyDemonEye::DropLoot()
 {
 	static bool swordDropped = false;
 	std::vector<Item*> res;
-	if (std::rand() % 2)
+	if (std::rand() % 5 > 0)
 		res.push_back(Item::Create(7, std::rand() % 3 + 1));
-	if (std::rand() % 2)
+	if (std::rand() % 5 > 0)
 		res.push_back(Item::Create(24, 1));
 	if (!swordDropped && std::rand() % 20 == 0)
 	{
