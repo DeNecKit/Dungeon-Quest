@@ -201,7 +201,8 @@ std::vector<Gui*> SceneGame::GetInventoryGui()
 		eq = instance->equipmentGui->GetChildren(),
 		ch = instance->chestGui->GetChildren();
 	inv.insert(inv.end(), eq.begin(), eq.end());
-	inv.insert(inv.end(), ch.begin(), ch.end());
+	if (instance->openedChest != nullptr)
+		inv.insert(inv.end(), ch.begin(), ch.end());
 	return inv;
 }
 

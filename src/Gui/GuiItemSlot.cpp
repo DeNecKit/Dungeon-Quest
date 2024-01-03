@@ -10,7 +10,7 @@ GuiItemSlot::GuiItemSlot(sf::FloatRect dims, TileChest *parentChest,
 	rect(dims, Gui::ItemSlotFillColor, Gui::ItemSlotOutlineColor),
 	pos(pos), parentChest(parentChest), isClickable(isClickable),
 	click(dims, [](Gui *self) {}, true,
-		new GuiDraggable(sf::milliseconds(100)), isClickable),
+		new GuiDraggable(sf::milliseconds(150)), isClickable),
 	lastCount(item == nullptr ? 1 : item->GetCount()), countText(sf::FloatRect(
 		dims.left + dims.width * 0.7f, dims.top + dims.height * 0.7f,
 		dims.width * 0.2f, dims.height * 0.2f),

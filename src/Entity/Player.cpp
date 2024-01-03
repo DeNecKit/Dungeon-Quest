@@ -96,7 +96,7 @@ void Player::Render(sf::RenderWindow *window)
 sf::Vector2f Player::GetHealthBarPos()
 {
 	sf::Vector2f hbs = GuiProgressBar::GetHealthBarSize();
-	float w = hbs.x, h = hbs.y, ps = Player::GetScrenSize() * 0.875f,
+	float w = hbs.x, h = hbs.y, ps = Player::GetScreenSize() * 0.875f,
 		px = Player::GetScreenPos().x, py = Player::GetScreenPos().y;
 	return sf::Vector2f(px + ps/2 - w/2, py + h*4);
 }
@@ -458,7 +458,7 @@ void Player::RenderInGame(sf::RenderWindow *window)
 	sf::Sprite s(*animationTileset,
 		sf::IntRect(animationCurFrame * texSize, 0, texSize, texSize));
 	s.setPosition(GetScreenPos());
-	float factor = GetScrenSize()/16;
+	float factor = GetScreenSize()/16;
 	int right = direction == PlayerDirection::Right ? 1 : -1;
 	s.setScale(sf::Vector2f(factor * right, factor));
 	window->draw(s);
@@ -471,7 +471,7 @@ void Player::RenderInBattle(sf::RenderWindow* window)
 		sf::IntRect(animationCurFrame * texSize,
 			16 + (int)battleAnimationState * texSize, texSize, texSize));
 	s.setPosition(GetScreenPos());
-	float factor = GetScrenSize() / texSize;
+	float factor = GetScreenSize() / texSize;
 	s.setScale(factor, factor);
 	window->draw(s);
 }
@@ -594,7 +594,7 @@ sf::Vector2f Player::GetScreenPos()
 	}
 }
 
-float Player::GetScrenSize()
+float Player::GetScreenSize()
 {
 	if (currentPlayer->isInBattle) return GameManager::WindowHeight()/2.f;
 	else return Level::GetTileSize()*sizeCoef;

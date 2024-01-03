@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /include
 /data
 /lib
+*.cd
